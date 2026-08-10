@@ -1,0 +1,20 @@
+<?php declare(strict_types=1);
+
+namespace IntelliTrend\Zabbix\Requests;
+
+/**
+ * iconmap.create - Create new icon maps.
+ */
+final class IconmapCreateRequest extends AbstractZabbixRequest
+{
+    public function __construct(
+        public string $name,
+        public string $default_iconid,
+        public array $mappings,
+    ) {}
+
+    public static function method(): string
+    {
+        return 'iconmap.create';
+    }
+}

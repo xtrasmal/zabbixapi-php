@@ -1,0 +1,21 @@
+<?php declare(strict_types=1);
+
+namespace IntelliTrend\Zabbix\Requests;
+
+/**
+ * script.execute - Run a script on a host or event. Except for URL type scripts, which are not executable.
+ */
+final class ScriptExecuteRequest extends AbstractZabbixRequest
+{
+    public function __construct(
+        public string $scriptid,
+        public ?string $hostid = null,
+        public ?string $eventid = null,
+        public ?string $manualinput = null,
+    ) {}
+
+    public static function method(): string
+    {
+        return 'script.execute';
+    }
+}

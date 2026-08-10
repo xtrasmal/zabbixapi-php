@@ -1,0 +1,12 @@
+<?php declare(strict_types=1);
+
+namespace IntelliTrend\Zabbix\Requests\Enums;
+
+/**
+ * OK event closes. Possible values: 0 - (default) All problems; 1 - All problems if tag values match.
+ */
+enum TriggerprototypeCorrelationMode: int
+{
+    case AllProblems = 0;
+    case AllProblemsIfTagValues = 1;
+}

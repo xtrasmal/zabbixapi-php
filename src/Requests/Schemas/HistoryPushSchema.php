@@ -1,0 +1,84 @@
+<?php declare(strict_types=1);
+
+namespace IntelliTrend\Zabbix\Requests\Schemas;
+
+use IntelliTrend\Zabbix\Requests\RequestSchema;
+
+final class HistoryPushSchema extends RequestSchema
+{
+    /**
+     * Draft 2020-12 schema for history.push, compiled from the source JSON at
+     * build time. No JSON is read at runtime.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            '$schema' => 'https://json-schema.org/draft/2020-12/schema',
+            '$id' => 'https://zabbix.com/7.0/api/history/history.push',
+            'title' => 'history.push',
+            'description' => 'Send item history data to Zabbix server. The IP address of the Zabbix web interface must be specified in the Allowed hosts field of the Zabbix trapper item in order for the method to work.',
+            '$comment' => 'Source: https://www.zabbix.com/documentation/7.0/en/manual/api/reference/history/push',
+            'oneOf' => [
+                [
+                    '$ref' => '#/$defs/itemHistoryEntry',
+                ],
+                [
+                    'type' => 'array',
+                    'items' => [
+                        '$ref' => '#/$defs/itemHistoryEntry',
+                    ],
+                    'minItems' => 1,
+                ],
+            ],
+            '$defs' => [
+                'itemHistoryEntry' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'itemid' => [
+                            'type' => 'string',
+                            'description' => 'ID of the related item. Parameter behavior: required if host and key are not set.',
+                        ],
+                        'host' => [
+                            'type' => 'string',
+                            'description' => 'Technical name of the host. Parameter behavior: required if itemid is not set.',
+                        ],
+                        'key' => [
+                            'type' => 'string',
+                            'description' => 'Item key. Parameter behavior: required if itemid is not set.',
+                        ],
+                        'value' => [
+                            'description' => 'Item value. Type: mixed. Parameter behavior: required.',
+                        ],
+                        'clock' => [
+                            'type' => 'integer',
+                            'description' => 'Time when the value was received.',
+                        ],
+                        'ns' => [
+                            'type' => 'integer',
+                            'description' => 'Nanoseconds when the value was received.',
+                        ],
+                    ],
+                    'required' => [
+                        'value',
+                    ],
+                    'oneOf' => [
+                        [
+                            'required' => [
+                                'itemid',
+                            ],
+                        ],
+                        [
+                            'required' => [
+                                'host',
+                                'key',
+                            ],
+                        ],
+                    ],
+                    'additionalProperties' => false,
+                ],
+            ],
+        ];
+    }
+}

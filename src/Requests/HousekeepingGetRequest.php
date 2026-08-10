@@ -1,0 +1,18 @@
+<?php declare(strict_types=1);
+
+namespace IntelliTrend\Zabbix\Requests;
+
+/**
+ * housekeeping.get - Retrieve housekeeping object according to the given parameters.
+ */
+final class HousekeepingGetRequest extends AbstractZabbixRequest
+{
+    public function __construct(
+        public array|string|null $output = null,
+    ) {}
+
+    public static function method(): string
+    {
+        return 'housekeeping.get';
+    }
+}

@@ -1,0 +1,22 @@
+<?php declare(strict_types=1);
+
+namespace IntelliTrend\Zabbix\Requests;
+
+/**
+ * template.massremove - Remove related objects from multiple templates.
+ */
+final class TemplateMassremoveRequest extends AbstractZabbixRequest
+{
+    public function __construct(
+        public string|array $templateids,
+        public string|array|null $groupids = null,
+        public string|array|null $macros = null,
+        public string|array|null $templateids_clear = null,
+        public string|array|null $templateids_link = null,
+    ) {}
+
+    public static function method(): string
+    {
+        return 'template.massremove';
+    }
+}

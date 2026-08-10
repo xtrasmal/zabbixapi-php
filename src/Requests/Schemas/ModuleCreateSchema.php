@@ -1,0 +1,53 @@
+<?php declare(strict_types=1);
+
+namespace IntelliTrend\Zabbix\Requests\Schemas;
+
+use IntelliTrend\Zabbix\Requests\RequestSchema;
+
+final class ModuleCreateSchema extends RequestSchema
+{
+    /**
+     * Draft 2020-12 schema for module.create, compiled from the source JSON at
+     * build time. No JSON is read at runtime.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            '$schema' => 'https://json-schema.org/draft/2020-12/schema',
+            '$id' => 'https://zabbix.com/7.0/api/module/module.create',
+            'title' => 'module.create',
+            'description' => 'Install new frontend modules.',
+            '$comment' => 'Source: https://www.zabbix.com/documentation/7.0/en/manual/api/reference/module/create',
+            'type' => 'object',
+            'properties' => [
+                'id' => [
+                    'type' => 'string',
+                    'description' => 'Unique module ID as defined by a developer in the manifest.json file of the module. Required for create operations.',
+                ],
+                'relative_path' => [
+                    'type' => 'string',
+                    'description' => 'Path to the directory of the module relative to the directory of the Zabbix frontend. Possible values: widgets/* - for built-in widget modules; modules/* - for third-party modules. Required for create operations.',
+                ],
+                'status' => [
+                    'type' => 'integer',
+                    'enum' => [
+                        0,
+                        1,
+                    ],
+                    'description' => 'Whether the module is enabled or disabled. Possible values: 0 - (default) Disabled; 1 - Enabled.',
+                ],
+                'config' => [
+                    'type' => 'object',
+                    'description' => 'Module configuration.',
+                ],
+            ],
+            'required' => [
+                'id',
+                'relative_path',
+            ],
+            'additionalProperties' => false,
+        ];
+    }
+}

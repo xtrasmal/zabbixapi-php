@@ -1,0 +1,45 @@
+<?php declare(strict_types=1);
+
+namespace IntelliTrend\Zabbix\Requests\Schemas;
+
+use IntelliTrend\Zabbix\Requests\RequestSchema;
+
+final class UserLoginSchema extends RequestSchema
+{
+    /**
+     * Draft 2020-12 schema for user.login, compiled from the source JSON at
+     * build time. No JSON is read at runtime.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            '$schema' => 'https://json-schema.org/draft/2020-12/schema',
+            '$id' => 'https://zabbix.com/7.0/api/user/user.login',
+            'title' => 'user.login',
+            'description' => 'Log in to the API and generate an authentication token. This method must be called without the auth parameter in the JSON-RPC request, and is only available to unauthenticated users who do not belong to any user group with enabled multi-factor authentication.',
+            '$comment' => 'Source: https://www.zabbix.com/documentation/7.0/en/manual/api/reference/user/login',
+            'type' => 'object',
+            'properties' => [
+                'username' => [
+                    'type' => 'string',
+                    'description' => 'User name. Parameter behavior: required.',
+                ],
+                'password' => [
+                    'type' => 'string',
+                    'description' => 'User password. Parameter behavior: required.',
+                ],
+                'userData' => [
+                    'type' => 'boolean',
+                    'description' => 'Return information about the authenticated user.',
+                ],
+            ],
+            'required' => [
+                'username',
+                'password',
+            ],
+            'additionalProperties' => false,
+        ];
+    }
+}

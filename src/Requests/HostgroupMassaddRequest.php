@@ -1,0 +1,19 @@
+<?php declare(strict_types=1);
+
+namespace IntelliTrend\Zabbix\Requests;
+
+/**
+ * hostgroup.massadd - Simultaneously add multiple related objects to all the given host groups.
+ */
+final class HostgroupMassaddRequest extends AbstractZabbixRequest
+{
+    public function __construct(
+        public array $groups,
+        public ?array $hosts = null,
+    ) {}
+
+    public static function method(): string
+    {
+        return 'hostgroup.massadd';
+    }
+}
