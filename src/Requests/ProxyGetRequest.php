@@ -28,7 +28,7 @@ final class ProxyGetRequest extends AbstractZabbixRequest
         public ?bool $startSearch = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'proxy.get';
     }

@@ -12,7 +12,7 @@ final class TemplategroupMassupdateRequest extends AbstractZabbixRequest
         public array $templates,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'templategroup.massupdate';
     }

@@ -13,7 +13,7 @@ final class TaskCreateRequest extends AbstractZabbixRequest
         public ?string $proxyid = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'task.create';
     }

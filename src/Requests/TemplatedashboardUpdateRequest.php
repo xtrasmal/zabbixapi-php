@@ -17,7 +17,7 @@ final class TemplatedashboardUpdateRequest extends AbstractZabbixRequest
         public ?array $pages = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'templatedashboard.update';
     }

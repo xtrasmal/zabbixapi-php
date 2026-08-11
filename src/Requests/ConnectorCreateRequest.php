@@ -34,7 +34,7 @@ final class ConnectorCreateRequest extends AbstractZabbixRequest
         public ?array $tags = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'connector.create';
     }

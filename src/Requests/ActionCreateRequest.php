@@ -21,7 +21,7 @@ final class ActionCreateRequest extends AbstractZabbixRequest
         public ?array $update_operations = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'action.create';
     }

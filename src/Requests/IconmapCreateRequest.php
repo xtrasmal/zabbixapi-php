@@ -13,7 +13,7 @@ final class IconmapCreateRequest extends AbstractZabbixRequest
         public array $mappings,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'iconmap.create';
     }

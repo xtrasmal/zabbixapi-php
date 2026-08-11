@@ -18,7 +18,7 @@ final class DashboardCreateRequest extends AbstractZabbixRequest
         public ?array $userGroups = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'dashboard.create';
     }

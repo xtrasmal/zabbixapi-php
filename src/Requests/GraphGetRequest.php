@@ -40,7 +40,7 @@ final class GraphGetRequest extends AbstractZabbixRequest
         public array|string|null $selectGroups = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'graph.get';
     }

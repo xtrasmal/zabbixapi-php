@@ -30,7 +30,7 @@ final class HousekeepingUpdateRequest extends AbstractZabbixRequest
         public ?string $compress_older = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'housekeeping.update';
     }

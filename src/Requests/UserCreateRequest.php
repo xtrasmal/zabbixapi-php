@@ -24,7 +24,7 @@ final class UserCreateRequest extends AbstractZabbixRequest
         public ?array $medias = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'user.create';
     }

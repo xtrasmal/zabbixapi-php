@@ -12,7 +12,7 @@ final class HostinterfaceReplacehostinterfacesRequest extends AbstractZabbixRequ
         public string $hostid,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'hostinterface.replacehostinterfaces';
     }

@@ -2,6 +2,8 @@
 
 namespace IntelliTrend\Zabbix\Requests;
 
+use IntelliTrend\Zabbix\Requests\Schemas\StaticSchemaRegistry;
+
 /**
  * Validates a request's params against its compiled schema before it leaves the
  * client. If Zabbix ever returns an input-shape validation error, this gate
@@ -14,13 +16,21 @@ final class ZabbixRequestValidator
         private SchemaValidator $validator,
     ) {}
 
+    public static function createDefault(): self
+    {
+        return new self(
+            new StaticSchemaRegistry(),
+            new OpisSchemaValidator(),
+        );
+    }
+
     public function validate(ZabbixRequest $request): void
     {
-        $schema = $this->registry->schemaFor($request::method());
+        $schema = $this->registry->schemaFor($request->method());
         $violations = $this->validator->validate($request->params(), $schema);
 
         if ($violations !== []) {
-            throw InvalidZabbixRequest::fromViolations($request::method(), $violations);
+            throw InvalidZabbixRequest::fromViolations($request->method(), $violations);
         }
     }
 }

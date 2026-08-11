@@ -31,7 +31,7 @@ final class HttptestUpdateRequest extends AbstractZabbixRequest
         public ?array $tags = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'httptest.update';
     }

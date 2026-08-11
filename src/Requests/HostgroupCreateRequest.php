@@ -12,7 +12,7 @@ final class HostgroupCreateRequest extends AbstractZabbixRequest
         public ?string $uuid = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'hostgroup.create';
     }

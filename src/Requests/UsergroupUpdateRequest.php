@@ -23,7 +23,7 @@ final class UsergroupUpdateRequest extends AbstractZabbixRequest
         public ?array $rights = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'usergroup.update';
     }

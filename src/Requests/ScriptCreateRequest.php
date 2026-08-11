@@ -36,7 +36,7 @@ final class ScriptCreateRequest extends AbstractZabbixRequest
         public ?string $manualinput_default_value = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'script.create';
     }

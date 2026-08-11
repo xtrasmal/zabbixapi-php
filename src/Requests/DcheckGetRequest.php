@@ -27,7 +27,7 @@ final class DcheckGetRequest extends AbstractZabbixRequest
         public ?bool $startSearch = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'dcheck.get';
     }

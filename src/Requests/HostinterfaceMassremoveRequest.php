@@ -12,7 +12,7 @@ final class HostinterfaceMassremoveRequest extends AbstractZabbixRequest
         public string|array $hostids,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'hostinterface.massremove';
     }

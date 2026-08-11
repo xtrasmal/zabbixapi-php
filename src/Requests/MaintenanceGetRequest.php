@@ -31,7 +31,7 @@ final class MaintenanceGetRequest extends AbstractZabbixRequest
         public ?bool $startSearch = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'maintenance.get';
     }

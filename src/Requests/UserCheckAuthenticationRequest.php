@@ -13,7 +13,7 @@ final class UserCheckAuthenticationRequest extends AbstractZabbixRequest
         public ?string $token = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'user.checkAuthentication';
     }

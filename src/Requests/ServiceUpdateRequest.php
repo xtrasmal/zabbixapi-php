@@ -25,7 +25,7 @@ final class ServiceUpdateRequest extends AbstractZabbixRequest
         public ?array $status_rules = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'service.update';
     }

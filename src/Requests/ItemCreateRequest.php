@@ -58,7 +58,7 @@ final class ItemCreateRequest extends AbstractZabbixRequest
         public ?array $tags = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'item.create';
     }

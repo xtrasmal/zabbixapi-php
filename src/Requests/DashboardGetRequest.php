@@ -27,7 +27,7 @@ final class DashboardGetRequest extends AbstractZabbixRequest
         public ?bool $startSearch = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'dashboard.get';
     }

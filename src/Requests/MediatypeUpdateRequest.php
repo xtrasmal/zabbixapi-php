@@ -41,7 +41,7 @@ final class MediatypeUpdateRequest extends AbstractZabbixRequest
         public ?array $message_templates = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'mediatype.update';
     }

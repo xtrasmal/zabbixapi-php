@@ -18,7 +18,7 @@ final class HostinterfaceCreateRequest extends AbstractZabbixRequest
         public ?array $details = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'hostinterface.create';
     }

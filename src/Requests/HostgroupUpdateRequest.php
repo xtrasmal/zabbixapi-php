@@ -13,7 +13,7 @@ final class HostgroupUpdateRequest extends AbstractZabbixRequest
         public ?string $uuid = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'hostgroup.update';
     }

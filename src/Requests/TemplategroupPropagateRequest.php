@@ -12,7 +12,7 @@ final class TemplategroupPropagateRequest extends AbstractZabbixRequest
         public bool $permissions,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'templategroup.propagate';
     }

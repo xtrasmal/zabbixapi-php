@@ -12,7 +12,7 @@ final class DiscoveryruleCopyRequest extends AbstractZabbixRequest
         public array $hostids,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'discoveryrule.copy';
     }

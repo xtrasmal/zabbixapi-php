@@ -13,7 +13,7 @@ final class TaskGetRequest extends AbstractZabbixRequest
         public ?bool $preservekeys = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'task.get';
     }

@@ -13,7 +13,7 @@ final class RegexpCreateRequest extends AbstractZabbixRequest
         public ?string $test_string = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'regexp.create';
     }

@@ -24,7 +24,7 @@ final class ModuleGetRequest extends AbstractZabbixRequest
         public ?bool $startSearch = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'module.get';
     }

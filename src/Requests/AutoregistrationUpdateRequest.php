@@ -13,7 +13,7 @@ final class AutoregistrationUpdateRequest extends AbstractZabbixRequest
         public ?string $tls_psk = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'autoregistration.update';
     }

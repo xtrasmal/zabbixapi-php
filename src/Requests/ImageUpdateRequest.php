@@ -14,7 +14,7 @@ final class ImageUpdateRequest extends AbstractZabbixRequest
         public ?string $image = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'image.update';
     }

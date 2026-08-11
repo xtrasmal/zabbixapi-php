@@ -37,7 +37,7 @@ final class ProxyCreateRequest extends AbstractZabbixRequest
         public ?array $hosts = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'proxy.create';
     }

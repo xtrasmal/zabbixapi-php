@@ -29,7 +29,7 @@ final class GraphprototypeUpdateRequest extends AbstractZabbixRequest
         public ?array $gitems = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'graphprototype.update';
     }

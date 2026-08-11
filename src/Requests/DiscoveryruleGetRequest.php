@@ -41,7 +41,7 @@ final class DiscoveryruleGetRequest extends AbstractZabbixRequest
         public ?bool $startSearch = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'discoveryrule.get';
     }

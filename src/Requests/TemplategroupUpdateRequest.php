@@ -13,7 +13,7 @@ final class TemplategroupUpdateRequest extends AbstractZabbixRequest
         public ?string $uuid = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'templategroup.update';
     }

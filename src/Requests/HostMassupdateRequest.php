@@ -35,7 +35,7 @@ final class HostMassupdateRequest extends AbstractZabbixRequest
         public ?array $templates_clear = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'host.massupdate';
     }

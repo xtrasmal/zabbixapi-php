@@ -10,7 +10,7 @@ final class UserdirectoryUpdateRequest extends AbstractZabbixListRequest
         parent::__construct($ids);
     }
 
-    public static function method(): string
+    public function method(): string
     {
         return 'userdirectory.update';
     }

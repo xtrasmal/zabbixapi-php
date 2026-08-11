@@ -18,7 +18,7 @@ final class DruleUpdateRequest extends AbstractZabbixRequest
         public ?array $dchecks = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'drule.update';
     }

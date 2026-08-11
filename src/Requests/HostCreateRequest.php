@@ -34,7 +34,7 @@ final class HostCreateRequest extends AbstractZabbixRequest
         public ?array $inventory = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'host.create';
     }

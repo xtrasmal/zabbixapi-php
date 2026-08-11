@@ -12,7 +12,7 @@ final class TemplategroupMassremoveRequest extends AbstractZabbixRequest
         public string|array $templateids,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'templategroup.massremove';
     }

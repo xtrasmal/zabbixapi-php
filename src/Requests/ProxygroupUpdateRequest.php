@@ -15,7 +15,7 @@ final class ProxygroupUpdateRequest extends AbstractZabbixRequest
         public ?string $min_online = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'proxygroup.update';
     }

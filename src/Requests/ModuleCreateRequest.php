@@ -14,7 +14,7 @@ final class ModuleCreateRequest extends AbstractZabbixRequest
         public ?array $config = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'module.create';
     }

@@ -12,7 +12,7 @@ final class HostgroupMassremoveRequest extends AbstractZabbixRequest
         public string|array|null $hostids = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'hostgroup.massremove';
     }

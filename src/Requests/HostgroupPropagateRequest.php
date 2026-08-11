@@ -13,7 +13,7 @@ final class HostgroupPropagateRequest extends AbstractZabbixRequest
         public ?bool $tag_filters = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'hostgroup.propagate';
     }

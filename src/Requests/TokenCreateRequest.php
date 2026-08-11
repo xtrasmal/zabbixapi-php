@@ -15,7 +15,7 @@ final class TokenCreateRequest extends AbstractZabbixRequest
         public ?int $expires_at = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'token.create';
     }

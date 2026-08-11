@@ -13,7 +13,7 @@ final class UserLoginRequest extends AbstractZabbixRequest
         public ?bool $userData = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'user.login';
     }

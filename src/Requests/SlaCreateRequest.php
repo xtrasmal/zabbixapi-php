@@ -20,7 +20,7 @@ final class SlaCreateRequest extends AbstractZabbixRequest
         public ?array $excluded_downtimes = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'sla.create';
     }

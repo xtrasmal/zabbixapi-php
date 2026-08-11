@@ -30,7 +30,7 @@ final class TriggerprototypeUpdateRequest extends AbstractZabbixRequest
         public ?array $tags = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'triggerprototype.update';
     }

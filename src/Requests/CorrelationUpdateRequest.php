@@ -16,7 +16,7 @@ final class CorrelationUpdateRequest extends AbstractZabbixRequest
         public ?array $operations = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'correlation.update';
     }

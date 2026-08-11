@@ -28,7 +28,7 @@ final class GraphCreateRequest extends AbstractZabbixRequest
         public ?string $uuid = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'graph.create';
     }

@@ -11,16 +11,61 @@ namespace IntelliTrend\Zabbix\Requests;
  */
 abstract class AbstractZabbixRequest implements ZabbixRequest
 {
+    /** @var array<string, mixed>|list<mixed>|null */
+    private ?array $manualParams = null;
+
+    /**
+     * Build a request directly from the method's manual-shaped params.
+     *
+     * @param array<string, mixed>|list<mixed> $params
+     */
+    final public static function fromParams(array $params): static
+    {
+        $request = (new \ReflectionClass(static::class))->newInstanceWithoutConstructor();
+        $request->manualParams = $params;
+
+        return $request;
+    }
+
     final public function params(): array
     {
+        if ($this->manualParams !== null) {
+            return $this->normalize($this->manualParams);
+        }
+
         $params = [];
         foreach (get_object_vars($this) as $name => $value) {
+            if ($name === 'manualParams') {
+                continue;
+            }
             if ($value === null) {
                 continue;
             }
-            $params[$name] = $value instanceof \BackedEnum ? $value->value : $value;
+            $params[$name] = $this->normalize($value);
         }
 
         return $params;
+    }
+
+    private function normalize(mixed $value): mixed
+    {
+        if ($value instanceof \BackedEnum) {
+            return $value->value;
+        }
+
+        if ($value instanceof ZabbixParameter) {
+            return $value->toZabbixValue();
+        }
+
+        if (is_array($value)) {
+            $normalized = [];
+            foreach ($value as $key => $item) {
+                $normalized[$key] = $this->normalize($item);
+            }
+
+            return $normalized;
+        }
+
+        return $value;
     }
 }

@@ -22,7 +22,7 @@ final class MaintenanceCreateRequest extends AbstractZabbixRequest
         public ?array $hostids = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'maintenance.create';
     }

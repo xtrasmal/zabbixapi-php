@@ -1,0 +1,37 @@
+<?php
+
+declare(strict_types=1);
+
+namespace IntelliTrend\Zabbix\Api;
+
+use IntelliTrend\Zabbix\Requests\MediatypeCreateRequest;
+use IntelliTrend\Zabbix\Requests\MediatypeDeleteRequest;
+use IntelliTrend\Zabbix\Requests\MediatypeGetRequest;
+use IntelliTrend\Zabbix\Requests\MediatypeUpdateRequest;
+
+final class MediaTypeApi extends AbstractApi
+{
+    /** @param array<string, mixed> $request */
+    public function create(MediatypeCreateRequest|array $request): MediatypeCreateRequest
+    {
+        return $this->request(MediatypeCreateRequest::class, $request);
+    }
+
+    /** @param list<mixed> $request */
+    public function delete(MediatypeDeleteRequest|array $request): MediatypeDeleteRequest
+    {
+        return $this->request(MediatypeDeleteRequest::class, $request);
+    }
+
+    /** @param array<string, mixed> $request */
+    public function get(MediatypeGetRequest|array $request = []): MediatypeGetRequest
+    {
+        return $this->request(MediatypeGetRequest::class, $request);
+    }
+
+    /** @param array<string, mixed> $request */
+    public function update(MediatypeUpdateRequest|array $request): MediatypeUpdateRequest
+    {
+        return $this->request(MediatypeUpdateRequest::class, $request);
+    }
+}

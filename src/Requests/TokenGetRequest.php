@@ -28,7 +28,7 @@ final class TokenGetRequest extends AbstractZabbixRequest
         public ?bool $startSearch = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'token.get';
     }

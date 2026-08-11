@@ -16,7 +16,7 @@ final class TrendGetRequest extends AbstractZabbixRequest
         public array|string|null $output = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'trend.get';
     }

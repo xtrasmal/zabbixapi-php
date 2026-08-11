@@ -49,7 +49,7 @@ final class UserdirectoryTestRequest extends AbstractZabbixRequest
         public ?string $test_password = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'userdirectory.test';
     }

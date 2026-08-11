@@ -36,7 +36,7 @@ final class HostUpdateRequest extends AbstractZabbixRequest
         public ?array $templates_clear = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'host.update';
     }

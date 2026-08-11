@@ -17,7 +17,7 @@ final class MfaCreateRequest extends AbstractZabbixRequest
         public ?string $client_secret = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'mfa.create';
     }

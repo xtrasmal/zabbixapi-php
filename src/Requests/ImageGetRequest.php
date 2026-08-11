@@ -26,7 +26,7 @@ final class ImageGetRequest extends AbstractZabbixRequest
         public ?bool $startSearch = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'image.get';
     }

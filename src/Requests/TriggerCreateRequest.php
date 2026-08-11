@@ -28,7 +28,7 @@ final class TriggerCreateRequest extends AbstractZabbixRequest
         public ?array $tags = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'trigger.create';
     }

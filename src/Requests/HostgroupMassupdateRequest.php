@@ -12,7 +12,7 @@ final class HostgroupMassupdateRequest extends AbstractZabbixRequest
         public array $hosts,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'hostgroup.massupdate';
     }

@@ -13,7 +13,7 @@ final class ImageCreateRequest extends AbstractZabbixRequest
         public string $image,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'image.create';
     }

@@ -16,7 +16,7 @@ final class EventAcknowledgeRequest extends AbstractZabbixRequest
         public ?int $suppress_until = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'event.acknowledge';
     }

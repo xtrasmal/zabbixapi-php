@@ -25,7 +25,7 @@ final class MfaGetRequest extends AbstractZabbixRequest
         public ?bool $startSearch = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'mfa.get';
     }

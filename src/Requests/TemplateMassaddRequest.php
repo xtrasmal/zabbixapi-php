@@ -14,7 +14,7 @@ final class TemplateMassaddRequest extends AbstractZabbixRequest
         public ?array $templates_link = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'template.massadd';
     }

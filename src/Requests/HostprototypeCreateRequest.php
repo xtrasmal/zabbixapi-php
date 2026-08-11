@@ -24,7 +24,7 @@ final class HostprototypeCreateRequest extends AbstractZabbixRequest
         public ?array $templates = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'hostprototype.create';
     }

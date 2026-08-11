@@ -58,7 +58,7 @@ final class DiscoveryruleUpdateRequest extends AbstractZabbixRequest
         public ?array $overrides = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'discoveryrule.update';
     }

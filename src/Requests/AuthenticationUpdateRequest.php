@@ -28,7 +28,7 @@ final class AuthenticationUpdateRequest extends AbstractZabbixRequest
         public ?string $mfaid = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'authentication.update';
     }

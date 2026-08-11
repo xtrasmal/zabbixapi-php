@@ -48,7 +48,7 @@ final class MapUpdateRequest extends AbstractZabbixRequest
         public ?array $lines = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'map.update';
     }

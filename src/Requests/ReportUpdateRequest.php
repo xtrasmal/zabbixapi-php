@@ -26,7 +26,7 @@ final class ReportUpdateRequest extends AbstractZabbixRequest
         public ?array $user_groups = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'report.update';
     }

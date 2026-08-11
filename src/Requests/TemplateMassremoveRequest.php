@@ -15,7 +15,7 @@ final class TemplateMassremoveRequest extends AbstractZabbixRequest
         public string|array|null $templateids_link = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'template.massremove';
     }

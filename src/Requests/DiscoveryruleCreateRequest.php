@@ -57,7 +57,7 @@ final class DiscoveryruleCreateRequest extends AbstractZabbixRequest
         public ?array $overrides = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'discoveryrule.create';
     }

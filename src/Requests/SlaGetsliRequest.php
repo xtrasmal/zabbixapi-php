@@ -15,7 +15,7 @@ final class SlaGetsliRequest extends AbstractZabbixRequest
         public string|array|null $serviceids = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'sla.getsli';
     }

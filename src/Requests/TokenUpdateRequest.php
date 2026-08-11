@@ -16,7 +16,7 @@ final class TokenUpdateRequest extends AbstractZabbixRequest
         public ?int $expires_at = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'token.update';
     }

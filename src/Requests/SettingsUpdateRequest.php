@@ -80,7 +80,7 @@ final class SettingsUpdateRequest extends AbstractZabbixRequest
         public ?string $timeout_browser = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'settings.update';
     }

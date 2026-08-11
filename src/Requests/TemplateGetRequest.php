@@ -51,7 +51,7 @@ final class TemplateGetRequest extends AbstractZabbixRequest
         public ?bool $startSearch = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'template.get';
     }

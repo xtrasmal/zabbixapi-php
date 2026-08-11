@@ -11,7 +11,7 @@ final class AutoregistrationGetRequest extends AbstractZabbixRequest
         public array|string|null $output = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'autoregistration.get';
     }

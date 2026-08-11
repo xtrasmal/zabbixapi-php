@@ -14,7 +14,7 @@ final class RegexpUpdateRequest extends AbstractZabbixRequest
         public ?array $expressions = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'regexp.update';
     }

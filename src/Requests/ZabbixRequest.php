@@ -4,12 +4,11 @@ namespace IntelliTrend\Zabbix\Requests;
 
 interface ZabbixRequest
 {
-    public static function method(): string;
+    public function method(): string;
 
     /**
-     * The JSON-RPC "params" payload: an associative array for object-shaped
-     * requests, a list for list-shaped requests. The JSON root shape (object
-     * vs array) is applied at encode/validate time.
+     * The method-specific Zabbix API params, exactly as an array accepted by
+     * ZabbixApi::call($method, $params).
      */
     public function params(): array;
 }

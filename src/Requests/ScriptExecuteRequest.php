@@ -14,7 +14,7 @@ final class ScriptExecuteRequest extends AbstractZabbixRequest
         public ?string $manualinput = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'script.execute';
     }

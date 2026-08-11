@@ -14,7 +14,7 @@ final class ValuemapCreateRequest extends AbstractZabbixRequest
         public ?string $uuid = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'valuemap.create';
     }

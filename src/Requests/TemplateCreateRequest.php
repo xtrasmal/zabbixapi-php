@@ -20,7 +20,7 @@ final class TemplateCreateRequest extends AbstractZabbixRequest
         public ?array $macros = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'template.create';
     }

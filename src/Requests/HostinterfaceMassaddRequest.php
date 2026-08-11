@@ -12,7 +12,7 @@ final class HostinterfaceMassaddRequest extends AbstractZabbixRequest
         public array $hosts,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'hostinterface.massadd';
     }

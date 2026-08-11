@@ -16,7 +16,7 @@ final class HostMassremoveRequest extends AbstractZabbixRequest
         public string|array|null $templateids_clear = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'host.massremove';
     }

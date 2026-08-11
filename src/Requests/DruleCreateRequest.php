@@ -17,7 +17,7 @@ final class DruleCreateRequest extends AbstractZabbixRequest
         public ?int $concurrency_max = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'drule.create';
     }

@@ -39,7 +39,7 @@ final class GraphprototypeGetRequest extends AbstractZabbixRequest
         public ?bool $startSearch = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'graphprototype.get';
     }

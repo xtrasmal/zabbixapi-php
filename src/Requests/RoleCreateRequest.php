@@ -13,7 +13,7 @@ final class RoleCreateRequest extends AbstractZabbixRequest
         public ?array $rules = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'role.create';
     }

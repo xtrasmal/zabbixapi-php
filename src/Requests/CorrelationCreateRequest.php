@@ -15,7 +15,7 @@ final class CorrelationCreateRequest extends AbstractZabbixRequest
         public ?Enums\CorrelationStatus $status = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'correlation.create';
     }

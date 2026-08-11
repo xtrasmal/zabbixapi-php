@@ -22,7 +22,7 @@ final class TemplateUpdateRequest extends AbstractZabbixRequest
         public ?array $templates_clear = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'template.update';
     }

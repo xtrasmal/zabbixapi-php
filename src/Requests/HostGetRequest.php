@@ -72,7 +72,23 @@ final class HostGetRequest extends AbstractZabbixRequest
         public ?bool $startSearch = null,
     ) {}
 
-    public static function method(): string
+    /** @param array<string, mixed> $params */
+    public static function byManualParams(array $params): self
+    {
+        return self::fromParams($params);
+    }
+
+    public static function byHost(string $host, array|string|null $output = ['hostid', 'host']): self
+    {
+        return self::fromParams([
+            'filter' => [
+                'host' => [$host],
+            ],
+            'output' => $output,
+        ]);
+    }
+
+    public function method(): string
     {
         return 'host.get';
     }

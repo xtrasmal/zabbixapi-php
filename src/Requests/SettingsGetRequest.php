@@ -11,7 +11,7 @@ final class SettingsGetRequest extends AbstractZabbixRequest
         public array|string|null $output = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'settings.get';
     }

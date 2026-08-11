@@ -15,7 +15,7 @@ final class HostMassaddRequest extends AbstractZabbixRequest
         public ?array $templates = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'host.massadd';
     }

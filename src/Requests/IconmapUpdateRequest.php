@@ -14,7 +14,7 @@ final class IconmapUpdateRequest extends AbstractZabbixRequest
         public ?array $mappings = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'iconmap.update';
     }

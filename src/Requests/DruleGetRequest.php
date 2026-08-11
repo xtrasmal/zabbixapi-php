@@ -29,7 +29,7 @@ final class DruleGetRequest extends AbstractZabbixRequest
         public ?bool $startSearch = null,
     ) {}
 
-    public static function method(): string
+    public function method(): string
     {
         return 'drule.get';
     }
