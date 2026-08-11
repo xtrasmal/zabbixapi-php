@@ -29,6 +29,12 @@ final class HttpTestApi extends AbstractApi
         return $this->request(HttptestGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): HttptestGetRequest
+    {
+        return $this->filterRequest(HttptestGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(HttptestUpdateRequest|array $request): HttptestUpdateRequest
     {

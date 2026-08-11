@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * template.get - Retrieve templates according to the given parameters.
  */
-final class TemplateGetRequest extends AbstractZabbixRequest
+final class TemplateGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $templateids = null,

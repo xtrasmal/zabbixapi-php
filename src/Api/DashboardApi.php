@@ -29,6 +29,12 @@ final class DashboardApi extends AbstractApi
         return $this->request(DashboardGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): DashboardGetRequest
+    {
+        return $this->filterRequest(DashboardGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(DashboardUpdateRequest|array $request): DashboardUpdateRequest
     {

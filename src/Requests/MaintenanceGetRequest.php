@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * maintenance.get - Retrieve maintenances according to the given parameters.
  */
-final class MaintenanceGetRequest extends AbstractZabbixRequest
+final class MaintenanceGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $groupids = null,

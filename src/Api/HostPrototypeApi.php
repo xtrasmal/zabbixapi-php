@@ -29,6 +29,12 @@ final class HostPrototypeApi extends AbstractApi
         return $this->request(HostprototypeGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): HostprototypeGetRequest
+    {
+        return $this->filterRequest(HostprototypeGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(HostprototypeUpdateRequest|array $request): HostprototypeUpdateRequest
     {

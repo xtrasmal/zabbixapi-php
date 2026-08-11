@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * correlation.get - Retrieve correlations according to the given parameters.
  */
-final class CorrelationGetRequest extends AbstractZabbixRequest
+final class CorrelationGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $correlationids = null,

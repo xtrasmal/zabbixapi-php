@@ -29,6 +29,12 @@ final class TemplateDashboardApi extends AbstractApi
         return $this->request(TemplatedashboardGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): TemplatedashboardGetRequest
+    {
+        return $this->filterRequest(TemplatedashboardGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(TemplatedashboardUpdateRequest|array $request): TemplatedashboardUpdateRequest
     {

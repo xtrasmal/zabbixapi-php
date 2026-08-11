@@ -38,6 +38,12 @@ final class ScriptApi extends AbstractApi
         return $this->request(ScriptGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): ScriptGetRequest
+    {
+        return $this->filterRequest(ScriptGetRequest::class, $filter);
+    }
+
     /** @param list<mixed> $request */
     public function getScriptsByEvents(ScriptGetscriptsbyeventsRequest|array $request): ScriptGetscriptsbyeventsRequest
     {

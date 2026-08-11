@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * triggerprototype.get - Retrieve trigger prototypes according to the given parameters.
  */
-final class TriggerprototypeGetRequest extends AbstractZabbixRequest
+final class TriggerprototypeGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public ?bool $active = null,

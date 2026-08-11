@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * graphprototype.get - Retrieve graph prototypes according to the given parameters.
  */
-final class GraphprototypeGetRequest extends AbstractZabbixRequest
+final class GraphprototypeGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $discoveryids = null,

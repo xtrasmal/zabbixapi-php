@@ -29,6 +29,12 @@ final class GraphPrototypeApi extends AbstractApi
         return $this->request(GraphprototypeGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): GraphprototypeGetRequest
+    {
+        return $this->filterRequest(GraphprototypeGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(GraphprototypeUpdateRequest|array $request): GraphprototypeUpdateRequest
     {

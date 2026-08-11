@@ -13,4 +13,10 @@ final class DHostApi extends AbstractApi
     {
         return $this->request(DhostGetRequest::class, $request);
     }
+
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): DhostGetRequest
+    {
+        return $this->filterRequest(DhostGetRequest::class, $filter);
+    }
 }

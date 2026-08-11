@@ -29,6 +29,12 @@ final class ItemApi extends AbstractApi
         return $this->request(ItemGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): ItemGetRequest
+    {
+        return $this->filterRequest(ItemGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(ItemUpdateRequest|array $request): ItemUpdateRequest
     {

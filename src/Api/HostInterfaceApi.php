@@ -32,6 +32,12 @@ final class HostInterfaceApi extends AbstractApi
         return $this->request(HostinterfaceGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): HostinterfaceGetRequest
+    {
+        return $this->filterRequest(HostinterfaceGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function massAdd(HostinterfaceMassaddRequest|array $request): HostinterfaceMassaddRequest
     {

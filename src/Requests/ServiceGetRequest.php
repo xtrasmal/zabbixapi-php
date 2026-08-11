@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * service.get - Retrieve services according to the given parameters.
  */
-final class ServiceGetRequest extends AbstractZabbixRequest
+final class ServiceGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $serviceids = null,

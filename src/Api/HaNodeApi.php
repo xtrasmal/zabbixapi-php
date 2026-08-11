@@ -13,4 +13,10 @@ final class HaNodeApi extends AbstractApi
     {
         return $this->request(HanodeGetRequest::class, $request);
     }
+
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): HanodeGetRequest
+    {
+        return $this->filterRequest(HanodeGetRequest::class, $filter);
+    }
 }

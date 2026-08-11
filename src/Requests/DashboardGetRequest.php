@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * dashboard.get - Retrieve dashboards according to the given parameters.
  */
-final class DashboardGetRequest extends AbstractZabbixRequest
+final class DashboardGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $dashboardids = null,

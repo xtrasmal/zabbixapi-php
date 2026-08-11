@@ -13,4 +13,10 @@ final class ProblemApi extends AbstractApi
     {
         return $this->request(ProblemGetRequest::class, $request);
     }
+
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): ProblemGetRequest
+    {
+        return $this->filterRequest(ProblemGetRequest::class, $filter);
+    }
 }

@@ -13,4 +13,10 @@ final class AuditLogApi extends AbstractApi
     {
         return $this->request(AuditlogGetRequest::class, $request);
     }
+
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): AuditlogGetRequest
+    {
+        return $this->filterRequest(AuditlogGetRequest::class, $filter);
+    }
 }

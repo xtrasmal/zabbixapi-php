@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * hostgroup.get - Retrieve host groups according to the given parameters.
  */
-final class HostgroupGetRequest extends AbstractZabbixRequest
+final class HostgroupGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $graphids = null,

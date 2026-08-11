@@ -6,3 +6,4 @@
 
 phpdoc
 build
+.phpunit.cache

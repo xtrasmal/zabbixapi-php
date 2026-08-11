@@ -36,6 +36,12 @@ final class TokenApi extends AbstractApi
         return $this->request(TokenGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): TokenGetRequest
+    {
+        return $this->filterRequest(TokenGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(TokenUpdateRequest|array $request): TokenUpdateRequest
     {

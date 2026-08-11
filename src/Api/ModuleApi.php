@@ -29,6 +29,12 @@ final class ModuleApi extends AbstractApi
         return $this->request(ModuleGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): ModuleGetRequest
+    {
+        return $this->filterRequest(ModuleGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(ModuleUpdateRequest|array $request): ModuleUpdateRequest
     {

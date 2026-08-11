@@ -29,6 +29,12 @@ final class CorrelationApi extends AbstractApi
         return $this->request(CorrelationGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): CorrelationGetRequest
+    {
+        return $this->filterRequest(CorrelationGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(CorrelationUpdateRequest|array $request): CorrelationUpdateRequest
     {

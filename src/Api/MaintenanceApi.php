@@ -29,6 +29,12 @@ final class MaintenanceApi extends AbstractApi
         return $this->request(MaintenanceGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): MaintenanceGetRequest
+    {
+        return $this->filterRequest(MaintenanceGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(MaintenanceUpdateRequest|array $request): MaintenanceUpdateRequest
     {

@@ -29,6 +29,12 @@ final class TriggerApi extends AbstractApi
         return $this->request(TriggerGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): TriggerGetRequest
+    {
+        return $this->filterRequest(TriggerGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(TriggerUpdateRequest|array $request): TriggerUpdateRequest
     {

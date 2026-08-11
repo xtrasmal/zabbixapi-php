@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * event.get - Retrieve events according to the given parameters.
  */
-final class EventGetRequest extends AbstractZabbixRequest
+final class EventGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $eventids = null,

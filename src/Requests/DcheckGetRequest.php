@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * dcheck.get - Retrieve discovery checks according to the given parameters.
  */
-final class DcheckGetRequest extends AbstractZabbixRequest
+final class DcheckGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $dcheckids = null,

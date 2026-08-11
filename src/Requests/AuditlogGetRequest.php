@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * auditlog.get - Retrieve audit log records according to the given parameters. Restricted to Super admin user types (permissions manageable via user role settings).
  */
-final class AuditlogGetRequest extends AbstractZabbixRequest
+final class AuditlogGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $auditids = null,

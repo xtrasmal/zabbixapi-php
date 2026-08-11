@@ -29,6 +29,12 @@ final class RoleApi extends AbstractApi
         return $this->request(RoleGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): RoleGetRequest
+    {
+        return $this->filterRequest(RoleGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(RoleUpdateRequest|array $request): RoleUpdateRequest
     {

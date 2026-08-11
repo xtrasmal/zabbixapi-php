@@ -24,5 +24,16 @@
         "psr-4": {
             "IntelliTrend\\Zabbix\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5"
     }
 }

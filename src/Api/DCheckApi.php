@@ -13,4 +13,10 @@ final class DCheckApi extends AbstractApi
     {
         return $this->request(DcheckGetRequest::class, $request);
     }
+
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): DcheckGetRequest
+    {
+        return $this->filterRequest(DcheckGetRequest::class, $filter);
+    }
 }

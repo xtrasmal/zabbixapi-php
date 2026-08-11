@@ -32,6 +32,17 @@ final class HostApi extends AbstractApi
         return $this->request(HostGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): HostGetRequest
+    {
+        return $this->filterRequest(HostGetRequest::class, $filter);
+    }
+
+    public function byHost(string $host): HostGetRequest
+    {
+        return $this->filter(['host' => [$host]]);
+    }
+
     /** @param array<string, mixed> $request */
     public function massAdd(HostMassaddRequest|array $request): HostMassaddRequest
     {

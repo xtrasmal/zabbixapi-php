@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * hostprototype.get - Retrieve host prototypes according to the given parameters.
  */
-final class HostprototypeGetRequest extends AbstractZabbixRequest
+final class HostprototypeGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $hostids = null,

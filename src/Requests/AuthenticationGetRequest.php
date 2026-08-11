@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * authentication.get - Retrieve authentication settings according to the given parameters. Only available to Super admin user type.
  */
-final class AuthenticationGetRequest extends AbstractZabbixRequest
+final class AuthenticationGetRequest extends AbstractZabbixGetRequest
 {
     public function __construct(
         public array|string|null $output = null,

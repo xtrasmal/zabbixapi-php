@@ -29,6 +29,12 @@ final class IconMapApi extends AbstractApi
         return $this->request(IconmapGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): IconmapGetRequest
+    {
+        return $this->filterRequest(IconmapGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(IconmapUpdateRequest|array $request): IconmapUpdateRequest
     {

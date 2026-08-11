@@ -29,6 +29,12 @@ final class ProxyGroupApi extends AbstractApi
         return $this->request(ProxygroupGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): ProxygroupGetRequest
+    {
+        return $this->filterRequest(ProxygroupGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(ProxygroupUpdateRequest|array $request): ProxygroupUpdateRequest
     {

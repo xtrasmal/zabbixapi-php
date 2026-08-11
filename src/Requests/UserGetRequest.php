@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * user.get - Retrieve users according to the given parameters.
  */
-final class UserGetRequest extends AbstractZabbixRequest
+final class UserGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $mediaids = null,

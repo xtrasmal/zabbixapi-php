@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * itemprototype.get - Retrieve item prototypes according to the given parameters.
  */
-final class ItemprototypeGetRequest extends AbstractZabbixRequest
+final class ItemprototypeGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $discoveryids = null,

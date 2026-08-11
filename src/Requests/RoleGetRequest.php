@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * role.get - Retrieve user roles according to the given parameters.
  */
-final class RoleGetRequest extends AbstractZabbixRequest
+final class RoleGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $roleids = null,

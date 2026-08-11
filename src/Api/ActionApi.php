@@ -29,6 +29,12 @@ final class ActionApi extends AbstractApi
         return $this->request(ActionGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): ActionGetRequest
+    {
+        return $this->filterRequest(ActionGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(ActionUpdateRequest|array $request): ActionUpdateRequest
     {

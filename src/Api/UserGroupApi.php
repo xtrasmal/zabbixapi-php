@@ -29,6 +29,12 @@ final class UserGroupApi extends AbstractApi
         return $this->request(UsergroupGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): UsergroupGetRequest
+    {
+        return $this->filterRequest(UsergroupGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(UsergroupUpdateRequest|array $request): UsergroupUpdateRequest
     {

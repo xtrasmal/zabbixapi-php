@@ -29,6 +29,12 @@ final class GraphApi extends AbstractApi
         return $this->request(GraphGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): GraphGetRequest
+    {
+        return $this->filterRequest(GraphGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(GraphUpdateRequest|array $request): GraphUpdateRequest
     {

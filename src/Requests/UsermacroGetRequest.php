@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * usermacro.get - Retrieve host and global macros according to the given parameters.
  */
-final class UsermacroGetRequest extends AbstractZabbixRequest
+final class UsermacroGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public ?bool $globalmacro = null,

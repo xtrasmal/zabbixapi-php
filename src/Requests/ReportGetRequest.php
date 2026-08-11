@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * report.get - Retrieve scheduled reports according to the given parameters.
  */
-final class ReportGetRequest extends AbstractZabbixRequest
+final class ReportGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $reportids = null,

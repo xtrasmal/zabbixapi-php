@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace IntelliTrend\Zabbix\Api;
 
 use IntelliTrend\Zabbix\Requests\AbstractZabbixListRequest;
+use IntelliTrend\Zabbix\Requests\AbstractZabbixFilteredGetRequest;
 use IntelliTrend\Zabbix\Requests\AbstractZabbixRequest;
 use IntelliTrend\Zabbix\Requests\ZabbixRequest;
 
@@ -46,5 +47,17 @@ abstract class AbstractApi
             AbstractZabbixRequest::class,
             AbstractZabbixListRequest::class,
         ));
+    }
+
+    /**
+     * @template T of AbstractZabbixFilteredGetRequest
+     *
+     * @param class-string<T> $requestClass
+     * @param array<string, mixed> $filter
+     * @return T
+     */
+    protected function filterRequest(string $requestClass, array $filter)
+    {
+        return $this->request($requestClass, ['filter' => $filter]);
     }
 }

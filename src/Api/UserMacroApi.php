@@ -44,6 +44,12 @@ final class UserMacroApi extends AbstractApi
         return $this->request(UsermacroGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): UsermacroGetRequest
+    {
+        return $this->filterRequest(UsermacroGetRequest::class, $filter);
+    }
+
     /** @param list<mixed> $request */
     public function update(UsermacroUpdateRequest|array $request): UsermacroUpdateRequest
     {

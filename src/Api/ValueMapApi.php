@@ -29,6 +29,12 @@ final class ValueMapApi extends AbstractApi
         return $this->request(ValuemapGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): ValuemapGetRequest
+    {
+        return $this->filterRequest(ValuemapGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(ValuemapUpdateRequest|array $request): ValuemapUpdateRequest
     {

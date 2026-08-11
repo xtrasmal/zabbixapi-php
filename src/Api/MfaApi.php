@@ -29,6 +29,12 @@ final class MfaApi extends AbstractApi
         return $this->request(MfaGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): MfaGetRequest
+    {
+        return $this->filterRequest(MfaGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(MfaUpdateRequest|array $request): MfaUpdateRequest
     {

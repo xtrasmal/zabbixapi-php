@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * templategroup.get - Retrieve template groups according to the given parameters.
  */
-final class TemplategroupGetRequest extends AbstractZabbixRequest
+final class TemplategroupGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $graphids = null,

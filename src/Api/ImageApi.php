@@ -29,6 +29,12 @@ final class ImageApi extends AbstractApi
         return $this->request(ImageGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): ImageGetRequest
+    {
+        return $this->filterRequest(ImageGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(ImageUpdateRequest|array $request): ImageUpdateRequest
     {

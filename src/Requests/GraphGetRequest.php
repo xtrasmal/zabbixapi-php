@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * graph.get - Retrieve graphs according to the given parameters.
  */
-final class GraphGetRequest extends AbstractZabbixRequest
+final class GraphGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $graphids = null,

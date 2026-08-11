@@ -22,6 +22,12 @@ final class HistoryApi extends AbstractApi
         return $this->request(HistoryGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): HistoryGetRequest
+    {
+        return $this->filterRequest(HistoryGetRequest::class, $filter);
+    }
+
     /** @param list<mixed> $request */
     public function push(HistoryPushRequest|array $request): HistoryPushRequest
     {

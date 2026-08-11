@@ -29,6 +29,12 @@ final class ConnectorApi extends AbstractApi
         return $this->request(ConnectorGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): ConnectorGetRequest
+    {
+        return $this->filterRequest(ConnectorGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(ConnectorUpdateRequest|array $request): ConnectorUpdateRequest
     {

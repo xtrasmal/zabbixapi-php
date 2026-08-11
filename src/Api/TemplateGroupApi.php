@@ -33,6 +33,12 @@ final class TemplateGroupApi extends AbstractApi
         return $this->request(TemplategroupGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): TemplategroupGetRequest
+    {
+        return $this->filterRequest(TemplategroupGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function massAdd(TemplategroupMassaddRequest|array $request): TemplategroupMassaddRequest
     {

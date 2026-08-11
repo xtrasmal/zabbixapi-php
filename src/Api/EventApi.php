@@ -20,4 +20,10 @@ final class EventApi extends AbstractApi
     {
         return $this->request(EventGetRequest::class, $request);
     }
+
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): EventGetRequest
+    {
+        return $this->filterRequest(EventGetRequest::class, $filter);
+    }
 }

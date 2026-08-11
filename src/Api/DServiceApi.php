@@ -13,4 +13,10 @@ final class DServiceApi extends AbstractApi
     {
         return $this->request(DserviceGetRequest::class, $request);
     }
+
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): DserviceGetRequest
+    {
+        return $this->filterRequest(DserviceGetRequest::class, $filter);
+    }
 }

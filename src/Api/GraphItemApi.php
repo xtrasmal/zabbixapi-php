@@ -13,4 +13,10 @@ final class GraphItemApi extends AbstractApi
     {
         return $this->request(GraphitemGetRequest::class, $request);
     }
+
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): GraphitemGetRequest
+    {
+        return $this->filterRequest(GraphitemGetRequest::class, $filter);
+    }
 }

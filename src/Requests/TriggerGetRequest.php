@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * trigger.get - Retrieve triggers according to the given parameters.
  */
-final class TriggerGetRequest extends AbstractZabbixRequest
+final class TriggerGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $triggerids = null,

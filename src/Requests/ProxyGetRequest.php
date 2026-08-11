@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * proxy.get - Retrieve proxies according to the given parameters.
  */
-final class ProxyGetRequest extends AbstractZabbixRequest
+final class ProxyGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $proxyids = null,

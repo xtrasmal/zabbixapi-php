@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * sla.get - Retrieve SLA objects according to the given parameters.
  */
-final class SlaGetRequest extends AbstractZabbixRequest
+final class SlaGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $slaids = null,

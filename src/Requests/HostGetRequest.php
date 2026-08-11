@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * host.get - Retrieve hosts according to the given parameters.
  */
-final class HostGetRequest extends AbstractZabbixRequest
+final class HostGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $groupids = null,
@@ -76,16 +76,6 @@ final class HostGetRequest extends AbstractZabbixRequest
     public static function byManualParams(array $params): self
     {
         return self::fromParams($params);
-    }
-
-    public static function byHost(string $host, array|string|null $output = ['hostid', 'host']): self
-    {
-        return self::fromParams([
-            'filter' => [
-                'host' => [$host],
-            ],
-            'output' => $output,
-        ]);
     }
 
     public function method(): string

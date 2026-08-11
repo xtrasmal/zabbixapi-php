@@ -27,6 +27,11 @@ abstract class AbstractZabbixRequest implements ZabbixRequest
         return $request;
     }
 
+    final protected function withParam(string $name, mixed $value): static
+    {
+        return static::fromParams(array_replace($this->params(), [$name => $value]));
+    }
+
     final public function params(): array
     {
         if ($this->manualParams !== null) {

@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * connector.get - Retrieve connectors according to the given parameters.
  */
-final class ConnectorGetRequest extends AbstractZabbixRequest
+final class ConnectorGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $connectorids = null,

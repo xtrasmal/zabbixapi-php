@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * hostinterface.get - Retrieve host interfaces according to the given parameters.
  */
-final class HostinterfaceGetRequest extends AbstractZabbixRequest
+final class HostinterfaceGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $hostids = null,

@@ -29,6 +29,12 @@ final class ItemPrototypeApi extends AbstractApi
         return $this->request(ItemprototypeGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): ItemprototypeGetRequest
+    {
+        return $this->filterRequest(ItemprototypeGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(ItemprototypeUpdateRequest|array $request): ItemprototypeUpdateRequest
     {

@@ -32,6 +32,12 @@ final class TemplateApi extends AbstractApi
         return $this->request(TemplateGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): TemplateGetRequest
+    {
+        return $this->filterRequest(TemplateGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function massAdd(TemplateMassaddRequest|array $request): TemplateMassaddRequest
     {

@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * userdirectory.get - Retrieve user directories according to the given parameters.
  */
-final class UserdirectoryGetRequest extends AbstractZabbixRequest
+final class UserdirectoryGetRequest extends AbstractZabbixFilteredGetRequest
 {
     public function __construct(
         public string|array|null $userdirectoryids = null,

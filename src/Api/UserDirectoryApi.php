@@ -30,6 +30,12 @@ final class UserDirectoryApi extends AbstractApi
         return $this->request(UserdirectoryGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): UserdirectoryGetRequest
+    {
+        return $this->filterRequest(UserdirectoryGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function test(UserdirectoryTestRequest|array $request): UserdirectoryTestRequest
     {

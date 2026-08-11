@@ -29,6 +29,12 @@ final class ReportApi extends AbstractApi
         return $this->request(ReportGetRequest::class, $request);
     }
 
+    /** @param array<string, mixed> $filter */
+    public function filter(array $filter): ReportGetRequest
+    {
+        return $this->filterRequest(ReportGetRequest::class, $filter);
+    }
+
     /** @param array<string, mixed> $request */
     public function update(ReportUpdateRequest|array $request): ReportUpdateRequest
     {
