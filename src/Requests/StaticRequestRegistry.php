@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Requests;
 
+use LogicException;
+
 /**
  * Maps a Zabbix method name to its generated request class.
  */
@@ -253,7 +255,7 @@ final class StaticRequestRegistry implements ZabbixRequestRegistry
             return $requestClass::fromParams($params);
         }
 
-        throw new \LogicException(sprintf(
+        throw new LogicException(sprintf(
             'Registered request class %s cannot be constructed from params.',
             $requestClass,
         ));

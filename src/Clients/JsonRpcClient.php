@@ -6,6 +6,7 @@ namespace Idiot\Zabbix\Clients;
 
 use Idiot\Zabbix\ZabbixApi;
 use Idiot\Zabbix\ZabbixApiException;
+use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use UnexpectedValueException;
@@ -243,7 +244,7 @@ final class JsonRpcClient
 
             try {
                 return JsonRpcResponse::fromError($id, $envelope['error']);
-            } catch (\InvalidArgumentException $e) {
+            } catch (InvalidArgumentException $e) {
                 throw new UnexpectedValueException($e->getMessage(), previous: $e);
             }
         }

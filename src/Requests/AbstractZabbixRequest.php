@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Requests;
 
+use BackedEnum;
+
 /**
  * Base for generated Zabbix requests. Requests are method-specific envelopes
  * around the plain Zabbix params array; the schema provider owns the method
@@ -33,7 +35,7 @@ abstract class AbstractZabbixRequest implements ZabbixRequest
         return $this->withParam('filter', $filter);
     }
 
-    final public function output(array|string|\BackedEnum|null $output): static
+    final public function output(array|string|BackedEnum|null $output): static
     {
         return $this->withParam('output', $output);
     }
@@ -80,7 +82,7 @@ abstract class AbstractZabbixRequest implements ZabbixRequest
 
     private function normalize(mixed $value): mixed
     {
-        if ($value instanceof \BackedEnum) {
+        if ($value instanceof BackedEnum) {
             return $value->value;
         }
 

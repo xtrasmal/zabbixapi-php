@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix;
 
-class ZabbixApiException extends \Exception
+use Exception;
+use Throwable;
+
+class ZabbixApiException extends Exception
 {
-    public function __construct(string $message, int $code = 0, ?\Throwable $previous = null)
+    public function __construct(string $message, int $code = 0, ?Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }

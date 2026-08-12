@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Requests;
 
-final class InvalidZabbixRequest extends \RuntimeException
+use RuntimeException;
+
+final class InvalidZabbixRequest extends RuntimeException
 {
     /** @var list<string> */
     private array $violations = [];

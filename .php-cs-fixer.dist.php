@@ -5,47 +5,22 @@ declare(strict_types=1);
 use PhpCsFixer\Config;
 use PhpCsFixer\Finder;
 
-$maintainedRequestFiles = [
-    __DIR__ . '/src/Requests/AbstractId.php',
-    __DIR__ . '/src/Requests/AbstractZabbixRequest.php',
-    __DIR__ . '/src/Requests/InvalidZabbixRequest.php',
-    __DIR__ . '/src/Requests/OpisSchemaValidator.php',
-    __DIR__ . '/src/Requests/RequestFactory.php',
-    __DIR__ . '/src/Requests/RequestSchema.php',
-    __DIR__ . '/src/Requests/SchemaValidator.php',
-    __DIR__ . '/src/Requests/StaticRequestRegistry.php',
-    __DIR__ . '/src/Requests/UnknownZabbixMethod.php',
-    __DIR__ . '/src/Requests/ZabbixParameter.php',
-    __DIR__ . '/src/Requests/ZabbixRequest.php',
-    __DIR__ . '/src/Requests/ZabbixRequestEncoder.php',
-    __DIR__ . '/src/Requests/ZabbixRequestRegistry.php',
-    __DIR__ . '/src/Requests/ZabbixRequestSchemaRegistry.php',
-    __DIR__ . '/src/Requests/ZabbixRequestValidator.php',
-];
-
 $finder = Finder::create()
-    ->files()
-    ->name('*.php')
     ->in([
         __DIR__ . '/examples',
-        __DIR__ . '/src/Api',
-        __DIR__ . '/src/Clients',
-        __DIR__ . '/src/JsonRpc',
+        __DIR__ . '/src',
         __DIR__ . '/tests',
     ])
-    ->append([
-        __FILE__,
-        __DIR__ . '/src/ZabbixApi.php',
-        __DIR__ . '/src/ZabbixApiException.php',
-        __DIR__ . '/src/ZabbixApiOptions.php',
-        ...$maintainedRequestFiles,
-    ]);
+    ->append([__FILE__]);
 
 return (new Config())
     ->setRiskyAllowed(true)
     ->setRules([
+        '@PSR1' => true,
+        '@PSR2' => true,
         '@PER-CS2x0' => true,
         '@PSR12' => true,
+        'array_indentation' => true,
         'array_syntax' => ['syntax' => 'short'],
         'assign_null_coalescing_to_coalesce_equal' => true,
         'binary_operator_spaces' => [
@@ -78,6 +53,11 @@ return (new Config())
                 'property' => 'none',
                 'trait_import' => 'none',
             ],
+        ],
+        'class_definition' => [
+            'inline_constructor_arguments' => false,
+            'single_item_single_line' => true,
+            'space_before_parenthesis' => true,
         ],
         'clean_namespace' => true,
         'concat_space' => ['spacing' => 'one'],

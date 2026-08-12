@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api;
 
+use BadMethodCallException;
 use Idiot\Zabbix\Requests\ZabbixRequest;
+use LogicException;
 
 /**
  * Queues calls from one Zabbix request-builder group.
@@ -66,7 +68,7 @@ final class ZabbixBatchGroup
     private function queue(string $name, array $arguments): ZabbixRequest
     {
         if (!method_exists($this->requests, $name)) {
-            throw new \BadMethodCallException(sprintf(
+            throw new BadMethodCallException(sprintf(
                 'Unknown Zabbix API helper %s::%s().',
                 $this->requests::class,
                 $name,
@@ -76,7 +78,7 @@ final class ZabbixBatchGroup
         $request = $this->requests->{$name}(...$arguments);
 
         if (!$request instanceof ZabbixRequest) {
-            throw new \LogicException(sprintf(
+            throw new LogicException(sprintf(
                 'Zabbix API helper %s::%s() must return a %s.',
                 $this->requests::class,
                 $name,

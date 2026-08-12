@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Idiot\Zabbix\Requests;
 
 use JsonSchema\Validator;
+use stdClass;
 
 /**
  * SchemaValidator backed by justinrainbow/json-schema.
@@ -15,7 +16,7 @@ final class JsonSchemaValidator implements SchemaValidator
     {
         $definition = $schema->definition();
         $data = [] === $params && !$schema->paramsAreList()
-            ? new \stdClass()
+            ? new stdClass()
             : $this->toJsonModel($params);
         $schemaObject = $this->toJsonModel($definition);
 
@@ -46,7 +47,7 @@ final class JsonSchemaValidator implements SchemaValidator
             return array_map($this->toJsonModel(...), $value);
         }
 
-        $object = new \stdClass();
+        $object = new stdClass();
 
         foreach ($value as $key => $child) {
             $object->{$key} = $this->toJsonModel($child);

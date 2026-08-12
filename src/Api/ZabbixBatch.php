@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Idiot\Zabbix\Api;
 
 use Idiot\Zabbix\Requests\ZabbixRequest;
+use OutOfBoundsException;
 
 /**
  * Accumulates Zabbix requests for one JSON-RPC batch.
@@ -40,7 +41,7 @@ final class ZabbixBatch
     public function __get(string $name): ZabbixBatchGroup
     {
         if (!property_exists($this->requests, $name)) {
-            throw new \OutOfBoundsException(sprintf('Unknown Zabbix API group %s.', $name));
+            throw new OutOfBoundsException(sprintf('Unknown Zabbix API group %s.', $name));
         }
 
         return $this->groups[$name] ??= new ZabbixBatchGroup($this, $this->requests->{$name});

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Requests;
 
+use InvalidArgumentException;
+
 /**
  * Base for typed Zabbix IDs (HostId, ItemId, ...). Zabbix IDs travel as numeric
  * strings on the wire; this guards their shape at construction so a malformed
@@ -21,7 +23,7 @@ abstract class AbstractId implements ZabbixParameter
     public static function fromString(string $value): static
     {
         if ('' === $value || !ctype_digit($value)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 static::class . ": id must be a numeric string, got '{$value}'.",
             );
         }
