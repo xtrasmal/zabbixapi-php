@@ -28,24 +28,54 @@ $group = $zabbix->hostGroups->create([
 Those helpers build the matching request object and immediately send it through `ZabbixApi::request()`.
 Pass the same plain params array that Zabbix documents for the underlying method.
 
-## Composed Requests
+## Filtering
 
-When a request needs fluent composition before it is sent, use the request builders exposed by `ZabbixApi::requests()`.
+For `get` methods that support Zabbix's `filter` parameter, pass the complete params array when you also need options like `output`, `select*`, or `limit`:
 
 ```php
-$request = $zabbix
-    ->requests()
-    ->hosts
-    ->filter(['host' => ['srv-01', 'srv-22']])
-    ->output(['hostid', 'host']);
-
-$hosts = $zabbix->request($request);
+$hosts = $zabbix->hosts->get([
+    'filter' => ['host' => ['srv-01', 'srv-02']],
+    'output' => ['hostid', 'host', 'name'],
+]);
 ```
 
-Each request object exposes:
+When you only need a filter, use the shorthand:
 
-- `method()`: the Zabbix JSON-RPC method name, such as `host.get`
-- `params()`: the method params array sent through JSON-RPC
+```php
+$hosts = $zabbix->hosts->filter([
+    'host' => ['srv-01', 'srv-02'],
+]);
+```
+
+## Batch
+
+Use `batch()` when you want to plan several Zabbix moves and send them as one JSON-RPC batch. Inside the callback, API group calls queue requests instead of executing immediately. Results are returned in queued order.
+
+```php
+$results = $zabbix->batch(function ($batch): void {
+    $batch->hosts->get([
+        'filter' => ['host' => ['srv-01']],
+        'output' => ['hostid', 'host'],
+    ]);
+
+    $batch->items->get([
+        'hostids' => ['10105'],
+        'output' => ['itemid', 'name'],
+    ]);
+
+    $batch->users->logout([]);
+});
+
+foreach ($results as $result) {
+    // Result values match the queued calls above.
+}
+```
+
+Outside `batch()`, the same group calls execute immediately:
+
+```php
+$hosts = $zabbix->hosts->get(['output' => ['hostid', 'host']]);
+```
 
 ## Adapter Request Factory
 
@@ -66,7 +96,7 @@ $hosts = $zabbix->request($request);
 
 `RequestFactory::validated()` validates params against the bundled Zabbix 7.0 JSON schema for that method. `RequestFactory::plain()` only maps method names to request objects.
 
-## JSON-RPC Batch
+## Low-Level JSON-RPC Batch
 
 Normal Zabbix calls through `ZabbixApi` are intentionally simple. The client automatically batches its required one-time `apiinfo.version` call with the first possible API request.
 
@@ -105,7 +135,7 @@ Batch responses are returned in request order. The JSON-RPC server may return th
 
 ## API Groups
 
-The client and request builder groups match Zabbix API areas:
+The client groups match Zabbix API areas:
 
 ```php
 $zabbix->hosts->get(['output' => ['hostid', 'host']]);
@@ -114,15 +144,4 @@ $zabbix->items->get(['hostids' => ['10105'], 'output' => 'extend']);
 $zabbix->triggers->get(['output' => 'extend']);
 ```
 
-Request builders accept plain arrays. Prefer arrays for controller and service code:
-
-```php
-$request = $zabbix->requests()->hosts->get([
-    'hostids' => ['10105'],
-    'output' => ['hostid', 'host'],
-]);
-
-$hosts = $zabbix->request($request);
-```
-
-Generated request classes are implementation details for the API groups, fluent builders, registry, and validation tooling. They are method-specific params envelopes built through `fromParams()`; application code should not instantiate generated requests directly.
+Generated request classes are implementation details for the API groups, batch accumulator, registry, and validation tooling. They are method-specific params envelopes built through `fromParams()`; application code should not instantiate generated requests directly.

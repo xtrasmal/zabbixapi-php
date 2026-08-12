@@ -9,6 +9,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response as HttpResponse;
+use Idiot\Zabbix\Requests\RequestFactory;
 use Idiot\Zabbix\ZabbixApi;
 use Idiot\Zabbix\ZabbixApiException;
 use PHPUnit\Framework\TestCase;
@@ -231,7 +232,7 @@ final class ZabbixApiTest extends TestCase
 
         self::assertSame(
             [['hostid' => '10105']],
-            $api->request($api->requests()->hosts->get(['output' => ['hostid']])),
+            $api->request(RequestFactory::plain()->make('host.get', ['output' => ['hostid']])),
         );
 
         self::assertSame(['apiinfo.version', 'host.get'], self::requestMethods($history[0]));
@@ -356,22 +357,80 @@ final class ZabbixApiTest extends TestCase
         self::assertSame('apiinfo.version', json_decode((string)$history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR)['method']);
     }
 
-    public function testRequestBuildersRemainAvailableForComposedRequests(): void
+    public function testBatchQueuesGroupedCallsAndReturnsResultsInOrder(): void
     {
-        $api = new ZabbixApi();
+        $history = [];
+        $api = new ZabbixApi(
+            options: [
+                'url' => 'https://zabbix.example',
+                'token' => 'secret',
+            ],
+            httpClient: self::guzzle([
+                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":[{"hostid":"10105"}]},{"jsonrpc":"2.0","id":3,"result":[{"itemid":"30001"}]}]'),
+            ], $history),
+        );
 
-        $request = $api
-            ->requests()
-            ->hosts
-            ->get()
-            ->filter(['host' => ['srv-01']])
-            ->output(['hostid', 'host']);
+        $results = $api->batch(function ($batch): void {
+            $batch->hosts->get([
+                'filter' => ['host' => ['srv-01']],
+                'output' => ['hostid'],
+            ]);
+            $batch->items->get([
+                'hostids' => ['10105'],
+                'output' => ['itemid'],
+            ]);
+        });
 
-        self::assertSame('host.get', $request->method());
+        self::assertSame([
+            [['hostid' => '10105']],
+            [['itemid' => '30001']],
+        ], $results);
+
+        $body = json_decode((string)$history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+
+        self::assertSame('Bearer secret', $history[0]['request']->getHeaderLine('Authorization'));
+        self::assertSame(['apiinfo.version', 'host.get', 'item.get'], array_column($body, 'method'));
+        self::assertSame([1, 2, 3], array_column($body, 'id'));
         self::assertSame([
             'filter' => ['host' => ['srv-01']],
-            'output' => ['hostid', 'host'],
-        ], $request->params());
+            'output' => ['hostid'],
+        ], $body[1]['params']);
+        self::assertSame([
+            'hostids' => ['10105'],
+            'output' => ['itemid'],
+        ], $body[2]['params']);
+    }
+
+    public function testBatchArrowCallbackQueuesReturnedRequestOnce(): void
+    {
+        $history = [];
+        $api = new ZabbixApi(
+            options: [
+                'url' => 'https://zabbix.example',
+                'token' => 'secret',
+            ],
+            httpClient: self::guzzle([
+                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":[{"hostid":"10105"}]}]'),
+            ], $history),
+        );
+
+        $results = $api->batch(fn ($batch) => $batch->hosts->get(['output' => ['hostid']]));
+
+        self::assertSame([[['hostid' => '10105']]], $results);
+        self::assertSame(['apiinfo.version', 'host.get'], self::requestMethods($history[0]));
+    }
+
+    public function testBatchRejectsEmptyPlans(): void
+    {
+        $api = new ZabbixApi(options: [
+            'url' => 'https://zabbix.example',
+            'token' => 'secret',
+        ]);
+
+        $this->expectException(ZabbixApiException::class);
+        $this->expectExceptionMessage('Cannot send an empty Zabbix API batch.');
+
+        $api->batch(static function (): void {});
     }
 
     public function testCallConvertsJsonRpcErrorsToExceptions(): void

@@ -6,6 +6,7 @@ The client stack is split by responsibility:
 - `Idiot\Zabbix\Clients\JsonRpcClient`
 - `Idiot\Zabbix\ZabbixApi`
 - `Idiot\Zabbix\Api\ZabbixApiGroup`
+- `Idiot\Zabbix\Api\ZabbixBatch`
 - `Idiot\Zabbix\Api\ZabbixRequestApi`
 - `Idiot\Zabbix\Requests\RequestFactory`
 - `Idiot\Zabbix\JsonRpc\Request`
@@ -21,10 +22,12 @@ The client stack is split by responsibility:
 
 `ZabbixApiGroup` binds one request-builder group to a configured `ZabbixApi` instance. It turns `$zabbix->hosts->get([...])` into a request object and immediately sends it.
 
+`ZabbixBatch` accumulates grouped calls for `ZabbixApi::batch()`. Inside a batch callback, `$batch->hosts->get([...])` queues a request instead of sending it; the configured client sends the queued requests through `JsonRpcClient::batch()` and returns result values in queued order.
+
 `RequestFactory` maps Zabbix method names to request objects and can validate params before a request leaves the client. It exists for method-name driven adapters and tooling, not as the primary application API.
 
 `JsonFileSchemaProvider` loads bundled Zabbix 7.0 JSON schemas from `schemas/7.0` for validation. The JSON files are the schema source of truth; generated PHP schema classes are not part of the runtime API.
 
-`ZabbixRequestApi` contains the unbound request-builder facade. Use `$zabbix->requests()` when you want to compose a request before dispatching it.
+`ZabbixRequestApi` contains the internal request-builder facade used by the bound API groups and batch accumulator.
 
 Generated request classes stay behind these smaller APIs for normal application code.

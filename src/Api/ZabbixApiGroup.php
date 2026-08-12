@@ -64,14 +64,6 @@ final class ZabbixApiGroup
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
 
-    /**
-     * @return TBuilder
-     */
-    public function requests(): object
-    {
-        return $this->requests;
-    }
-
     private function dispatch(string $name, array $arguments): array|bool|float|int|string|null
     {
         if (!method_exists($this->requests, $name)) {

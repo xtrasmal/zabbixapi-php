@@ -23,7 +23,7 @@ php examples/hosts.php
 
 - `hosts.php`: direct bound API usage with `$zabbix->hosts->get()`
 - `host-groups.php`: list host groups through `$zabbix->hostGroups`
-- `composed-request.php`: compose a request before dispatching it
+- `batch.php`: queue grouped API calls and send them as one JSON-RPC batch
 - `json-rpc-batch.php`: low-level JSON-RPC 2.0 batch request
 - `user-login.php`: automatic `user.login` fallback for installations that still need it
 - `laravel/ZabbixPhpProvider.php`: Laravel service provider registration

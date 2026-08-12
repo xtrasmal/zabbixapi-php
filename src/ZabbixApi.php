@@ -6,6 +6,7 @@ namespace Idiot\Zabbix;
 
 use GuzzleHttp\ClientInterface;
 use Idiot\Zabbix\Api\ZabbixApiGroup;
+use Idiot\Zabbix\Api\ZabbixBatch;
 use Idiot\Zabbix\Api\ZabbixRequestApi;
 use Idiot\Zabbix\Clients\Credentials;
 use Idiot\Zabbix\Clients\HttpClient;
@@ -288,9 +289,42 @@ class ZabbixApi
         return $this->call($request->method(), $request->params());
     }
 
-    public function requests(): ZabbixRequestApi
+    /**
+     * Queue several Zabbix API calls and send them as one JSON-RPC batch.
+     *
+     * @return list<array|bool|float|int|string|null>
+     */
+    public function batch(callable|ZabbixRequest ...$requests): array
     {
-        return $this->requests;
+        $requests = $this->collectBatchRequests($requests);
+
+        if ([] === $requests) {
+            throw new ZabbixApiException('Cannot send an empty Zabbix API batch.', self::EXCEPTION_CLASS_CODE);
+        }
+
+        $responses = $this->sendBatch($requests);
+        $results = [];
+
+        foreach ($responses as $index => $response) {
+            if (null !== $response->error) {
+                throw self::zabbixError($response->error);
+            }
+
+            $result = $response->result;
+            $request = $requests[$index];
+
+            if ($request instanceof ApiinfoVersionRequest) {
+                $this->apiVersion = (string)$result;
+            }
+
+            if ($request instanceof UserLoginRequest) {
+                $this->storeBearerTokenFromLoginResult($result);
+            }
+
+            $results[] = $result;
+        }
+
+        return $results;
     }
 
     /**
@@ -432,6 +466,100 @@ class ZabbixApi
         return $response;
     }
 
+    /**
+     * @param list<callable|ZabbixRequest> $requests
+     *
+     * @return list<ZabbixRequest>
+     */
+    private function collectBatchRequests(array $requests): array
+    {
+        if (1 === count($requests) && is_callable($requests[0]) && !$requests[0] instanceof ZabbixRequest) {
+            $batch = new ZabbixBatch($this->requests);
+            $requests[0]($batch);
+
+            return $batch->requests();
+        }
+
+        foreach ($requests as $request) {
+            if (!$request instanceof ZabbixRequest) {
+                throw new \InvalidArgumentException('Zabbix API batches only accept request objects or one batch callback.');
+            }
+        }
+
+        return array_values($requests);
+    }
+
+    /**
+     * @param list<ZabbixRequest> $requests
+     *
+     * @return list<\Idiot\Zabbix\JsonRpc\Response>
+     */
+    private function sendBatch(array $requests): array
+    {
+        $calls = [];
+        $nextId = 1;
+        $includeVersion = null === $this->apiVersion && !$this->batchContainsMethod($requests, 'apiinfo.version');
+
+        if ($includeVersion) {
+            $calls[] = [
+                'method' => 'apiinfo.version',
+                'id' => $nextId++,
+                'params' => [],
+            ];
+        }
+
+        foreach ($requests as $request) {
+            $calls[] = [
+                'method' => $request->method(),
+                'id' => $nextId++,
+                'params' => $request->params(),
+            ];
+        }
+
+        $responses = $this->jsonRpcClient->batch(
+            url: $this->endpoint(),
+            calls: $calls,
+            bearerToken: $this->bearerTokenForBatch($requests),
+        );
+
+        if (!$includeVersion) {
+            return $responses;
+        }
+
+        $versionResponse = array_shift($responses);
+        if (null !== $versionResponse->error) {
+            throw self::zabbixError($versionResponse->error);
+        }
+
+        $this->apiVersion = (string)$versionResponse->result;
+
+        return $responses;
+    }
+
+    /** @param list<ZabbixRequest> $requests */
+    private function batchContainsMethod(array $requests, string $method): bool
+    {
+        foreach ($requests as $request) {
+            if ($request->method() === $method) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /** @param list<ZabbixRequest> $requests */
+    private function bearerTokenForBatch(array $requests): ?string
+    {
+        foreach ($requests as $request) {
+            if (!in_array($request->method(), self::UNAUTHENTICATED_METHODS, true)) {
+                return $this->requireBearerToken();
+            }
+        }
+
+        return null;
+    }
+
     private function bearerTokenFor(string $method): ?string
     {
         return in_array($method, self::UNAUTHENTICATED_METHODS, true) ? null : $this->requireBearerToken();
@@ -479,7 +607,14 @@ class ZabbixApi
         }
 
         $result = $this->call($request->method(), $request->params());
+        $this->storeBearerTokenFromLoginResult($result);
 
+        return $result;
+    }
+
+    private function storeBearerTokenFromLoginResult(array|bool|float|int|string|null $result): void
+    {
+        $credentials = $this->requireCredentials();
         $bearerToken = is_string($result) ? $result : (is_array($result) ? ($result['sessionid'] ?? null) : null);
 
         if (!is_string($bearerToken) || '' === trim($bearerToken)) {
@@ -487,8 +622,6 @@ class ZabbixApi
         }
 
         $this->credentials = $credentials->withBearerToken($bearerToken);
-
-        return $result;
     }
 
     /**

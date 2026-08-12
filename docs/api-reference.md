@@ -22,11 +22,28 @@ $zabbix->items->get(['hostids' => ['10105'], 'output' => 'extend']);
 
 ### `request(Idiot\Zabbix\Requests\ZabbixRequest $request): array|bool|float|int|string|null`
 
-Calls a Zabbix API method from a request object.
+Calls a Zabbix API method from a request object. This is mainly useful for adapter code that already receives request objects.
 
-### `requests(): Idiot\Zabbix\Api\ZabbixRequestApi`
+### `batch(callable|Idiot\Zabbix\Requests\ZabbixRequest ...$requests): list<array|bool|float|int|string|null>`
 
-Returns the request-builder facade for composing request objects before sending them through `request()`.
+Queues several Zabbix API calls and sends them as one JSON-RPC batch. The callback receives a batch accumulator whose groups mirror the normal public API; calls return in the same order they were queued.
+
+```php
+$results = $zabbix->batch(function ($batch): void {
+    $batch->hosts->get([
+        'filter' => ['host' => ['srv-01']],
+        'output' => ['hostid', 'host'],
+    ]);
+    $batch->items->get([
+        'hostids' => ['10105'],
+        'output' => ['itemid', 'name'],
+    ]);
+});
+
+foreach ($results as $result) {
+    // Handle each Zabbix result in queued order.
+}
+```
 
 ### `getApiVersion(): string`
 

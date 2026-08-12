@@ -42,6 +42,17 @@ $hostsByName = $zabbix->hosts->filter([
 $group = $zabbix->hostGroups->create([
     'name' => 'Linux servers',
 ]);
+
+$results = $zabbix->batch(function ($batch): void {
+    $batch->hosts->get([
+        'filter' => ['host' => ['srv-01']],
+        'output' => ['hostid', 'host'],
+    ]);
+    $batch->items->get([
+        'hostids' => ['10105'],
+        'output' => ['itemid', 'name'],
+    ]);
+});
 ```
 
 ## Table of contents
