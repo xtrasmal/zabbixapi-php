@@ -23,48 +23,48 @@ final class ZabbixApiGroup
     ) {}
 
     /** @param array<string, mixed>|ZabbixRequest $request */
-    public function get(array|ZabbixRequest $request = []): array|bool|float|int|string|null
+    public function get(array|ZabbixRequest $request = []): mixed
     {
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
 
     /** @param array<string, mixed>|ZabbixRequest $request */
-    public function create(array|ZabbixRequest $request): array|bool|float|int|string|null
+    public function create(array|ZabbixRequest $request): mixed
     {
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
 
     /** @param array<string, mixed>|list<mixed>|ZabbixRequest $request */
-    public function delete(array|ZabbixRequest $request): array|bool|float|int|string|null
+    public function delete(array|ZabbixRequest $request): mixed
     {
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
 
     /** @param array<string, mixed>|ZabbixRequest $request */
-    public function update(array|ZabbixRequest $request): array|bool|float|int|string|null
+    public function update(array|ZabbixRequest $request): mixed
     {
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
 
     /** @param array<string, mixed> $filter */
-    public function filter(array $filter): array|bool|float|int|string|null
+    public function filter(array $filter): mixed
     {
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
 
     /** @param array<string, mixed>|ZabbixRequest $request */
-    public function login(array|ZabbixRequest $request): array|bool|float|int|string|null
+    public function login(array|ZabbixRequest $request): mixed
     {
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
 
     /** @param list<mixed>|ZabbixRequest $request */
-    public function logout(array|ZabbixRequest $request = []): array|bool|float|int|string|null
+    public function logout(array|ZabbixRequest $request = []): mixed
     {
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
 
-    private function dispatch(string $name, array $arguments): array|bool|float|int|string|null
+    private function dispatch(string $name, array $arguments): mixed
     {
         if (!method_exists($this->requests, $name)) {
             throw new \BadMethodCallException(sprintf(
@@ -88,7 +88,7 @@ final class ZabbixApiGroup
         return $this->client->request($request);
     }
 
-    public function __call(string $name, array $arguments): array|bool|float|int|string|null
+    public function __call(string $name, array $arguments): mixed
     {
         return $this->dispatch($name, $arguments);
     }

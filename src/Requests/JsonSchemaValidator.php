@@ -38,6 +38,20 @@ final class JsonSchemaValidator implements SchemaValidator
 
     private function toJsonModel(mixed $value): mixed
     {
-        return json_decode(json_encode($value, JSON_THROW_ON_ERROR), false, flags: JSON_THROW_ON_ERROR);
+        if (!is_array($value)) {
+            return $value;
+        }
+
+        if (array_is_list($value)) {
+            return array_map($this->toJsonModel(...), $value);
+        }
+
+        $object = new \stdClass();
+
+        foreach ($value as $key => $child) {
+            $object->{$key} = $this->toJsonModel($child);
+        }
+
+        return $object;
     }
 }

@@ -25,7 +25,7 @@ function zabbix_from_env(): ZabbixApi
     ]);
 }
 
-function print_json(array|bool|float|int|string|null $value): void
+function print_json(mixed $value): void
 {
     echo json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) . PHP_EOL;
 }

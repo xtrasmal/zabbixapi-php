@@ -11,10 +11,6 @@ use Idiot\Zabbix\ZabbixApi;
 use Idiot\Zabbix\ZabbixApiException;
 use JsonException;
 
-/**
- * @phpstan-type JsonRpcScalar array|bool|float|int|string|null
- * @phpstan-type JsonRpcPayload array<string, JsonRpcScalar>|list<JsonRpcScalar>
- */
 final class HttpClient
 {
     private array $options;
@@ -39,9 +35,9 @@ final class HttpClient
     /**
      * @throws ZabbixApiException
      *
-     * @return JsonRpcPayload
+     * @return array<string, mixed>|list<mixed>
      */
-    public function postJsonRpc(string $url, string $body, ?string $bearerToken = null): array
+    public function postJsonRpc(string $url, array $payload, ?string $bearerToken = null): array
     {
         $options = $this->options;
         $headers = array_replace($options['headers'] ?? [], [
@@ -54,8 +50,17 @@ final class HttpClient
         }
 
         $options['headers'] = $headers;
-        $options['body'] = $body;
         $options['http_errors'] = false;
+
+        try {
+            $options['body'] = json_encode($payload, JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            throw new ZabbixApiException(
+                message: 'Invalid JSON-RPC request payload: ' . $e->getMessage(),
+                code: ZabbixApi::EXCEPTION_CLASS_CODE,
+                previous: $e,
+            );
+        }
 
         try {
             $response = $this->client()->request('POST', $url, $options);

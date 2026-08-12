@@ -6,11 +6,11 @@
 
 Creates a client. `$options['url']` configures the Zabbix base URL, `$options['token']` configures the bearer token, `$options['username']` and `$options['password']` configure automatic `user.login` fallback, and other options are passed to Guzzle as request options. Passing a Guzzle client or PSR-3 logger is useful for tests, custom handlers, or application logging.
 
-### `call(string $method, array $params = []): array|bool|float|int|string|null`
+### `call(string $method, array $params = []): mixed`
 
 Calls a Zabbix API method using an explicit method name and params array. Prefer API groups in application code; this method is useful for unsupported methods, debugging, or small adapters.
 
-### `$zabbix->hosts->get(array $params = []): array|bool|float|int|string|null`
+### `$zabbix->hosts->get(array $params = []): mixed`
 
 Executes a request through a Zabbix API group. The public groups mirror Zabbix API areas, for example `$zabbix->hosts`, `$zabbix->items`, `$zabbix->triggers`, `$zabbix->users`, and `$zabbix->templates`.
 
@@ -20,11 +20,11 @@ $zabbix->hostGroups->create(['name' => 'Linux servers']);
 $zabbix->items->get(['hostids' => ['10105'], 'output' => 'extend']);
 ```
 
-### `request(Idiot\Zabbix\Requests\ZabbixRequest $request): array|bool|float|int|string|null`
+### `request(Idiot\Zabbix\Requests\ZabbixRequest $request): mixed`
 
 Calls a Zabbix API method from a request object. This is mainly useful for adapter code that already receives request objects.
 
-### `batch(callable|Idiot\Zabbix\Requests\ZabbixRequest ...$requests): list<array|bool|float|int|string|null>`
+### `batch(callable|Idiot\Zabbix\Requests\ZabbixRequest ...$requests): list<mixed>`
 
 Queues several Zabbix API calls and sends them as one JSON-RPC batch. The callback receives a batch accumulator whose groups mirror the normal public API; calls return in the same order they were queued.
 

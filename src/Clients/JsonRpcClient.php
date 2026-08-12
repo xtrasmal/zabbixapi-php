@@ -6,7 +6,6 @@ namespace Idiot\Zabbix\Clients;
 
 use Idiot\Zabbix\ZabbixApi;
 use Idiot\Zabbix\ZabbixApiException;
-use JsonException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use UnexpectedValueException;
@@ -14,9 +13,8 @@ use UnexpectedValueException;
 /**
  * A minimal JSON-RPC 2.0 client.
  *
- * Queue one or more requests, {@see encode()} them for transport (a single
- * request as a lone object, several as a batch array), then validate the
- * decoded response payload with {@see decode()}.
+ * Queue one or more requests as JSON-RPC envelopes, then validate the decoded
+ * response payload with {@see decode()}.
  */
 final class JsonRpcClient
 {
@@ -46,23 +44,23 @@ final class JsonRpcClient
         ?string $bearerToken = null,
     ): JsonRpcResponse {
         try {
-            $body = $this
+            $payload = $this
                 ->query($method, $id, $params)
-                ->encode();
+                ->payload();
 
-            if (null === $body) {
-                throw new UnexpectedValueException('Failed to encode JSON-RPC request.');
+            if (null === $payload) {
+                throw new UnexpectedValueException('Failed to build JSON-RPC request.');
             }
 
             $this->log()->debug('Sending Zabbix JSON-RPC request.', [
                 'method' => $method,
                 'params' => $params,
-                'body' => $body,
+                'payload' => $payload,
             ]);
 
             $response = $this->transport->postJsonRpc(
                 url: $url,
-                body: $body,
+                payload: $payload,
                 bearerToken: $bearerToken,
             );
 
@@ -105,20 +103,20 @@ final class JsonRpcClient
                 $this->query($call['method'], $call['id'], $call['params'] ?? []);
             }
 
-            $body = $this->encode();
+            $payload = $this->payload();
 
-            if (null === $body) {
-                throw new UnexpectedValueException('Failed to encode JSON-RPC batch request.');
+            if (null === $payload) {
+                throw new UnexpectedValueException('Failed to build JSON-RPC batch request.');
             }
 
             $this->log()->debug('Sending Zabbix JSON-RPC batch request.', [
                 'methods' => array_column($calls, 'method'),
-                'body' => $body,
+                'payload' => $payload,
             ]);
 
             $response = $this->transport->postJsonRpc(
                 url: $url,
-                body: $body,
+                payload: $payload,
                 bearerToken: $bearerToken,
             );
 
@@ -158,27 +156,27 @@ final class JsonRpcClient
     }
 
     /**
-     * Encode the queued messages and reset the queue.
+     * Return the queued messages as JSON-RPC payload arrays and reset the queue.
      *
-     * A single message encodes as a lone object, multiple as a batch array.
+     * A single message returns as a lone object, multiple as a batch array.
      * Returns null when nothing is queued.
      *
-     * @throws UnexpectedValueException when the request cannot be encoded as JSON.
+     * @return array<string, mixed>|list<array<string, mixed>>|null
      */
-    public function encode(): ?string
+    public function payload(): ?array
     {
         if ([] === $this->messages) {
             return null;
         }
 
-        $payload = 1 === count($this->messages) ? $this->messages[0] : $this->messages;
+        $messages = array_map(
+            static fn (JsonRpcRequest $message): array => $message->jsonSerialize(),
+            $this->messages,
+        );
+
         $this->messages = [];
 
-        try {
-            return json_encode($payload, JSON_THROW_ON_ERROR);
-        } catch (JsonException $e) {
-            throw new UnexpectedValueException("Failed to encode JSON-RPC request: {$e->getMessage()}", previous: $e);
-        }
+        return 1 === count($messages) ? $messages[0] : $messages;
     }
 
     /**

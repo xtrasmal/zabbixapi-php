@@ -266,7 +266,7 @@ class ZabbixApi
     /**
      * @throws ZabbixApiException
      */
-    public function call(string $method, array $params = []): array|bool|float|int|string|null
+    public function call(string $method, array $params = []): mixed
     {
         $response = $this->send($method, $params);
 
@@ -280,7 +280,7 @@ class ZabbixApi
     /**
      * @throws ZabbixApiException
      */
-    public function request(ZabbixRequest $request): array|bool|float|int|string|null
+    public function request(ZabbixRequest $request): mixed
     {
         if ($request instanceof UserLoginRequest) {
             return $this->loginWhenNeeded($request);
@@ -292,7 +292,7 @@ class ZabbixApi
     /**
      * Queue several Zabbix API calls and send them as one JSON-RPC batch.
      *
-     * @return list<array|bool|float|int|string|null>
+     * @return list<mixed>
      */
     public function batch(callable|ZabbixRequest ...$requests): array
     {
@@ -598,7 +598,7 @@ class ZabbixApi
     /**
      * @throws ZabbixApiException
      */
-    private function loginWhenNeeded(UserLoginRequest $request): array|bool|float|int|string|null
+    private function loginWhenNeeded(UserLoginRequest $request): mixed
     {
         $credentials = $this->requireCredentials();
 
@@ -612,7 +612,7 @@ class ZabbixApi
         return $result;
     }
 
-    private function storeBearerTokenFromLoginResult(array|bool|float|int|string|null $result): void
+    private function storeBearerTokenFromLoginResult(mixed $result): void
     {
         $credentials = $this->requireCredentials();
         $bearerToken = is_string($result) ? $result : (is_array($result) ? ($result['sessionid'] ?? null) : null);
@@ -625,23 +625,30 @@ class ZabbixApi
     }
 
     /**
-     * @param array{code: int, message: string, data?: array|bool|float|int|string|null} $error
+     * @param array{code: int, message: string, data?: mixed} $error
      */
     private static function zabbixError(array $error): ZabbixApiException
     {
-        $data = $error['data'] ?? null;
-
-        try {
-            $details = is_scalar($data) || null === $data
-                ? (string)$data
-                : json_encode($data, JSON_THROW_ON_ERROR);
-        } catch (\JsonException) {
-            $details = 'unencodable error data';
-        }
-
         return new ZabbixApiException(
-            message: "{$error['message']} [$details]",
+            message: sprintf('%s [%s]', $error['message'], self::formatErrorData($error['data'] ?? null)),
             code: $error['code'],
         );
+    }
+
+    private static function formatErrorData(mixed $data): string
+    {
+        if (null === $data) {
+            return '';
+        }
+
+        if (is_bool($data)) {
+            return $data ? 'true' : 'false';
+        }
+
+        if (is_scalar($data)) {
+            return (string)$data;
+        }
+
+        return get_debug_type($data);
     }
 }

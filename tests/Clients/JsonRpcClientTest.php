@@ -86,19 +86,19 @@ final class JsonRpcClientTest extends TestCase
         ], json_decode((string)$history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR));
     }
 
-    public function testSingleQueryEncodesJsonRpc20RequestObject(): void
+    public function testSingleQueryBuildsJsonRpc20RequestObject(): void
     {
         self::assertSame([
             'jsonrpc' => '2.0',
             'method' => 'subtract',
             'id' => 1,
             'params' => [42, 23],
-        ], self::encode(
+        ], self::payload(
             (self::client())->query('subtract', 1, [42, 23]),
         ));
     }
 
-    public function testSeveralQueriesEncodeAsBatchArray(): void
+    public function testSeveralQueriesBuildAsBatchArray(): void
     {
         self::assertSame([
             [
@@ -113,20 +113,20 @@ final class JsonRpcClientTest extends TestCase
                 'id' => '2',
                 'params' => [42, 23],
             ],
-        ], self::encode(
+        ], self::payload(
             (self::client())
                 ->query('sum', '1', [1, 2, 4])
                 ->query('subtract', '2', [42, 23]),
         ));
     }
 
-    public function testNotificationEncodesWithoutId(): void
+    public function testNotificationBuildsWithoutId(): void
     {
         self::assertSame([
             'jsonrpc' => '2.0',
             'method' => 'update',
             'params' => [1, 2, 3, 4, 5],
-        ], self::encode(
+        ], self::payload(
             (self::client())->notify('update', [1, 2, 3, 4, 5]),
         ));
     }
@@ -145,7 +145,7 @@ final class JsonRpcClientTest extends TestCase
                 'method' => 'notify_hello',
                 'params' => [7],
             ],
-        ], self::encode(
+        ], self::payload(
             (self::client())
                 ->query('sum', '1', [1, 2, 4])
                 ->notify('notify_hello', [7]),
@@ -158,7 +158,7 @@ final class JsonRpcClientTest extends TestCase
             'jsonrpc' => '2.0',
             'method' => 'host.get',
             'id' => 1,
-        ], self::encode(
+        ], self::payload(
             (self::client())->query('host.get', 1),
         ));
     }
@@ -168,7 +168,7 @@ final class JsonRpcClientTest extends TestCase
         self::assertSame([
             'jsonrpc' => '2.0',
             'method' => 'foobar',
-        ], self::encode(
+        ], self::payload(
             (self::client())->notify('foobar'),
         ));
     }
@@ -177,9 +177,9 @@ final class JsonRpcClientTest extends TestCase
      * @param int|string|null $id
      */
     #[DataProvider('validIds')]
-    public function testQueryAllowsJsonRpcScalarIds(int|string|null $id): void
+    public function testQueryAllowsSupportedJsonRpcIds(int|string|null $id): void
     {
-        self::assertSame($id, self::encode(
+        self::assertSame($id, self::payload(
             (self::client())->query('host.get', $id),
         )['id']);
     }
@@ -210,26 +210,31 @@ final class JsonRpcClientTest extends TestCase
 
     public function testMethodNamesArePreservedCaseSensitively(): void
     {
-        self::assertSame('Host.Get', self::encode(
+        self::assertSame('Host.Get', self::payload(
             (self::client())->query('Host.Get', 1),
         )['method']);
     }
 
-    public function testPositionalParamsEncodeAsJsonArray(): void
+    public function testPositionalParamsBuildAsJsonArray(): void
     {
-        self::assertSame([42, 23], self::encode(
+        self::assertSame([42, 23], self::payload(
             (self::client())->query('subtract', 1, [42, 23]),
         )['params']);
     }
 
-    public function testNamedParamsEncodeAsJsonObjectWithCaseSensitiveKeys(): void
+    public function testNamedParamsKeepCaseSensitiveKeys(): void
     {
         $payload = (self::client())
             ->query('subtract', 1, ['minuend' => 42, 'Subtrahend' => 23])
-            ->encode();
+            ->payload();
 
         self::assertSame(
-            '{"jsonrpc":"2.0","method":"subtract","id":1,"params":{"minuend":42,"Subtrahend":23}}',
+            [
+                'jsonrpc' => '2.0',
+                'method' => 'subtract',
+                'id' => 1,
+                'params' => ['minuend' => 42, 'Subtrahend' => 23],
+            ],
             $payload,
         );
     }
@@ -295,7 +300,7 @@ final class JsonRpcClientTest extends TestCase
      * @param int|string|null $id
      */
     #[DataProvider('validIds')]
-    public function testDecodeAcceptsJsonRpcScalarIds(int|string|null $id): void
+    public function testDecodeAcceptsSupportedJsonRpcIds(int|string|null $id): void
     {
         self::assertSame($id, self::decode([
             'jsonrpc' => '2.0',
@@ -566,13 +571,13 @@ final class JsonRpcClientTest extends TestCase
     /**
      * @return array<mixed>
      */
-    private static function encode(JsonRpcClient $client): array
+    private static function payload(JsonRpcClient $client): array
     {
-        $payload = $client->encode();
+        $payload = $client->payload();
 
-        self::assertIsString($payload);
+        self::assertIsArray($payload);
 
-        return json_decode($payload, true, flags: JSON_THROW_ON_ERROR);
+        return $payload;
     }
 
     /**

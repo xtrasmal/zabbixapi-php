@@ -30,7 +30,7 @@ final class HttpClientTest extends TestCase
 
         $response = $client->postJsonRpc(
             'https://zabbix.example/api_jsonrpc.php',
-            '{"jsonrpc":"2.0","method":"host.get","id":1}',
+            ['jsonrpc' => '2.0', 'method' => 'host.get', 'id' => 1],
             bearerToken: 'secret',
         );
 
@@ -59,7 +59,7 @@ final class HttpClientTest extends TestCase
 
         $client->postJsonRpc(
             'https://zabbix.example/api_jsonrpc.php',
-            '{}',
+            [],
         );
     }
 
@@ -75,7 +75,21 @@ final class HttpClientTest extends TestCase
 
         $client->postJsonRpc(
             'https://zabbix.example/api_jsonrpc.php',
-            '{}',
+            [],
+        );
+    }
+
+    public function testPostJsonRpcConvertsInvalidRequestPayloadsToZabbixApiExceptions(): void
+    {
+        $history = [];
+        $client = new HttpClient(self::guzzle([], $history));
+
+        $this->expectException(ZabbixApiException::class);
+        $this->expectExceptionMessage('Invalid JSON-RPC request payload:');
+
+        $client->postJsonRpc(
+            'https://zabbix.example/api_jsonrpc.php',
+            ['jsonrpc' => '2.0', 'method' => 'host.get', 'id' => 1, 'params' => [NAN]],
         );
     }
 
