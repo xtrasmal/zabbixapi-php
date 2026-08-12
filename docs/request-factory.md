@@ -25,9 +25,9 @@ $request = $factory->make('host.get', [
 $hosts = $zabbix->request($request);
 ```
 
-`RequestFactory::plain()` only maps method names to request objects.
+`RequestFactory::plain()` only maps method names to request objects. `ZabbixApi::request()` still validates that request before transport.
 
-`RequestFactory::validated()` maps method names and validates params against the bundled Zabbix 7.0 JSON schema before the request is sent.
+`RequestFactory::validated()` maps method names and validates params against the bundled Zabbix 7.0 JSON schema immediately. Use it when an adapter should reject invalid input before handing a request object to the client.
 
 ## Batch Adapters
 

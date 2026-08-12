@@ -9,6 +9,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response as HttpResponse;
+use Idiot\Zabbix\Requests\InvalidZabbixRequest;
 use Idiot\Zabbix\Requests\RequestFactory;
 use Idiot\Zabbix\ZabbixApi;
 use Idiot\Zabbix\ZabbixApiException;
@@ -270,6 +271,27 @@ final class ZabbixApiTest extends TestCase
         ], json_decode((string)$history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR)[1]);
     }
 
+    public function testDomainApiPropertiesValidateParamsBeforeTransport(): void
+    {
+        $history = [];
+        $api = new ZabbixApi(
+            options: [
+                'url' => 'https://zabbix.example',
+                'token' => 'secret',
+            ],
+            httpClient: self::guzzle([], $history),
+        );
+
+        $this->expectException(InvalidZabbixRequest::class);
+        $this->expectExceptionMessage("Invalid params for 'host.get'");
+
+        try {
+            $api->hosts->get(['output' => 123]);
+        } finally {
+            self::assertSame([], $history);
+        }
+    }
+
     public function testPublicApiGroupsAcceptPlainArrayParams(): void
     {
         $history = [];
@@ -431,6 +453,29 @@ final class ZabbixApiTest extends TestCase
         $this->expectExceptionMessage('Cannot send an empty Zabbix API batch.');
 
         $api->batch(static function (): void {});
+    }
+
+    public function testBatchValidatesQueuedParamsBeforeTransport(): void
+    {
+        $history = [];
+        $api = new ZabbixApi(
+            options: [
+                'url' => 'https://zabbix.example',
+                'token' => 'secret',
+            ],
+            httpClient: self::guzzle([], $history),
+        );
+
+        $this->expectException(InvalidZabbixRequest::class);
+        $this->expectExceptionMessage("Invalid params for 'host.get'");
+
+        try {
+            $api->batch(function ($batch): void {
+                $batch->hosts->get(['output' => 123]);
+            });
+        } finally {
+            self::assertSame([], $history);
+        }
     }
 
     public function testCallConvertsJsonRpcErrorsToExceptions(): void

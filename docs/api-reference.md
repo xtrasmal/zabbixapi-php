@@ -12,7 +12,7 @@ Calls a Zabbix API method using an explicit method name and params array. Prefer
 
 ### `$zabbix->hosts->get(array $params = []): mixed`
 
-Executes a request through a Zabbix API group. The public groups mirror Zabbix API areas, for example `$zabbix->hosts`, `$zabbix->items`, `$zabbix->triggers`, `$zabbix->users`, and `$zabbix->templates`.
+Executes a request through a Zabbix API group. The public groups mirror Zabbix API areas, for example `$zabbix->hosts`, `$zabbix->items`, `$zabbix->triggers`, `$zabbix->users`, and `$zabbix->templates`. Params are validated against the bundled Zabbix schema before transport.
 
 ```php
 $zabbix->hosts->get(['output' => ['hostid', 'host']]);
@@ -26,7 +26,7 @@ Calls a Zabbix API method from a request object. This is mainly useful for adapt
 
 ### `batch(callable|Idiot\Zabbix\Requests\ZabbixRequest ...$requests): list<mixed>`
 
-Queues several Zabbix API calls and sends them as one JSON-RPC batch. The callback receives a batch accumulator whose groups mirror the normal public API; calls return in the same order they were queued.
+Queues several Zabbix API calls and sends them as one JSON-RPC batch. The callback receives a batch accumulator whose groups mirror the normal public API; queued params are validated before transport and results return in the same order they were queued.
 
 ```php
 $results = $zabbix->batch(function ($batch): void {
