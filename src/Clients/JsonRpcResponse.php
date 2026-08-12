@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Idiot\Zabbix\JsonRpc;
+namespace Idiot\Zabbix\Clients;
 
 use InvalidArgumentException;
 
@@ -25,7 +25,7 @@ use InvalidArgumentException;
  * If there was an error in detecting the id in the Request object (e.g. Parse error/Invalid Request), it MUST be Null.
  * Either the result member or error member MUST be included, but both members MUST NOT be included.
  */
-final class Response implements \JsonSerializable
+final class JsonRpcResponse implements \JsonSerializable
 {
     private function __construct(
         public readonly int|string|null $id,
@@ -36,12 +36,12 @@ final class Response implements \JsonSerializable
     ) {}
 
     /**
-     * @return array{jsonrpc: Request::VERSION, id: int|string|null, result?: array|bool|float|int|string|null, error?: array{code: int, message: string, data?: array|bool|float|int|string|null}}
+     * @return array{jsonrpc: JsonRpcRequest::VERSION, id: int|string|null, result?: array|bool|float|int|string|null, error?: array{code: int, message: string, data?: array|bool|float|int|string|null}}
      */
     public function jsonSerialize(): array
     {
         return [
-            'jsonrpc' => Request::VERSION,
+            'jsonrpc' => JsonRpcRequest::VERSION,
             'id' => $this->id,
             ...($this->hasResult ? ['result' => $this->result] : ['error' => $this->error]),
         ];

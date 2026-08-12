@@ -418,7 +418,7 @@ class ZabbixApi
         ]);
     }
 
-    private function send(string $method, array $params = []): \Idiot\Zabbix\JsonRpc\Response
+    private function send(string $method, array $params = []): Clients\JsonRpcResponse
     {
         $bearerToken = $this->bearerTokenFor($method);
 
@@ -439,7 +439,7 @@ class ZabbixApi
         string $method,
         array $params,
         ?string $bearerToken,
-    ): \Idiot\Zabbix\JsonRpc\Response {
+    ): Clients\JsonRpcResponse {
         [$versionResponse, $response] = $this->jsonRpcClient->batch(
             url: $this->endpoint(),
             calls: [
@@ -492,7 +492,7 @@ class ZabbixApi
     /**
      * @param list<ZabbixRequest> $requests
      *
-     * @return list<\Idiot\Zabbix\JsonRpc\Response>
+     * @return list<\Idiot\Zabbix\Clients\JsonRpcResponse>
      */
     private function sendBatch(array $requests): array
     {

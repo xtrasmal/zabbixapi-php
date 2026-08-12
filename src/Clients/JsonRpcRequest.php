@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Idiot\Zabbix\JsonRpc;
+namespace Idiot\Zabbix\Clients;
 
 use InvalidArgumentException;
 
-final class Request implements \JsonSerializable
+final class JsonRpcRequest implements \JsonSerializable
 {
     public const VERSION = '2.0';
 

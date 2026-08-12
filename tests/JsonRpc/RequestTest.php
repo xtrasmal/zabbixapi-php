@@ -6,8 +6,8 @@ namespace Tests\JsonRpc;
 
 use Idiot\Zabbix\Clients\HttpClient;
 use Idiot\Zabbix\Clients\JsonRpcClient;
-use Idiot\Zabbix\JsonRpc\Request;
-use Idiot\Zabbix\JsonRpc\Response;
+use Idiot\Zabbix\Clients\JsonRpcRequest;
+use Idiot\Zabbix\Clients\JsonRpcResponse;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use UnexpectedValueException;
@@ -16,20 +16,20 @@ final class RequestTest extends TestCase
 {
     public function testNotificationSerializationOmitsIdAndParams(): void
     {
-        $message = Request::notification('event.ping');
+        $message = JsonRpcRequest::notification('event.ping');
 
         self::assertSame([
-            'jsonrpc' => Request::VERSION,
+            'jsonrpc' => JsonRpcRequest::VERSION,
             'method' => 'event.ping',
         ], $message->jsonSerialize());
     }
 
     public function testRequestSerializationIncludesIdAndParams(): void
     {
-        $message = Request::request('host.get', 1, ['output' => 'extend']);
+        $message = JsonRpcRequest::request('host.get', 1, ['output' => 'extend']);
 
         self::assertSame([
-            'jsonrpc' => Request::VERSION,
+            'jsonrpc' => JsonRpcRequest::VERSION,
             'method' => 'host.get',
             'id' => 1,
             'params' => ['output' => 'extend'],
@@ -38,10 +38,10 @@ final class RequestTest extends TestCase
 
     public function testRequestSerializationIncludesExplicitEmptyParams(): void
     {
-        $message = Request::request('host.get', 1, []);
+        $message = JsonRpcRequest::request('host.get', 1, []);
 
         self::assertSame([
-            'jsonrpc' => Request::VERSION,
+            'jsonrpc' => JsonRpcRequest::VERSION,
             'method' => 'host.get',
             'id' => 1,
             'params' => [],
@@ -50,10 +50,10 @@ final class RequestTest extends TestCase
 
     public function testRequestSerializationCanIncludeExplicitNullId(): void
     {
-        $message = Request::request('host.get', null);
+        $message = JsonRpcRequest::request('host.get', null);
 
         self::assertSame([
-            'jsonrpc' => Request::VERSION,
+            'jsonrpc' => JsonRpcRequest::VERSION,
             'method' => 'host.get',
             'id' => null,
         ], $message->jsonSerialize());
@@ -64,18 +64,18 @@ final class RequestTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Methods beginning with "rpc." are reserved.');
 
-        Request::request('rpc.health', 1);
+        JsonRpcRequest::request('rpc.health', 1);
     }
 
     public function testResponseSerializationIncludesJsonRpcErrorEnvelope(): void
     {
-        $response = Response::fromError(1, [
+        $response = JsonRpcResponse::fromError(1, [
             'code' => -32601,
             'message' => 'Method not found',
         ]);
 
         self::assertSame([
-            'jsonrpc' => Request::VERSION,
+            'jsonrpc' => JsonRpcRequest::VERSION,
             'id' => 1,
             'error' => [
                 'code' => -32601,
@@ -87,14 +87,14 @@ final class RequestTest extends TestCase
     public function testResponseSerializationPreservesErrorPayload(): void
     {
         self::assertSame([
-            'jsonrpc' => Request::VERSION,
+            'jsonrpc' => JsonRpcRequest::VERSION,
             'id' => 1,
             'error' => [
                 'code' => -32602,
                 'message' => 'Invalid params',
                 'data' => ['field' => 'hostids'],
             ],
-        ], Response::fromError(1, [
+        ], JsonRpcResponse::fromError(1, [
             'code' => -32602,
             'message' => 'Invalid params',
             'data' => ['field' => 'hostids'],
@@ -104,10 +104,10 @@ final class RequestTest extends TestCase
     public function testResponseSerializationIncludesNullResultOnSuccess(): void
     {
         self::assertSame([
-            'jsonrpc' => Request::VERSION,
+            'jsonrpc' => JsonRpcRequest::VERSION,
             'id' => 1,
             'result' => null,
-        ], Response::fromResult(1, null)->jsonSerialize());
+        ], JsonRpcResponse::fromResult(1, null)->jsonSerialize());
     }
 
     public function testDecodeRejectsEmptyBatchResponseArray(): void
@@ -142,7 +142,7 @@ final class RequestTest extends TestCase
     /**
      * @param array<string, mixed>|list<mixed> $payload
      *
-     * @return list<Response>
+     * @return list<JsonRpcResponse>
      */
     private static function decode(array $payload): array
     {

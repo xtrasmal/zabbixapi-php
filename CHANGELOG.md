@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 First release of `idiot/zabbixapi`, a token-only Zabbix JSON-RPC API client for PHP.
 
 ### Added
-- JSON-RPC 2.0 transport layer with immutable `Request` and `Response` value objects.
+- JSON-RPC 2.0 transport layer with immutable `JsonRpcRequest` and `JsonRpcResponse` value objects.
 - Guzzle-based `HttpClient` and `JsonRpcClient`, with dedicated credentials handling.
 - Generated, typed request layer backed by PHP enums, plus imported Zabbix API schemas for request validation.
 - Typed API facade exposing bound API groups directly on the client (e.g. `$api->hosts->get(...)`).

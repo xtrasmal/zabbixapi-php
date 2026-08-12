@@ -576,7 +576,7 @@ final class JsonRpcClientTest extends TestCase
     /**
      * @param array<string, mixed>|list<mixed> $payload
      *
-     * @return list<\Idiot\Zabbix\JsonRpc\Response>
+     * @return list<\Idiot\Zabbix\Clients\JsonRpcResponse>
      */
     private static function decode(array $payload): array
     {

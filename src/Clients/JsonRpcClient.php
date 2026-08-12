@@ -4,20 +4,12 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Clients;
 
-use Idiot\Zabbix\JsonRpc\Request;
-use Idiot\Zabbix\JsonRpc\Response;
 use Idiot\Zabbix\ZabbixApi;
 use Idiot\Zabbix\ZabbixApiException;
 use JsonException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use UnexpectedValueException;
-
-/**
- * @phpstan-type JsonRpcScalar array|bool|float|int|string|null
- * @phpstan-type JsonRpcObject array<string, JsonRpcScalar>
- * @phpstan-type JsonRpcEnvelope JsonRpcObject|list<JsonRpcScalar>
- */
 
 /**
  * A minimal JSON-RPC 2.0 client.
@@ -28,7 +20,7 @@ use UnexpectedValueException;
  */
 final class JsonRpcClient
 {
-    /** @var list<Request> */
+    /** @var list<JsonRpcRequest> */
     private array $messages = [];
 
     public function __construct(
@@ -52,7 +44,7 @@ final class JsonRpcClient
         int|string|null $id,
         array $params = [],
         ?string $bearerToken = null,
-    ): Response {
+    ): JsonRpcResponse {
         try {
             $body = $this
                 ->query($method, $id, $params)
@@ -94,7 +86,7 @@ final class JsonRpcClient
      *
      * @throws ZabbixApiException
      *
-     * @return list<Response>
+     * @return list<JsonRpcResponse>
      */
     public function batch(
         string $url,
@@ -150,7 +142,7 @@ final class JsonRpcClient
      */
     public function query(string $method, int|string|null $id, ?array $params = null): self
     {
-        $this->messages[] = Request::request($method, $id, $params);
+        $this->messages[] = JsonRpcRequest::request($method, $id, $params);
 
         return $this;
     }
@@ -160,7 +152,7 @@ final class JsonRpcClient
      */
     public function notify(string $method, ?array $params = null): self
     {
-        $this->messages[] = Request::notification($method, $params);
+        $this->messages[] = JsonRpcRequest::notification($method, $params);
 
         return $this;
     }
@@ -190,14 +182,14 @@ final class JsonRpcClient
     }
 
     /**
-     * Decode a JSON-RPC reply into one {@see Response} per result, in the order
+     * Decode a JSON-RPC reply into one {@see JsonRpcResponse} per result, in the order
      * received.
      *
      * @param JsonRpcEnvelope $payload
      *
      * @throws UnexpectedValueException on a non-conforming envelope.
      *
-     * @return list<Response>
+     * @return list<JsonRpcResponse>
      */
     public function decode(array $payload): array
     {
@@ -223,9 +215,9 @@ final class JsonRpcClient
     /**
      * @param JsonRpcObject $envelope
      */
-    private function toResponse(array $envelope): Response
+    private function toResponse(array $envelope): JsonRpcResponse
     {
-        if (($envelope['jsonrpc'] ?? null) !== Request::VERSION) {
+        if (($envelope['jsonrpc'] ?? null) !== JsonRpcRequest::VERSION) {
             throw new UnexpectedValueException('Not a JSON-RPC 2.0 response.');
         }
 
@@ -248,13 +240,13 @@ final class JsonRpcClient
             }
 
             try {
-                return Response::fromError($id, $envelope['error']);
+                return JsonRpcResponse::fromError($id, $envelope['error']);
             } catch (\InvalidArgumentException $e) {
                 throw new UnexpectedValueException($e->getMessage(), previous: $e);
             }
         }
 
-        return Response::fromResult($id, $envelope['result']);
+        return JsonRpcResponse::fromResult($id, $envelope['result']);
     }
 
     private function normalizeId(array|bool|float|int|string|null $id): int|string|null
@@ -267,11 +259,11 @@ final class JsonRpcClient
     }
 
     /**
-     * @param list<Response> $responses
+     * @param list<JsonRpcResponse> $responses
      *
      * @throws UnexpectedValueException
      */
-    private function singleResponse(array $responses, int|string|null $requestId): Response
+    private function singleResponse(array $responses, int|string|null $requestId): JsonRpcResponse
     {
         if (1 !== count($responses)) {
             throw new UnexpectedValueException('Expected exactly one JSON-RPC response.');
@@ -287,10 +279,10 @@ final class JsonRpcClient
     }
 
     /**
-     * @param list<Response>        $responses
+     * @param list<JsonRpcResponse> $responses
      * @param list<int|string|null> $requestIds
      *
-     * @return list<Response>
+     * @return list<JsonRpcResponse>
      */
     private function orderedResponses(array $responses, array $requestIds): array
     {
