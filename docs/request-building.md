@@ -64,7 +64,7 @@ $request = $factory->make('host.get', [
 $hosts = $zabbix->request($request);
 ```
 
-`RequestFactory::validated()` validates params against the compiled Zabbix method schema. `RequestFactory::plain()` only maps method names to request objects.
+`RequestFactory::validated()` validates params against the bundled Zabbix 7.0 JSON schema for that method. `RequestFactory::plain()` only maps method names to request objects.
 
 ## JSON-RPC Batch
 

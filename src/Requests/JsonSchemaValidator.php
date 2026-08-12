@@ -7,9 +7,7 @@ namespace Idiot\Zabbix\Requests;
 use JsonSchema\Validator;
 
 /**
- * SchemaValidator backed by justinrainbow/json-schema. The compiled PHP array
- * is converted through JSON so the validator receives the same object/list
- * model it would get from json_decode().
+ * SchemaValidator backed by justinrainbow/json-schema.
  */
 final class JsonSchemaValidator implements SchemaValidator
 {

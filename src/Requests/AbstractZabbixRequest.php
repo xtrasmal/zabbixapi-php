@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Requests;
 
-use Idiot\Zabbix\Requests\Schemas\StaticSchemaRegistry;
-
 /**
  * Base for generated Zabbix requests. Requests are method-specific envelopes
- * around the plain Zabbix params array; the compiled schema registry owns the
- * method shape and validation rules.
+ * around the plain Zabbix params array; the schema provider owns the method
+ * shape and validation rules.
  */
 abstract class AbstractZabbixRequest implements ZabbixRequest
 {
@@ -50,7 +48,7 @@ abstract class AbstractZabbixRequest implements ZabbixRequest
         /** @var array<string, bool> $listParamsByMethod */
         static $listParamsByMethod = [];
 
-        return $listParamsByMethod[$this->method()] ??= (new StaticSchemaRegistry())
+        return $listParamsByMethod[$this->method()] ??= (new JsonFileSchemaProvider())
             ->schemaFor($this->method())
             ->paramsAreList();
     }

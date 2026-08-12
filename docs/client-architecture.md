@@ -23,6 +23,8 @@ The client stack is split by responsibility:
 
 `RequestFactory` maps Zabbix method names to request objects and can validate params before a request leaves the client. It exists for method-name driven adapters and tooling, not as the primary application API.
 
+`JsonFileSchemaProvider` loads bundled Zabbix 7.0 JSON schemas from `schemas/7.0` for validation. The JSON files are the schema source of truth; generated PHP schema classes are not part of the runtime API.
+
 `ZabbixRequestApi` contains the unbound request-builder facade. Use `$zabbix->requests()` when you want to compose a request before dispatching it.
 
 Generated request classes stay behind these smaller APIs for normal application code.

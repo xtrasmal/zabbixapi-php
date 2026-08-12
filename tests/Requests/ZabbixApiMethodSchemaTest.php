@@ -9,8 +9,7 @@ use Idiot\Zabbix\Requests\HistoryPushRequest;
 use Idiot\Zabbix\Requests\HostDeleteRequest;
 use Idiot\Zabbix\Requests\HostGetRequest;
 use Idiot\Zabbix\Requests\InvalidZabbixRequest;
-use Idiot\Zabbix\Requests\RequestSchema;
-use Idiot\Zabbix\Requests\Schemas\StaticSchemaRegistry;
+use Idiot\Zabbix\Requests\JsonFileSchemaProvider;
 use Idiot\Zabbix\Requests\StaticRequestRegistry;
 use Idiot\Zabbix\Requests\UnknownZabbixMethod;
 use Idiot\Zabbix\Requests\ZabbixRequest;
@@ -24,16 +23,17 @@ final class ZabbixApiMethodSchemaTest extends TestCase
     private const UNSUPPORTED_SESSION_METHODS = ['user.logout'];
 
     /**
-     * @param class-string<RequestSchema> $schemaClass
      * @param class-string<ZabbixRequest> $requestClass
      */
     #[DataProvider('apiMethods')]
-    public function testRequestParamsValidateAgainstCompiledSchema(
+    public function testRequestParamsValidateAgainstBundledSchema(
         string $method,
-        string $schemaClass,
+        string $schemaFile,
         string $requestClass,
     ): void {
-        $schema = new $schemaClass();
+        $schema = (new JsonFileSchemaProvider())->schemaFor($method);
+        self::assertSame(self::schemaDefinition($schemaFile), $schema->definition());
+
         $preferList = self::paramsAreList($requestClass);
         $params = SchemaSampleFactory::sample($schema->definition(), $preferList);
         $request = $requestClass::fromParams($params);
@@ -46,16 +46,17 @@ final class ZabbixApiMethodSchemaTest extends TestCase
     }
 
     /**
-     * @param class-string<RequestSchema> $schemaClass
      * @param class-string<ZabbixRequest> $requestClass
      */
     #[DataProvider('apiMethods')]
-    public function testMalformedRequestParamsAreRejectedByCompiledSchema(
+    public function testMalformedRequestParamsAreRejectedByBundledSchema(
         string $method,
-        string $schemaClass,
+        string $schemaFile,
         string $requestClass,
     ): void {
-        $schema = new $schemaClass();
+        $schema = (new JsonFileSchemaProvider())->schemaFor($method);
+        self::assertSame(self::schemaDefinition($schemaFile), $schema->definition());
+
         $preferList = self::paramsAreList($requestClass);
         $params = SchemaSampleFactory::invalidSample($schema->definition(), $preferList);
         $request = $requestClass::fromParams($params);
@@ -143,6 +144,16 @@ final class ZabbixApiMethodSchemaTest extends TestCase
         ])->paramsAreList());
     }
 
+    public function testJsonFileSchemaProviderLoadsBundledZabbixSevenSchemas(): void
+    {
+        $schema = (new JsonFileSchemaProvider())->schemaFor('host.get');
+
+        self::assertSame('host.get', $schema->method());
+        self::assertSame('host.get', $schema->definition()['title'] ?? null);
+        self::assertSame('https://zabbix.com/7.0/api/host/host.get', $schema->definition()['$id'] ?? null);
+        self::assertFalse($schema->paramsAreList());
+    }
+
     public function testStaticRequestRegistryRejectsUnknownMethods(): void
     {
         $this->expectException(UnknownZabbixMethod::class);
@@ -159,11 +170,11 @@ final class ZabbixApiMethodSchemaTest extends TestCase
     }
 
     #[DataProvider('unsupportedSessionMethods')]
-    public function testSchemaRegistryRejectsSessionAuthenticationMethods(string $method): void
+    public function testSchemaProviderRejectsSessionAuthenticationMethods(string $method): void
     {
         $this->expectException(UnknownZabbixMethod::class);
 
-        (new StaticSchemaRegistry())->schemaFor($method);
+        (new JsonFileSchemaProvider())->schemaFor($method);
     }
 
     /**
@@ -178,27 +189,19 @@ final class ZabbixApiMethodSchemaTest extends TestCase
         self::assertSame($requestClass, $registry->requestClassFor($method));
     }
 
-    /** @return iterable<string, array{string, class-string<RequestSchema>, class-string<ZabbixRequest>}> */
+    public function testGeneratedPhpSchemaClassesAreNotRuntimeApi(): void
+    {
+        $schemaFiles = glob(__DIR__ . '/../../src/Requests/Schemas/*Schema.php');
+
+        self::assertSame([], false === $schemaFiles ? [] : $schemaFiles);
+    }
+
+    /** @return iterable<string, array{string, string, class-string<ZabbixRequest>}> */
     public static function apiMethods(): iterable
     {
         $requestRegistry = new StaticRequestRegistry();
-        $schemaFiles = glob(__DIR__ . '/../../src/Requests/Schemas/*Schema.php');
-        self::assertIsArray($schemaFiles);
-
-        sort($schemaFiles);
-
-        foreach ($schemaFiles as $schemaFile) {
-            $schemaShortName = basename($schemaFile, '.php');
-            if ('StaticSchemaRegistry' === $schemaShortName) {
-                continue;
-            }
-
-            $schemaClass = 'Idiot\\Zabbix\\Requests\\Schemas\\' . $schemaShortName;
-
-            self::assertTrue(class_exists($schemaClass), sprintf('Schema class %s does not exist.', $schemaClass));
-            self::assertTrue(is_subclass_of($schemaClass, RequestSchema::class));
-
-            $method = (new $schemaClass())->definition()['title'] ?? null;
+        foreach (self::schemaFiles() as $schemaFile) {
+            $method = self::schemaDefinition($schemaFile)['title'] ?? null;
             self::assertIsString($method);
             if (in_array($method, self::UNSUPPORTED_SESSION_METHODS, true)) {
                 continue;
@@ -208,7 +211,7 @@ final class ZabbixApiMethodSchemaTest extends TestCase
             self::assertTrue(class_exists($requestClass), sprintf('Request class %s does not exist.', $requestClass));
             self::assertTrue(is_subclass_of($requestClass, ZabbixRequest::class));
 
-            yield $method => [$method, $schemaClass, $requestClass];
+            yield $method => [$method, $schemaFile, $requestClass];
         }
     }
 
@@ -216,14 +219,8 @@ final class ZabbixApiMethodSchemaTest extends TestCase
     public static function sourceSpecMethods(): iterable
     {
         $requestRegistry = new StaticRequestRegistry();
-        $schemaFiles = glob(__DIR__ . '/../../schemas/*/*.json');
-        self::assertIsArray($schemaFiles);
-        self::assertNotSame([], $schemaFiles, 'No source spec schemas found.');
-
-        sort($schemaFiles);
-
-        foreach ($schemaFiles as $schemaFile) {
-            $schema = json_decode((string)file_get_contents($schemaFile), true, flags: JSON_THROW_ON_ERROR);
+        foreach (self::schemaFiles() as $schemaFile) {
+            $schema = self::schemaDefinition($schemaFile);
             $method = $schema['title'] ?? null;
             self::assertIsString($method);
             if (in_array($method, self::UNSUPPORTED_SESSION_METHODS, true)) {
@@ -252,5 +249,27 @@ final class ZabbixApiMethodSchemaTest extends TestCase
         }
 
         return $requestClass::fromParams([])->paramsAreList();
+    }
+
+    /** @return list<string> */
+    private static function schemaFiles(): array
+    {
+        $schemaFiles = glob(__DIR__ . '/../../schemas/7.0/*/*.json');
+        self::assertIsArray($schemaFiles);
+        self::assertNotSame([], $schemaFiles, 'No bundled Zabbix 7.0 schemas found.');
+
+        sort($schemaFiles);
+
+        return $schemaFiles;
+    }
+
+    /** @return array<string, mixed> */
+    private static function schemaDefinition(string $schemaFile): array
+    {
+        $schema = json_decode((string)file_get_contents($schemaFile), true, flags: JSON_THROW_ON_ERROR);
+        self::assertIsArray($schema);
+
+        /** @var array<string, mixed> $schema */
+        return $schema;
     }
 }
