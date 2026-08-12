@@ -12,6 +12,7 @@ use Idiot\Zabbix\Requests\InvalidZabbixRequest;
 use Idiot\Zabbix\Requests\JsonFileSchemaProvider;
 use Idiot\Zabbix\Requests\StaticRequestRegistry;
 use Idiot\Zabbix\Requests\UnknownZabbixMethod;
+use Idiot\Zabbix\Requests\UserLogoutRequest;
 use Idiot\Zabbix\Requests\ZabbixRequest;
 use Idiot\Zabbix\Requests\ZabbixRequestValidator;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -20,8 +21,6 @@ use Tests\Support\SchemaSampleFactory;
 
 final class ZabbixApiMethodSchemaTest extends TestCase
 {
-    private const UNSUPPORTED_SESSION_METHODS = ['user.logout'];
-
     /**
      * @param class-string<ZabbixRequest> $requestClass
      */
@@ -103,6 +102,17 @@ final class ZabbixApiMethodSchemaTest extends TestCase
         ], $request->params());
     }
 
+    public function testStaticRequestRegistrySupportsUserLogoutAsOfficialZabbixMethod(): void
+    {
+        $request = (new StaticRequestRegistry())->requestFor('user.logout');
+
+        self::assertInstanceOf(UserLogoutRequest::class, $request);
+        self::assertSame('user.logout', $request->method());
+        self::assertSame([], $request->params());
+
+        ZabbixRequestValidator::createDefault()->validate($request);
+    }
+
     public function testGeneratedRequestsDoNotExposePublicConstructors(): void
     {
         $requestFiles = glob(__DIR__ . '/../../src/Requests/*Request.php');
@@ -161,22 +171,6 @@ final class ZabbixApiMethodSchemaTest extends TestCase
         (new StaticRequestRegistry())->requestClassFor('unknown.method');
     }
 
-    #[DataProvider('unsupportedSessionMethods')]
-    public function testRuntimeRegistriesRejectSessionAuthenticationMethods(string $method): void
-    {
-        $this->expectException(UnknownZabbixMethod::class);
-
-        (new StaticRequestRegistry())->requestClassFor($method);
-    }
-
-    #[DataProvider('unsupportedSessionMethods')]
-    public function testSchemaProviderRejectsSessionAuthenticationMethods(string $method): void
-    {
-        $this->expectException(UnknownZabbixMethod::class);
-
-        (new JsonFileSchemaProvider())->schemaFor($method);
-    }
-
     /**
      * @param class-string<ZabbixRequest> $requestClass
      */
@@ -203,10 +197,6 @@ final class ZabbixApiMethodSchemaTest extends TestCase
         foreach (self::schemaFiles() as $schemaFile) {
             $method = self::schemaDefinition($schemaFile)['title'] ?? null;
             self::assertIsString($method);
-            if (in_array($method, self::UNSUPPORTED_SESSION_METHODS, true)) {
-                continue;
-            }
-
             $requestClass = $requestRegistry->requestClassFor($method);
             self::assertTrue(class_exists($requestClass), sprintf('Request class %s does not exist.', $requestClass));
             self::assertTrue(is_subclass_of($requestClass, ZabbixRequest::class));
@@ -223,21 +213,9 @@ final class ZabbixApiMethodSchemaTest extends TestCase
             $schema = self::schemaDefinition($schemaFile);
             $method = $schema['title'] ?? null;
             self::assertIsString($method);
-            if (in_array($method, self::UNSUPPORTED_SESSION_METHODS, true)) {
-                continue;
-            }
-
             $requestClass = $requestRegistry->requestClassFor($method);
 
             yield $method => [$method, $requestClass];
-        }
-    }
-
-    /** @return iterable<string, array{string}> */
-    public static function unsupportedSessionMethods(): iterable
-    {
-        foreach (self::UNSUPPORTED_SESSION_METHODS as $method) {
-            yield $method => [$method];
         }
     }
 

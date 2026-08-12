@@ -2,7 +2,7 @@
 
 PHP client for the Zabbix JSON-RPC API.
 
-This library sends JSON-RPC 2.0 requests to `api_jsonrpc.php` and authenticates API calls with an `Authorization: Bearer <token>` header. No body `auth`, local session cache, or logout flow is used.
+This library sends JSON-RPC 2.0 requests to `api_jsonrpc.php` and authenticates API calls with an `Authorization: Bearer <token>` header. No body `auth` or local session cache is used; `user.logout` is available only as an explicit Zabbix API call.
 
 ## Installation
 

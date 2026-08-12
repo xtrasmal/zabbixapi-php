@@ -208,6 +208,7 @@ final class StaticRequestRegistry implements ZabbixRequestRegistry
         'user.delete' => UserDeleteRequest::class,
         'user.get' => UserGetRequest::class,
         'user.login' => UserLoginRequest::class,
+        'user.logout' => UserLogoutRequest::class,
         'user.provision' => UserProvisionRequest::class,
         'user.resettotp' => UserResettotpRequest::class,
         'user.unblock' => UserUnblockRequest::class,

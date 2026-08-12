@@ -312,6 +312,28 @@ final class ZabbixApiTest extends TestCase
         ], $thirdBody['params']);
     }
 
+    public function testUserLogoutCanBeCalledThroughPublicApiGroup(): void
+    {
+        $history = [];
+        $api = new ZabbixApi(
+            options: [
+                'url' => 'https://zabbix.example',
+                'token' => 'secret',
+            ],
+            httpClient: self::guzzle([
+                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":true}]'),
+            ], $history),
+        );
+
+        self::assertTrue($api->users->logout());
+
+        $body = json_decode((string)$history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+
+        self::assertSame('Bearer secret', $history[0]['request']->getHeaderLine('Authorization'));
+        self::assertSame('user.logout', $body[1]['method']);
+        self::assertSame([], $body[1]['params']);
+    }
+
     public function testApiVersionLookupIsLazyUnauthenticatedAndCached(): void
     {
         $history = [];

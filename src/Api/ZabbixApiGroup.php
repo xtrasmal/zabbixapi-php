@@ -58,6 +58,12 @@ final class ZabbixApiGroup
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
 
+    /** @param list<mixed>|ZabbixRequest $request */
+    public function logout(array|ZabbixRequest $request = []): array|bool|float|int|string|null
+    {
+        return $this->dispatch(__FUNCTION__, func_get_args());
+    }
+
     /**
      * @return TBuilder
      */

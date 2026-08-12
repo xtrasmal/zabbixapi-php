@@ -9,6 +9,7 @@ use Idiot\Zabbix\Requests\UserCreateRequest;
 use Idiot\Zabbix\Requests\UserDeleteRequest;
 use Idiot\Zabbix\Requests\UserGetRequest;
 use Idiot\Zabbix\Requests\UserLoginRequest;
+use Idiot\Zabbix\Requests\UserLogoutRequest;
 use Idiot\Zabbix\Requests\UserProvisionRequest;
 use Idiot\Zabbix\Requests\UserResettotpRequest;
 use Idiot\Zabbix\Requests\UserUnblockRequest;
@@ -50,6 +51,12 @@ final class UserApi extends AbstractApi
     public function login(UserLoginRequest|array $request): UserLoginRequest
     {
         return $this->request(UserLoginRequest::class, $request);
+    }
+
+    /** @param list<mixed> $request */
+    public function logout(UserLogoutRequest|array $request = []): UserLogoutRequest
+    {
+        return $this->request(UserLogoutRequest::class, $request);
     }
 
     /** @param list<mixed> $request */

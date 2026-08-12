@@ -67,12 +67,14 @@ final class ZabbixRequestApiTest extends TestCase
         ], $api->hosts->get()->filter(['host' => ['srv-01']])->output(['hostid'])->params());
     }
 
-    public function testUserFacadeExposesOfficialLoginButNotLogout(): void
+    public function testUserFacadeExposesOfficialSessionMethods(): void
     {
         $api = new ZabbixRequestApi();
 
         self::assertTrue(method_exists($api->users, 'login'));
-        self::assertFalse(method_exists($api->users, 'logout'));
+        self::assertTrue(method_exists($api->users, 'logout'));
+        self::assertSame('user.logout', $api->users->logout()->method());
+        self::assertSame([], $api->users->logout()->params());
     }
 
     public function testRequestBuilderMethodsAcceptPlainArrayParams(): void
