@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Enable internal housekeeping for trends. Possible values: 0 - Disable; 1 - (default) Enable.

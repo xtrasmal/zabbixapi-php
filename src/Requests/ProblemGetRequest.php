@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
 /**
  * problem.get - Retrieve unresolved problems (and, if requested, recently resolved ones) according to the given parameters.

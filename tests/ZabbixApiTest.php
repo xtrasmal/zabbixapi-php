@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests;
 
@@ -7,10 +9,9 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response as HttpResponse;
-use IntelliTrend\Zabbix\Requests\HostGetRequest;
-use IntelliTrend\Zabbix\Requests\UserLoginRequest;
-use IntelliTrend\Zabbix\ZabbixApi;
-use IntelliTrend\Zabbix\ZabbixApiException;
+use Idiot\Zabbix\Requests\HostGetRequest;
+use Idiot\Zabbix\ZabbixApi;
+use Idiot\Zabbix\ZabbixApiException;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\AbstractLogger;
 
@@ -27,123 +28,136 @@ final class ZabbixApiTest extends TestCase
         $api->call('host.get');
     }
 
-    public function testConnectRejectsEmptyUrl(): void
+    public function testConstructorRejectsEmptyUrl(): void
     {
-        $api = new ZabbixApi();
-
         $this->expectException(ZabbixApiException::class);
         $this->expectExceptionCode(ZabbixApi::EXCEPTION_CLASS_CODE);
         $this->expectExceptionMessage('Missing Zabbix URL.');
 
-        $api->connect('', 'secret');
+        new ZabbixApi(options: [
+            'url' => '',
+            'token' => 'secret',
+        ]);
     }
 
-    public function testConnectRejectsEmptyToken(): void
+    public function testConstructorRejectsEmptyToken(): void
     {
-        $api = new ZabbixApi();
-
         $this->expectException(ZabbixApiException::class);
         $this->expectExceptionCode(ZabbixApi::EXCEPTION_CLASS_CODE_AUTH);
         $this->expectExceptionMessage('Missing Zabbix API token.');
 
-        $api->connect('https://zabbix.example', '');
+        new ZabbixApi(options: [
+            'url' => 'https://zabbix.example',
+            'token' => '',
+        ]);
     }
 
-    public function testConnectReturnsConfiguredClientInstanceForSingletonFactories(): void
+    public function testConstructorCanConfigureEndpointTokenAndHttpOptions(): void
     {
         $history = [];
-        $api = new ZabbixApi(httpClient: self::guzzle([
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
-        ], $history));
-
-        $configured = $api->connect(
-            zabUrl: 'https://zabbix.example',
-            zabToken: 'secret'
+        $api = new ZabbixApi(
+            options: [
+                'url' => 'https://zabbix.example',
+                'token' => 'secret',
+                'verify' => false,
+            ],
+            httpClient: self::guzzle([
+                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":[{"hostid":"10105"}]}]'),
+            ], $history),
         );
 
-        self::assertSame($api, $configured);
-        self::assertSame('secret', $configured->getAuthToken());
-        self::assertSame('7.2.0', $configured->getApiVersion());
-    }
+        self::assertSame('secret', $api->getAuthToken());
+        self::assertSame([], $history);
+        self::assertSame([['hostid' => '10105']], $api->hosts->get(['output' => ['hostid']]));
 
-    public function testConnectChecksApiVersionWithoutBearerTokenAndCallsUseBearerToken(): void
-    {
-        $history = [];
-        $api = new ZabbixApi(httpClient: self::guzzle([
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":true}'),
-        ], $history));
-
-        $api->connect('https://zabbix.example', 'secret');
-
-        self::assertTrue($api->call('host.get'));
-        self::assertCount(2, $history);
-        self::assertSame('', $history[0]['request']->getHeaderLine('Authorization'));
-        self::assertSame('Bearer secret', $history[1]['request']->getHeaderLine('Authorization'));
-    }
-
-    public function testConnectCanConfigureEndpointBeforeUserLoginSuppliesBearerToken(): void
-    {
-        $history = [];
-        $api = new ZabbixApi(httpClient: self::guzzle([
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"session-token"}'),
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":true}'),
-        ], $history));
-
-        $api->connect('https://zabbix.example');
-
-        self::assertSame('session-token', $api->request(new UserLoginRequest('Admin', 'zabbix')));
-        self::assertSame('session-token', $api->getAuthToken());
-        self::assertTrue($api->call('host.get'));
-
-        self::assertCount(3, $history);
-        self::assertSame('', $history[0]['request']->getHeaderLine('Authorization'));
-        self::assertSame('', $history[1]['request']->getHeaderLine('Authorization'));
-        self::assertSame('Bearer session-token', $history[2]['request']->getHeaderLine('Authorization'));
-    }
-
-    public function testUserLoginRequestIsSkippedWhenBearerTokenAlreadyExists(): void
-    {
-        $history = [];
-        $api = new ZabbixApi(httpClient: self::guzzle([
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
-        ], $history));
-
-        $api->connect('https://zabbix.example', 'existing-token');
-
-        self::assertSame('existing-token', $api->request(new UserLoginRequest('Admin', 'zabbix')));
         self::assertCount(1, $history);
+        self::assertFalse($history[0]['options']['verify']);
+        self::assertSame('Bearer secret', $history[0]['request']->getHeaderLine('Authorization'));
+        self::assertSame(['apiinfo.version', 'host.get'], self::requestMethods($history[0]));
     }
 
-    public function testUserLoginRequestStoresSessionIdWhenUserDataIsReturned(): void
+    public function testConstructorRejectsTokenWithoutEndpoint(): void
+    {
+        $this->expectException(ZabbixApiException::class);
+        $this->expectExceptionCode(ZabbixApi::EXCEPTION_CLASS_CODE_AUTH);
+        $this->expectExceptionMessage('Zabbix API token cannot be configured without a Zabbix URL.');
+
+        new ZabbixApi(options: [
+            'token' => 'secret',
+        ]);
+    }
+
+    public function testConstructorCanConfigureUserLoginForFirstAuthenticatedCall(): void
     {
         $history = [];
-        $api = new ZabbixApi(httpClient: self::guzzle([
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":{"userid":"1","sessionid":"session-token"}}'),
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":true}'),
-        ], $history));
+        $api = new ZabbixApi(
+            options: [
+                'url' => 'https://zabbix.example',
+                'username' => 'Admin',
+                'password' => 'zabbix',
+            ],
+            httpClient: self::guzzle([
+                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":"session-token"}]'),
+                new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":[{"hostid":"10105"}]}'),
+            ], $history),
+        );
 
-        $api->connect('https://zabbix.example');
+        self::assertSame([['hostid' => '10105']], $api->hosts->get(['output' => ['hostid']]));
+        self::assertSame('session-token', $api->getAuthToken());
+        self::assertCount(2, $history);
+
+        self::assertSame('', $history[0]['request']->getHeaderLine('Authorization'));
+        self::assertSame('Bearer session-token', $history[1]['request']->getHeaderLine('Authorization'));
 
         self::assertSame(
-            ['userid' => '1', 'sessionid' => 'session-token'],
-            $api->request(new UserLoginRequest('Admin', 'zabbix', userData: true))
+            'user.login',
+            self::requestMethods($history[0])[1],
         );
-        self::assertSame('session-token', $api->getAuthToken());
-        self::assertTrue($api->call('host.get'));
-        self::assertSame('Bearer session-token', $history[2]['request']->getHeaderLine('Authorization'));
     }
 
-    public function testAuthenticatedCallsRequireUserLoginWhenConnectedWithoutBearerToken(): void
+    public function testConstructorSkipsConfiguredUserLoginWhenTokenExists(): void
     {
         $history = [];
-        $api = new ZabbixApi(httpClient: self::guzzle([
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
-        ], $history));
+        $api = new ZabbixApi(
+            options: [
+                'url' => 'https://zabbix.example',
+                'token' => 'secret',
+                'username' => 'Admin',
+                'password' => 'zabbix',
+            ],
+            httpClient: self::guzzle([
+                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":[{"hostid":"10105"}]}]'),
+            ], $history),
+        );
 
-        $api->connect('https://zabbix.example');
+        self::assertSame([['hostid' => '10105']], $api->hosts->get(['output' => ['hostid']]));
+        self::assertCount(1, $history);
+        self::assertSame(['apiinfo.version', 'host.get'], self::requestMethods($history[0]));
+        self::assertSame('Bearer secret', $history[0]['request']->getHeaderLine('Authorization'));
+    }
+
+    public function testConstructorRejectsPartialUserLoginOptions(): void
+    {
+        $this->expectException(ZabbixApiException::class);
+        $this->expectExceptionCode(ZabbixApi::EXCEPTION_CLASS_CODE_AUTH);
+        $this->expectExceptionMessage('Zabbix API username and password must be configured together.');
+
+        new ZabbixApi(options: [
+            'url' => 'https://zabbix.example',
+            'username' => 'Admin',
+        ]);
+    }
+
+    public function testAuthenticatedCallsRequireBearerTokenOrConfiguredLogin(): void
+    {
+        $history = [];
+        $api = new ZabbixApi(
+            options: [
+                'url' => 'https://zabbix.example',
+            ],
+            httpClient: self::guzzle([
+            ], $history),
+        );
 
         $this->expectException(ZabbixApiException::class);
         $this->expectExceptionCode(ZabbixApi::EXCEPTION_CLASS_CODE_AUTH);
@@ -155,34 +169,50 @@ final class ZabbixApiTest extends TestCase
     public function testCallSendsJsonRpc20RequestWithoutBodyAuth(): void
     {
         $history = [];
-        $api = new ZabbixApi(httpClient: self::guzzle([
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":[]}'),
-        ], $history));
+        $api = new ZabbixApi(
+            options: [
+                'url' => 'https://zabbix.example/',
+                'token' => 'secret',
+            ],
+            httpClient: self::guzzle([
+                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":[]}]'),
+            ], $history),
+        );
 
-        $api->connect('https://zabbix.example/', 'secret');
         $api->call('host.get', ['output' => 'extend']);
 
-        $body = json_decode((string)$history[1]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+        $body = json_decode((string)$history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
 
         self::assertSame([
-            'jsonrpc' => '2.0',
-            'method' => 'host.get',
-            'id' => 1,
-            'params' => ['output' => 'extend'],
+            [
+                'jsonrpc' => '2.0',
+                'method' => 'apiinfo.version',
+                'id' => 1,
+                'params' => [],
+            ],
+            [
+                'jsonrpc' => '2.0',
+                'method' => 'host.get',
+                'id' => 2,
+                'params' => ['output' => 'extend'],
+            ],
         ], $body);
-        self::assertArrayNotHasKey('auth', $body);
+        self::assertArrayNotHasKey('auth', $body[0]);
+        self::assertArrayNotHasKey('auth', $body[1]);
     }
 
     public function testCallDecodesJsonRpcResult(): void
     {
         $history = [];
-        $api = new ZabbixApi(httpClient: self::guzzle([
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":{"hostid":"10105"}}'),
-        ], $history));
-
-        $api->connect('https://zabbix.example', 'secret');
+        $api = new ZabbixApi(
+            options: [
+                'url' => 'https://zabbix.example',
+                'token' => 'secret',
+            ],
+            httpClient: self::guzzle([
+                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":{"hostid":"10105"}}]'),
+            ], $history),
+        );
 
         self::assertSame(['hostid' => '10105'], $api->call('host.get'));
     }
@@ -190,53 +220,76 @@ final class ZabbixApiTest extends TestCase
     public function testRequestExecutesZabbixRequestObject(): void
     {
         $history = [];
-        $api = new ZabbixApi(httpClient: self::guzzle([
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":[{"hostid":"10105"}]}'),
-        ], $history));
-
-        $api->connect('https://zabbix.example', 'secret');
+        $api = new ZabbixApi(
+            options: [
+                'url' => 'https://zabbix.example',
+                'token' => 'secret',
+            ],
+            httpClient: self::guzzle([
+                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":[{"hostid":"10105"}]}]'),
+            ], $history),
+        );
 
         self::assertSame(
             [['hostid' => '10105']],
-            $api->request(HostGetRequest::fromParams(['output' => ['hostid']]))
+            $api->request(HostGetRequest::fromParams(['output' => ['hostid']])),
         );
 
-        self::assertSame([
-            'jsonrpc' => '2.0',
-            'method' => 'host.get',
-            'id' => 1,
-            'params' => ['output' => ['hostid']],
-        ], json_decode((string)$history[1]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR));
+        self::assertSame(['apiinfo.version', 'host.get'], self::requestMethods($history[0]));
     }
 
     public function testDomainApiPropertiesBuildAndExecuteRequests(): void
     {
         $history = [];
-        $api = new ZabbixApi(httpClient: self::guzzle([
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":[{"hostid":"10105","host":"srv-01"}]}'),
-        ], $history));
-
-        $api->connect('https://zabbix.example', 'secret');
+        $api = new ZabbixApi(
+            options: [
+                'url' => 'https://zabbix.example',
+                'token' => 'secret',
+            ],
+            httpClient: self::guzzle([
+                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":[{"hostid":"10105","host":"srv-01"}]}]'),
+            ], $history),
+        );
 
         self::assertSame(
             [['hostid' => '10105', 'host' => 'srv-01']],
             $api->hosts->get([
                 'output' => ['hostid', 'host'],
                 'filter' => ['host' => ['srv-01']],
-            ])
+            ]),
         );
 
         self::assertSame([
             'jsonrpc' => '2.0',
             'method' => 'host.get',
-            'id' => 1,
+            'id' => 2,
             'params' => [
                 'output' => ['hostid', 'host'],
                 'filter' => ['host' => ['srv-01']],
             ],
-        ], json_decode((string)$history[1]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR));
+        ], json_decode((string)$history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR)[1]);
+    }
+
+    public function testApiVersionLookupIsLazyUnauthenticatedAndCached(): void
+    {
+        $history = [];
+        $api = new ZabbixApi(
+            options: [
+                'url' => 'https://zabbix.example',
+                'token' => 'secret',
+            ],
+            httpClient: self::guzzle([
+                new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
+            ], $history),
+        );
+
+        self::assertSame([], $history);
+        self::assertSame('7.2.0', $api->getApiVersion());
+        self::assertSame('7.2.0', $api->getApiVersion());
+
+        self::assertCount(1, $history);
+        self::assertSame('', $history[0]['request']->getHeaderLine('Authorization'));
+        self::assertSame('apiinfo.version', json_decode((string)$history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR)['method']);
     }
 
     public function testRequestBuildersRemainAvailableForComposedRequests(): void
@@ -260,12 +313,15 @@ final class ZabbixApiTest extends TestCase
     public function testCallConvertsJsonRpcErrorsToExceptions(): void
     {
         $history = [];
-        $api = new ZabbixApi(httpClient: self::guzzle([
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"error":{"code":-32602,"message":"Invalid params","data":"bad input"}}'),
-        ], $history));
-
-        $api->connect('https://zabbix.example', 'secret');
+        $api = new ZabbixApi(
+            options: [
+                'url' => 'https://zabbix.example',
+                'token' => 'secret',
+            ],
+            httpClient: self::guzzle([
+                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"error":{"code":-32602,"message":"Invalid params","data":"bad input"}}]'),
+            ], $history),
+        );
 
         $this->expectException(ZabbixApiException::class);
         $this->expectExceptionCode(-32602);
@@ -274,21 +330,22 @@ final class ZabbixApiTest extends TestCase
         $api->call('host.get');
     }
 
-    public function testConnectAcceptsPlainGuzzleRequestOptions(): void
+    public function testConstructorAcceptsPlainGuzzleRequestOptions(): void
     {
         $history = [];
         $api = new ZabbixApi(
             options: [
+                'url' => 'https://zabbix.example',
+                'token' => 'secret',
                 'verify' => false,
                 'proxy' => 'http://proxy.example:8080',
             ],
             httpClient: self::guzzle([
                 new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
-            ], $history)
+            ], $history),
         );
 
-        $api->connect('https://zabbix.example', 'secret');
-
+        self::assertSame('7.2.0', $api->getApiVersion());
         self::assertFalse($history[0]['options']['verify']);
         self::assertSame('http://proxy.example:8080', $history[0]['options']['proxy']);
         self::assertArrayNotHasKey('curl', $history[0]['options']);
@@ -299,14 +356,17 @@ final class ZabbixApiTest extends TestCase
         $history = [];
         $logger = new ArrayLogger();
         $api = new ZabbixApi(
+            options: [
+                'url' => 'https://zabbix.example',
+                'token' => 'secret',
+            ],
             httpClient: self::guzzle([
                 new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
             ], $history),
-            logger: $logger
+            logger: $logger,
         );
 
-        $api->connect('https://zabbix.example', 'secret');
-
+        self::assertSame('7.2.0', $api->getApiVersion());
         self::assertSame([
             'Configured Zabbix HTTP client.',
             'Sending Zabbix JSON-RPC request.',
@@ -315,7 +375,7 @@ final class ZabbixApiTest extends TestCase
     }
 
     /**
-     * @param list<HttpResponse> $responses
+     * @param list<HttpResponse>               $responses
      * @param array<int, array<string, mixed>> $history
      */
     private static function guzzle(array $responses, array &$history): GuzzleClient
@@ -324,6 +384,19 @@ final class ZabbixApiTest extends TestCase
         $stack->push(Middleware::history($history));
 
         return new GuzzleClient(['handler' => $stack]);
+    }
+
+    /**
+     * @param array<string, mixed> $history
+     *
+     * @return list<string>
+     */
+    private static function requestMethods(array $history): array
+    {
+        $body = json_decode((string)$history['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+        $requests = array_is_list($body) ? $body : [$body];
+
+        return array_map(static fn (array $request): string => $request['method'], $requests);
     }
 }
 

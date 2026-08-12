@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\HanodeGetRequest;
+use Idiot\Zabbix\Requests\HanodeGetRequest;
 
 final class HaNodeApi extends AbstractApi
 {

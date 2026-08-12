@@ -1,6 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace IntelliTrend\Zabbix\Requests;
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Requests;
 
 use Opis\JsonSchema\Errors\ErrorFormatter;
 use Opis\JsonSchema\Helper;
@@ -22,7 +24,7 @@ final class OpisSchemaValidator implements SchemaValidator
         // all hosts") is that case, so hand opis an empty object when the schema
         // root is an object. This stdClass is a transient fed straight into
         // opis; it is never returned from our API.
-        $data = $params === [] && ($definition['type'] ?? null) === 'object'
+        $data = [] === $params && ($definition['type'] ?? null) === 'object'
             ? new \stdClass()
             : Helper::toJSON($params);
 
@@ -38,11 +40,11 @@ final class OpisSchemaValidator implements SchemaValidator
         $error = $result->error();
         $violations = [];
         foreach ((new ErrorFormatter())->formatKeyed($error) as $pointer => $messages) {
-            foreach ((array) $messages as $message) {
-                $violations[] = ($pointer === '' ? '(root)' : $pointer) . ': ' . $message;
+            foreach ((array)$messages as $message) {
+                $violations[] = ('' === $pointer ? '(root)' : $pointer) . ': ' . $message;
             }
         }
 
-        return $violations !== [] ? $violations : [$error->message()];
+        return [] !== $violations ? $violations : [$error->message()];
     }
 }

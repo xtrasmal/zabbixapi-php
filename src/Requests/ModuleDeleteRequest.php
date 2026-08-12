@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
-final class ModuleDeleteRequest extends AbstractZabbixListRequest
+final class ModuleDeleteRequest extends AbstractZabbixRequest
 {
     /** @param list<ModuleId> $ids */
     public function __construct(array $ids)

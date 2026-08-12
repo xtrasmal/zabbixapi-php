@@ -1,12 +1,14 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\JsonRpc;
 
+use Idiot\Zabbix\Clients\HttpClient;
+use Idiot\Zabbix\Clients\JsonRpcClient;
+use Idiot\Zabbix\JsonRpc\Request;
+use Idiot\Zabbix\JsonRpc\Response;
 use InvalidArgumentException;
-use IntelliTrend\Zabbix\Clients\HttpClient;
-use IntelliTrend\Zabbix\Clients\JsonRpcClient;
-use IntelliTrend\Zabbix\JsonRpc\Request;
-use IntelliTrend\Zabbix\JsonRpc\Response;
 use PHPUnit\Framework\TestCase;
 use UnexpectedValueException;
 
@@ -88,9 +90,9 @@ final class RequestTest extends TestCase
             'jsonrpc' => Request::VERSION,
             'id' => 1,
             'error' => [
-            'code' => -32602,
-            'message' => 'Invalid params',
-            'data' => ['field' => 'hostids'],
+                'code' => -32602,
+                'message' => 'Invalid params',
+                'data' => ['field' => 'hostids'],
             ],
         ], Response::fromError(1, [
             'code' => -32602,
@@ -139,6 +141,7 @@ final class RequestTest extends TestCase
 
     /**
      * @param array<string, mixed>|list<mixed> $payload
+     *
      * @return list<Response>
      */
     private static function decode(array $payload): array

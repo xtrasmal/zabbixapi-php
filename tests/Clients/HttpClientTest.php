@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Clients;
 
@@ -7,8 +9,8 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response as HttpResponse;
-use IntelliTrend\Zabbix\Clients\HttpClient;
-use IntelliTrend\Zabbix\ZabbixApiException;
+use Idiot\Zabbix\Clients\HttpClient;
+use Idiot\Zabbix\ZabbixApiException;
 use PHPUnit\Framework\TestCase;
 
 final class HttpClientTest extends TestCase
@@ -23,13 +25,13 @@ final class HttpClientTest extends TestCase
             [
                 'decode_content' => false,
                 'verify' => false,
-            ]
+            ],
         );
 
         $response = $client->postJsonRpc(
             'https://zabbix.example/api_jsonrpc.php',
             '{"jsonrpc":"2.0","method":"host.get","id":1}',
-            bearerToken: 'secret'
+            bearerToken: 'secret',
         );
 
         self::assertSame(['jsonrpc' => '2.0', 'id' => 1, 'result' => true], $response);
@@ -57,7 +59,7 @@ final class HttpClientTest extends TestCase
 
         $client->postJsonRpc(
             'https://zabbix.example/api_jsonrpc.php',
-            '{}'
+            '{}',
         );
     }
 
@@ -73,12 +75,12 @@ final class HttpClientTest extends TestCase
 
         $client->postJsonRpc(
             'https://zabbix.example/api_jsonrpc.php',
-            '{}'
+            '{}',
         );
     }
 
     /**
-     * @param list<HttpResponse> $responses
+     * @param list<HttpResponse>               $responses
      * @param array<int, array<string, mixed>> $history
      */
     private static function guzzle(array $responses, array &$history): GuzzleClient

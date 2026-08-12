@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
-final class ConnectorDeleteRequest extends AbstractZabbixListRequest
+final class ConnectorDeleteRequest extends AbstractZabbixRequest
 {
     /** @param list<ConnectorId> $ids */
     public function __construct(array $ids)

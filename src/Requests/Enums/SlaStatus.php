@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Status of the SLA. Possible values: 0 - (default) disabled SLA; 1 - enabled SLA.

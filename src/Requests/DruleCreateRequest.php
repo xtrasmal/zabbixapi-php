@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
 /**
  * drule.create - Create new network discovery rules.

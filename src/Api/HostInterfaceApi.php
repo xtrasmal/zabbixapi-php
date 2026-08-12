@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\HostinterfaceCreateRequest;
-use IntelliTrend\Zabbix\Requests\HostinterfaceDeleteRequest;
-use IntelliTrend\Zabbix\Requests\HostinterfaceGetRequest;
-use IntelliTrend\Zabbix\Requests\HostinterfaceMassaddRequest;
-use IntelliTrend\Zabbix\Requests\HostinterfaceMassremoveRequest;
-use IntelliTrend\Zabbix\Requests\HostinterfaceReplacehostinterfacesRequest;
-use IntelliTrend\Zabbix\Requests\HostinterfaceUpdateRequest;
+use Idiot\Zabbix\Requests\HostinterfaceCreateRequest;
+use Idiot\Zabbix\Requests\HostinterfaceDeleteRequest;
+use Idiot\Zabbix\Requests\HostinterfaceGetRequest;
+use Idiot\Zabbix\Requests\HostinterfaceMassaddRequest;
+use Idiot\Zabbix\Requests\HostinterfaceMassremoveRequest;
+use Idiot\Zabbix\Requests\HostinterfaceReplacehostinterfacesRequest;
+use Idiot\Zabbix\Requests\HostinterfaceUpdateRequest;
 
 final class HostInterfaceApi extends AbstractApi
 {

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Whether to use the default action message text and subject. Possible values: 0 - use the data from the operation; 1 - (default) use the data from the media type.

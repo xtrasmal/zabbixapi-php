@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\AuthenticationGetRequest;
-use IntelliTrend\Zabbix\Requests\AuthenticationUpdateRequest;
+use Idiot\Zabbix\Requests\AuthenticationGetRequest;
+use Idiot\Zabbix\Requests\AuthenticationUpdateRequest;
 
 final class AuthenticationApi extends AbstractApi
 {

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Type of information of the item.  Possible values: 0 - numeric float; 1 - character; 2 - log; 3 - numeric unsigned; 4 - text; 5 - binary.  Property behavior: - required for create operations - read-only for inherited objects or discovered objects

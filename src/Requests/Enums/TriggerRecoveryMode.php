@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * OK event generation mode.  Possible values: 0 - (default) Expression; 1 - Recovery expression; 2 - None.

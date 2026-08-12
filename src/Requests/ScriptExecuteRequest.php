@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
 /**
  * script.execute - Run a script on a host or event. Except for URL type scripts, which are not executable.

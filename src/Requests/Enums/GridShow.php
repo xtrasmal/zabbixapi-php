@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Whether to show the grid on the map. Possible values: 0 - do not show the grid; 1 - (default) show the grid.

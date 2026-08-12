@@ -1,11 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Api;
 
-use IntelliTrend\Zabbix\Api\ZabbixRequestApi;
-use IntelliTrend\Zabbix\Requests\Enums\Output;
-use IntelliTrend\Zabbix\Requests\HostGetRequest;
-use IntelliTrend\Zabbix\Requests\SettingsGetRequest;
+use Idiot\Zabbix\Api\ZabbixRequestApi;
+use Idiot\Zabbix\Requests\Enums\Output;
+use Idiot\Zabbix\Requests\HostGetRequest;
+use Idiot\Zabbix\Requests\SettingsGetRequest;
 use PHPUnit\Framework\TestCase;
 
 final class ZabbixRequestApiTest extends TestCase

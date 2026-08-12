@@ -5,7 +5,7 @@ The library throws `ZabbixApiException`.
 Zabbix JSON-RPC errors keep the Zabbix error code:
 
 ```php
-use IntelliTrend\Zabbix\ZabbixApiException;
+use Idiot\Zabbix\ZabbixApiException;
 
 try {
     $zabbix->call('host.get', ['bad' => 'params']);

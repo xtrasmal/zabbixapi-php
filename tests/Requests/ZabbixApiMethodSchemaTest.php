@@ -1,15 +1,17 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Requests;
 
-use IntelliTrend\Zabbix\Requests\AbstractZabbixListRequest;
-use IntelliTrend\Zabbix\Requests\InvalidZabbixRequest;
-use IntelliTrend\Zabbix\Requests\RequestSchema;
-use IntelliTrend\Zabbix\Requests\StaticRequestRegistry;
-use IntelliTrend\Zabbix\Requests\Schemas\StaticSchemaRegistry;
-use IntelliTrend\Zabbix\Requests\UnknownZabbixMethod;
-use IntelliTrend\Zabbix\Requests\ZabbixRequest;
-use IntelliTrend\Zabbix\Requests\ZabbixRequestValidator;
+use Idiot\Zabbix\Requests\AbstractZabbixRequest;
+use Idiot\Zabbix\Requests\InvalidZabbixRequest;
+use Idiot\Zabbix\Requests\RequestSchema;
+use Idiot\Zabbix\Requests\Schemas\StaticSchemaRegistry;
+use Idiot\Zabbix\Requests\StaticRequestRegistry;
+use Idiot\Zabbix\Requests\UnknownZabbixMethod;
+use Idiot\Zabbix\Requests\ZabbixRequest;
+use Idiot\Zabbix\Requests\ZabbixRequestValidator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\SchemaSampleFactory;
@@ -29,7 +31,7 @@ final class ZabbixApiMethodSchemaTest extends TestCase
         string $requestClass,
     ): void {
         $schema = new $schemaClass();
-        $preferList = is_a($requestClass, AbstractZabbixListRequest::class, true);
+        $preferList = self::paramsAreList($requestClass);
         $params = SchemaSampleFactory::sample($schema->definition(), $preferList);
         $request = $requestClass::fromParams($params);
 
@@ -51,7 +53,7 @@ final class ZabbixApiMethodSchemaTest extends TestCase
         string $requestClass,
     ): void {
         $schema = new $schemaClass();
-        $preferList = is_a($requestClass, AbstractZabbixListRequest::class, true);
+        $preferList = self::paramsAreList($requestClass);
         $params = SchemaSampleFactory::invalidSample($schema->definition(), $preferList);
         $request = $requestClass::fromParams($params);
 
@@ -143,11 +145,11 @@ final class ZabbixApiMethodSchemaTest extends TestCase
 
         foreach ($schemaFiles as $schemaFile) {
             $schemaShortName = basename($schemaFile, '.php');
-            if ($schemaShortName === 'StaticSchemaRegistry') {
+            if ('StaticSchemaRegistry' === $schemaShortName) {
                 continue;
             }
 
-            $schemaClass = 'IntelliTrend\\Zabbix\\Requests\\Schemas\\' . $schemaShortName;
+            $schemaClass = 'Idiot\\Zabbix\\Requests\\Schemas\\' . $schemaShortName;
 
             self::assertTrue(class_exists($schemaClass), sprintf('Schema class %s does not exist.', $schemaClass));
             self::assertTrue(is_subclass_of($schemaClass, RequestSchema::class));
@@ -196,5 +198,15 @@ final class ZabbixApiMethodSchemaTest extends TestCase
         foreach (self::UNSUPPORTED_SESSION_METHODS as $method) {
             yield $method => [$method];
         }
+    }
+
+    /** @param class-string<ZabbixRequest> $requestClass */
+    private static function paramsAreList(string $requestClass): bool
+    {
+        if (!is_a($requestClass, AbstractZabbixRequest::class, true)) {
+            return false;
+        }
+
+        return $requestClass::fromParams([])->paramsAreList();
     }
 }

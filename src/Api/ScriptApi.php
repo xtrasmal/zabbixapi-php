@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\ScriptCreateRequest;
-use IntelliTrend\Zabbix\Requests\ScriptDeleteRequest;
-use IntelliTrend\Zabbix\Requests\ScriptExecuteRequest;
-use IntelliTrend\Zabbix\Requests\ScriptGetRequest;
-use IntelliTrend\Zabbix\Requests\ScriptGetscriptsbyeventsRequest;
-use IntelliTrend\Zabbix\Requests\ScriptGetscriptsbyhostsRequest;
-use IntelliTrend\Zabbix\Requests\ScriptUpdateRequest;
+use Idiot\Zabbix\Requests\ScriptCreateRequest;
+use Idiot\Zabbix\Requests\ScriptDeleteRequest;
+use Idiot\Zabbix\Requests\ScriptExecuteRequest;
+use Idiot\Zabbix\Requests\ScriptGetRequest;
+use Idiot\Zabbix\Requests\ScriptGetscriptsbyeventsRequest;
+use Idiot\Zabbix\Requests\ScriptGetscriptsbyhostsRequest;
+use Idiot\Zabbix\Requests\ScriptUpdateRequest;
 
 final class ScriptApi extends AbstractApi
 {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\MfaCreateRequest;
-use IntelliTrend\Zabbix\Requests\MfaDeleteRequest;
-use IntelliTrend\Zabbix\Requests\MfaGetRequest;
-use IntelliTrend\Zabbix\Requests\MfaUpdateRequest;
+use Idiot\Zabbix\Requests\MfaCreateRequest;
+use Idiot\Zabbix\Requests\MfaDeleteRequest;
+use Idiot\Zabbix\Requests\MfaGetRequest;
+use Idiot\Zabbix\Requests\MfaUpdateRequest;
 
 final class MfaApi extends AbstractApi
 {

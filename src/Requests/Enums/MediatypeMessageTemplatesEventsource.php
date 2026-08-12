@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Event source.  Possible values: 0 - Triggers; 1 - Discovery; 2 - Autoregistration; 3 - Internal; 4 - Services.  Property behavior: - required

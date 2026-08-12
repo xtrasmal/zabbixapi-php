@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Type of the border. Possible values: 0 - none; 1 - solid line; 2 - dotted line; 3 - dashed line. Default: 0.

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\TokenCreateRequest;
-use IntelliTrend\Zabbix\Requests\TokenDeleteRequest;
-use IntelliTrend\Zabbix\Requests\TokenGenerateRequest;
-use IntelliTrend\Zabbix\Requests\TokenGetRequest;
-use IntelliTrend\Zabbix\Requests\TokenUpdateRequest;
+use Idiot\Zabbix\Requests\TokenCreateRequest;
+use Idiot\Zabbix\Requests\TokenDeleteRequest;
+use Idiot\Zabbix\Requests\TokenGenerateRequest;
+use Idiot\Zabbix\Requests\TokenGetRequest;
+use Idiot\Zabbix\Requests\TokenUpdateRequest;
 
 final class TokenApi extends AbstractApi
 {

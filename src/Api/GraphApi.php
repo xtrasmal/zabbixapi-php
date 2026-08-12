@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\GraphCreateRequest;
-use IntelliTrend\Zabbix\Requests\GraphDeleteRequest;
-use IntelliTrend\Zabbix\Requests\GraphGetRequest;
-use IntelliTrend\Zabbix\Requests\GraphUpdateRequest;
+use Idiot\Zabbix\Requests\GraphCreateRequest;
+use Idiot\Zabbix\Requests\GraphDeleteRequest;
+use Idiot\Zabbix\Requests\GraphGetRequest;
+use Idiot\Zabbix\Requests\GraphUpdateRequest;
 
 final class GraphApi extends AbstractApi
 {

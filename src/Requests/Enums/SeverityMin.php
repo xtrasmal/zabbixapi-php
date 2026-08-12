@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Minimum severity of the triggers that will be displayed on the map. Same values as the trigger object's priority (severity) property: 0 - not classified; 1 - information; 2 - warning; 3 - average; 4 - high; 5 - disaster.

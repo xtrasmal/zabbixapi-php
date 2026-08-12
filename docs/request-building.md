@@ -38,7 +38,7 @@ Each request object exposes:
 For method-name driven adapters, use `RequestFactory` instead of generated constructors:
 
 ```php
-use IntelliTrend\Zabbix\Requests\RequestFactory;
+use Idiot\Zabbix\Requests\RequestFactory;
 
 $factory = RequestFactory::validated();
 
@@ -51,6 +51,43 @@ $hosts = $zabbix->request($request);
 ```
 
 `RequestFactory::validated()` validates params against the compiled Zabbix method schema. `RequestFactory::plain()` only maps method names to request objects.
+
+## JSON-RPC Batch
+
+Normal Zabbix calls through `ZabbixApi` are intentionally simple. The client automatically batches its required one-time `apiinfo.version` call with the first possible API request.
+
+For explicit JSON-RPC 2.0 batching, use the lower-level `JsonRpcClient`:
+
+```php
+use Idiot\Zabbix\Clients\HttpClient;
+use Idiot\Zabbix\Clients\JsonRpcClient;
+
+$client = new JsonRpcClient(new HttpClient());
+
+$responses = $client->batch(
+    url: 'https://zabbix.example/api_jsonrpc.php',
+    calls: [
+        [
+            'method' => 'apiinfo.version',
+            'id' => 1,
+            'params' => [],
+        ],
+        [
+            'method' => 'host.get',
+            'id' => 2,
+            'params' => [
+                'output' => ['hostid', 'host'],
+            ],
+        ],
+    ],
+    bearerToken: 'your-zabbix-api-token',
+);
+
+$version = $responses[0]->result;
+$hosts = $responses[1]->result;
+```
+
+Batch responses are returned in request order. The JSON-RPC server may return them in any order; the client reorders them by response id.
 
 ## API Groups
 
@@ -66,7 +103,7 @@ $zabbix->triggers->get(['output' => 'extend']);
 Request builders accept plain arrays or request objects. Prefer arrays for controller and service code:
 
 ```php
-use IntelliTrend\Zabbix\Requests\HostGetRequest;
+use Idiot\Zabbix\Requests\HostGetRequest;
 
 $request = $zabbix->requests()->hosts->get([
     'hostids' => ['10105'],

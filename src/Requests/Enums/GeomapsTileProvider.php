@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Geomap tile provider. Possible values: OpenStreetMap.Mapnik - (default) OpenStreetMap Mapnik; OpenTopoMap - OpenTopoMap; Stamen.TonerLite - Stamen Toner Lite; Stamen.Terrain - Stamen Terrain; USGS.USTopo - USGS US Topo; USGS.USImagery - USGS US Imagery. Supports empty string to specify custom values of geomaps_tile_url, geomaps_max_zoom and geomaps_attribution.

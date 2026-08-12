@@ -1,11 +1,19 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace IntelliTrend\Zabbix\Requests;
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Requests;
 
 final class InvalidZabbixRequest extends \RuntimeException
 {
     /** @var list<string> */
     private array $violations = [];
+
+    /** @return list<string> */
+    public function violations(): array
+    {
+        return $this->violations;
+    }
 
     /** @param list<string> $violations */
     public static function fromViolations(string $method, array $violations): self
@@ -18,11 +26,5 @@ final class InvalidZabbixRequest extends \RuntimeException
         $exception->violations = $violations;
 
         return $exception;
-    }
-
-    /** @return list<string> */
-    public function violations(): array
-    {
-        return $this->violations;
     }
 }

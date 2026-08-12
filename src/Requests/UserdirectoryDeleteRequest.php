@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
-final class UserdirectoryDeleteRequest extends AbstractZabbixListRequest
+final class UserdirectoryDeleteRequest extends AbstractZabbixRequest
 {
     /** @param list<UserdirectoryId> $ids */
     public function __construct(array $ids)

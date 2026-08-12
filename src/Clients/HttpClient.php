@@ -1,12 +1,14 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace IntelliTrend\Zabbix\Clients;
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Clients;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
-use IntelliTrend\Zabbix\ZabbixApi;
-use IntelliTrend\Zabbix\ZabbixApiException;
+use Idiot\Zabbix\ZabbixApi;
+use Idiot\Zabbix\ZabbixApiException;
 use JsonException;
 
 /**
@@ -35,18 +37,19 @@ final class HttpClient
     }
 
     /**
-     * @return JsonRpcPayload
      * @throws ZabbixApiException
+     *
+     * @return JsonRpcPayload
      */
     public function postJsonRpc(string $url, string $body, ?string $bearerToken = null): array
     {
         $options = $this->options;
         $headers = array_replace($options['headers'] ?? [], [
             'Content-Type' => 'application/json-rpc',
-            'User-Agent' => 'IntelliTrend/ZabbixApi;Version:' . ZabbixApi::VERSION,
+            'User-Agent' => 'Idiot/ZabbixApi;Version:' . ZabbixApi::VERSION,
         ]);
 
-        if ($bearerToken !== null) {
+        if (null !== $bearerToken) {
             $headers['Authorization'] = 'Bearer ' . $bearerToken;
         }
 
@@ -60,7 +63,7 @@ final class HttpClient
             throw new ZabbixApiException(
                 message: 'Request failed: ' . $e->getMessage(),
                 code: $e->getCode() > 0 ? $e->getCode() : 0,
-                previous: $e
+                previous: $e,
             );
         }
 
@@ -69,7 +72,7 @@ final class HttpClient
         if ($httpCode >= 400) {
             throw new ZabbixApiException(
                 message: "Request failed with HTTP-Code: $httpCode. " . $response->getReasonPhrase(),
-                code: $httpCode
+                code: $httpCode,
             );
         }
 
@@ -79,23 +82,18 @@ final class HttpClient
             throw new ZabbixApiException(
                 message: 'Invalid JSON response: ' . $e->getMessage(),
                 code: ZabbixApi::EXCEPTION_CLASS_CODE,
-                previous: $e
+                previous: $e,
             );
         }
 
         if (!is_array($decoded)) {
             throw new ZabbixApiException(
                 message: 'JSON-RPC response must be a JSON object or batch array.',
-                code: ZabbixApi::EXCEPTION_CLASS_CODE
+                code: ZabbixApi::EXCEPTION_CLASS_CODE,
             );
         }
 
         return $decoded;
-    }
-
-    private function client(): ClientInterface
-    {
-        return $this->client ??= new GuzzleClient();
     }
 
     public static function defaultOptions(): array
@@ -118,5 +116,10 @@ final class HttpClient
         }
 
         return $merged;
+    }
+
+    private function client(): ClientInterface
+    {
+        return $this->client ??= new GuzzleClient();
     }
 }

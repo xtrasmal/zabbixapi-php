@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\RegexpCreateRequest;
-use IntelliTrend\Zabbix\Requests\RegexpDeleteRequest;
-use IntelliTrend\Zabbix\Requests\RegexpGetRequest;
-use IntelliTrend\Zabbix\Requests\RegexpUpdateRequest;
+use Idiot\Zabbix\Requests\RegexpCreateRequest;
+use Idiot\Zabbix\Requests\RegexpDeleteRequest;
+use Idiot\Zabbix\Requests\RegexpGetRequest;
+use Idiot\Zabbix\Requests\RegexpUpdateRequest;
 
 final class RegexpApi extends AbstractApi
 {

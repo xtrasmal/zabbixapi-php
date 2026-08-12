@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\ItemprototypeCreateRequest;
-use IntelliTrend\Zabbix\Requests\ItemprototypeDeleteRequest;
-use IntelliTrend\Zabbix\Requests\ItemprototypeGetRequest;
-use IntelliTrend\Zabbix\Requests\ItemprototypeUpdateRequest;
+use Idiot\Zabbix\Requests\ItemprototypeCreateRequest;
+use Idiot\Zabbix\Requests\ItemprototypeDeleteRequest;
+use Idiot\Zabbix\Requests\ItemprototypeGetRequest;
+use Idiot\Zabbix\Requests\ItemprototypeUpdateRequest;
 
 final class ItemPrototypeApi extends AbstractApi
 {

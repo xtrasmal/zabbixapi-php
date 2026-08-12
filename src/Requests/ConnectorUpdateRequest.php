@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
 /**
  * connector.update - Update existing connectors. Only the connectorid property is required; only passed properties are updated, the rest remain unchanged.

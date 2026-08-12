@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
-final class ApiinfoVersionRequest extends AbstractZabbixListRequest
+final class ApiinfoVersionRequest extends AbstractZabbixRequest
 {
     /** @param list<ApiinfoId> $ids */
     public function __construct(array $ids)

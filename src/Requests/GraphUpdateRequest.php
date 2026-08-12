@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
 /**
  * graph.update - Update existing graphs. Only the graphid property is required; only passed properties are updated, the rest remain unchanged.

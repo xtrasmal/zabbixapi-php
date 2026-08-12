@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\SettingsGetRequest;
-use IntelliTrend\Zabbix\Requests\SettingsUpdateRequest;
+use Idiot\Zabbix\Requests\SettingsGetRequest;
+use Idiot\Zabbix\Requests\SettingsUpdateRequest;
 
 final class SettingsApi extends AbstractApi
 {

@@ -1,16 +1,18 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace IntelliTrend\Zabbix;
+declare(strict_types=1);
+
+namespace Idiot\Zabbix;
 
 use GuzzleHttp\ClientInterface;
-use IntelliTrend\Zabbix\Api\ZabbixApiGroup;
-use IntelliTrend\Zabbix\Api\ZabbixRequestApi;
-use IntelliTrend\Zabbix\Clients\Credentials;
-use IntelliTrend\Zabbix\Clients\HttpClient;
-use IntelliTrend\Zabbix\Clients\JsonRpcClient;
-use IntelliTrend\Zabbix\Requests\ApiinfoVersionRequest;
-use IntelliTrend\Zabbix\Requests\UserLoginRequest;
-use IntelliTrend\Zabbix\Requests\ZabbixRequest;
+use Idiot\Zabbix\Api\ZabbixApiGroup;
+use Idiot\Zabbix\Api\ZabbixRequestApi;
+use Idiot\Zabbix\Clients\Credentials;
+use Idiot\Zabbix\Clients\HttpClient;
+use Idiot\Zabbix\Clients\JsonRpcClient;
+use Idiot\Zabbix\Requests\ApiinfoVersionRequest;
+use Idiot\Zabbix\Requests\UserLoginRequest;
+use Idiot\Zabbix\Requests\ZabbixRequest;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -21,161 +23,212 @@ class ZabbixApi
     public const EXCEPTION_CLASS_CODE_AUTH = 2000;
     public const DEFAULT_TIMEOUT = 30;
     public const DEFAULT_CONNECTION_TIMEOUT = 10;
-
     private const JSON_RPC_REQUEST_ID = 1;
+    private const JSON_RPC_VERSION_REQUEST_ID = 1;
+    private const JSON_RPC_BATCH_REQUEST_ID = 2;
+
     /** @var list<string> */
     private const UNAUTHENTICATED_METHODS = ['apiinfo.version', 'user.login'];
 
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\ActionApi> */
+    public readonly ZabbixApiGroup $actions;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\AlertApi> */
+    public readonly ZabbixApiGroup $alerts;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\ApiInfoApi> */
+    public readonly ZabbixApiGroup $apiInfo;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\AuditLogApi> */
+    public readonly ZabbixApiGroup $auditLogs;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\AuthenticationApi> */
+    public readonly ZabbixApiGroup $authentication;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\AutoregistrationApi> */
+    public readonly ZabbixApiGroup $autoregistration;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\ConnectorApi> */
+    public readonly ZabbixApiGroup $connectors;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\CorrelationApi> */
+    public readonly ZabbixApiGroup $correlations;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\DashboardApi> */
+    public readonly ZabbixApiGroup $dashboards;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\DCheckApi> */
+    public readonly ZabbixApiGroup $dchecks;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\DHostApi> */
+    public readonly ZabbixApiGroup $dhosts;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\DiscoveryRuleApi> */
+    public readonly ZabbixApiGroup $discoveryRules;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\DRuleApi> */
+    public readonly ZabbixApiGroup $drules;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\DServiceApi> */
+    public readonly ZabbixApiGroup $dservices;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\EventApi> */
+    public readonly ZabbixApiGroup $events;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\GraphItemApi> */
+    public readonly ZabbixApiGroup $graphItems;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\GraphPrototypeApi> */
+    public readonly ZabbixApiGroup $graphPrototypes;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\GraphApi> */
+    public readonly ZabbixApiGroup $graphs;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\HaNodeApi> */
+    public readonly ZabbixApiGroup $haNodes;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\HistoryApi> */
+    public readonly ZabbixApiGroup $history;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\HostGroupApi> */
+    public readonly ZabbixApiGroup $hostGroups;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\HostInterfaceApi> */
+    public readonly ZabbixApiGroup $hostInterfaces;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\HostPrototypeApi> */
+    public readonly ZabbixApiGroup $hostPrototypes;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\HostApi> */
+    public readonly ZabbixApiGroup $hosts;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\HousekeepingApi> */
+    public readonly ZabbixApiGroup $housekeeping;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\HttpTestApi> */
+    public readonly ZabbixApiGroup $httpTests;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\IconMapApi> */
+    public readonly ZabbixApiGroup $iconMaps;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\ImageApi> */
+    public readonly ZabbixApiGroup $images;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\ItemPrototypeApi> */
+    public readonly ZabbixApiGroup $itemPrototypes;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\ItemApi> */
+    public readonly ZabbixApiGroup $items;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\MaintenanceApi> */
+    public readonly ZabbixApiGroup $maintenance;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\MapApi> */
+    public readonly ZabbixApiGroup $maps;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\MediaTypeApi> */
+    public readonly ZabbixApiGroup $mediaTypes;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\MfaApi> */
+    public readonly ZabbixApiGroup $mfa;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\ModuleApi> */
+    public readonly ZabbixApiGroup $modules;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\ProblemApi> */
+    public readonly ZabbixApiGroup $problems;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\ProxyApi> */
+    public readonly ZabbixApiGroup $proxies;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\ProxyGroupApi> */
+    public readonly ZabbixApiGroup $proxyGroups;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\RegexpApi> */
+    public readonly ZabbixApiGroup $regexps;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\ReportApi> */
+    public readonly ZabbixApiGroup $reports;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\RoleApi> */
+    public readonly ZabbixApiGroup $roles;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\ScriptApi> */
+    public readonly ZabbixApiGroup $scripts;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\ServiceApi> */
+    public readonly ZabbixApiGroup $services;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\SettingsApi> */
+    public readonly ZabbixApiGroup $settings;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\SlaApi> */
+    public readonly ZabbixApiGroup $slas;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\TaskApi> */
+    public readonly ZabbixApiGroup $tasks;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\TemplateDashboardApi> */
+    public readonly ZabbixApiGroup $templateDashboards;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\TemplateGroupApi> */
+    public readonly ZabbixApiGroup $templateGroups;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\TemplateApi> */
+    public readonly ZabbixApiGroup $templates;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\TokenApi> */
+    public readonly ZabbixApiGroup $tokens;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\TrendApi> */
+    public readonly ZabbixApiGroup $trends;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\TriggerPrototypeApi> */
+    public readonly ZabbixApiGroup $triggerPrototypes;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\TriggerApi> */
+    public readonly ZabbixApiGroup $triggers;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\UserDirectoryApi> */
+    public readonly ZabbixApiGroup $userDirectories;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\UserGroupApi> */
+    public readonly ZabbixApiGroup $userGroups;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\UserMacroApi> */
+    public readonly ZabbixApiGroup $userMacros;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\UserApi> */
+    public readonly ZabbixApiGroup $users;
+
+    /** @var ZabbixApiGroup<\Idiot\Zabbix\Api\ValueMapApi> */
+    public readonly ZabbixApiGroup $valueMaps;
+
     private ?Credentials $credentials = null;
     private ?string $apiVersion = null;
-
     private JsonRpcClient $jsonRpcClient;
     private LoggerInterface $logger;
     private ZabbixRequestApi $requests;
-
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\ActionApi> */
-    public readonly ZabbixApiGroup $actions;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\AlertApi> */
-    public readonly ZabbixApiGroup $alerts;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\ApiInfoApi> */
-    public readonly ZabbixApiGroup $apiInfo;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\AuditLogApi> */
-    public readonly ZabbixApiGroup $auditLogs;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\AuthenticationApi> */
-    public readonly ZabbixApiGroup $authentication;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\AutoregistrationApi> */
-    public readonly ZabbixApiGroup $autoregistration;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\ConnectorApi> */
-    public readonly ZabbixApiGroup $connectors;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\CorrelationApi> */
-    public readonly ZabbixApiGroup $correlations;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\DashboardApi> */
-    public readonly ZabbixApiGroup $dashboards;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\DCheckApi> */
-    public readonly ZabbixApiGroup $dchecks;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\DHostApi> */
-    public readonly ZabbixApiGroup $dhosts;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\DiscoveryRuleApi> */
-    public readonly ZabbixApiGroup $discoveryRules;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\DRuleApi> */
-    public readonly ZabbixApiGroup $drules;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\DServiceApi> */
-    public readonly ZabbixApiGroup $dservices;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\EventApi> */
-    public readonly ZabbixApiGroup $events;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\GraphItemApi> */
-    public readonly ZabbixApiGroup $graphItems;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\GraphPrototypeApi> */
-    public readonly ZabbixApiGroup $graphPrototypes;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\GraphApi> */
-    public readonly ZabbixApiGroup $graphs;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\HaNodeApi> */
-    public readonly ZabbixApiGroup $haNodes;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\HistoryApi> */
-    public readonly ZabbixApiGroup $history;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\HostGroupApi> */
-    public readonly ZabbixApiGroup $hostGroups;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\HostInterfaceApi> */
-    public readonly ZabbixApiGroup $hostInterfaces;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\HostPrototypeApi> */
-    public readonly ZabbixApiGroup $hostPrototypes;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\HostApi> */
-    public readonly ZabbixApiGroup $hosts;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\HousekeepingApi> */
-    public readonly ZabbixApiGroup $housekeeping;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\HttpTestApi> */
-    public readonly ZabbixApiGroup $httpTests;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\IconMapApi> */
-    public readonly ZabbixApiGroup $iconMaps;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\ImageApi> */
-    public readonly ZabbixApiGroup $images;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\ItemPrototypeApi> */
-    public readonly ZabbixApiGroup $itemPrototypes;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\ItemApi> */
-    public readonly ZabbixApiGroup $items;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\MaintenanceApi> */
-    public readonly ZabbixApiGroup $maintenance;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\MapApi> */
-    public readonly ZabbixApiGroup $maps;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\MediaTypeApi> */
-    public readonly ZabbixApiGroup $mediaTypes;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\MfaApi> */
-    public readonly ZabbixApiGroup $mfa;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\ModuleApi> */
-    public readonly ZabbixApiGroup $modules;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\ProblemApi> */
-    public readonly ZabbixApiGroup $problems;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\ProxyApi> */
-    public readonly ZabbixApiGroup $proxies;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\ProxyGroupApi> */
-    public readonly ZabbixApiGroup $proxyGroups;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\RegexpApi> */
-    public readonly ZabbixApiGroup $regexps;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\ReportApi> */
-    public readonly ZabbixApiGroup $reports;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\RoleApi> */
-    public readonly ZabbixApiGroup $roles;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\ScriptApi> */
-    public readonly ZabbixApiGroup $scripts;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\ServiceApi> */
-    public readonly ZabbixApiGroup $services;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\SettingsApi> */
-    public readonly ZabbixApiGroup $settings;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\SlaApi> */
-    public readonly ZabbixApiGroup $slas;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\TaskApi> */
-    public readonly ZabbixApiGroup $tasks;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\TemplateDashboardApi> */
-    public readonly ZabbixApiGroup $templateDashboards;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\TemplateGroupApi> */
-    public readonly ZabbixApiGroup $templateGroups;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\TemplateApi> */
-    public readonly ZabbixApiGroup $templates;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\TokenApi> */
-    public readonly ZabbixApiGroup $tokens;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\TrendApi> */
-    public readonly ZabbixApiGroup $trends;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\TriggerPrototypeApi> */
-    public readonly ZabbixApiGroup $triggerPrototypes;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\TriggerApi> */
-    public readonly ZabbixApiGroup $triggers;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\UserDirectoryApi> */
-    public readonly ZabbixApiGroup $userDirectories;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\UserGroupApi> */
-    public readonly ZabbixApiGroup $userGroups;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\UserMacroApi> */
-    public readonly ZabbixApiGroup $userMacros;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\UserApi> */
-    public readonly ZabbixApiGroup $users;
-    /** @var ZabbixApiGroup<\IntelliTrend\Zabbix\Api\ValueMapApi> */
-    public readonly ZabbixApiGroup $valueMaps;
+    private ?UserLoginRequest $loginRequest = null;
 
     /**
-     * @param array<string, mixed> $options Guzzle request options.
+     * @param array<string, mixed> $options Zabbix options plus Guzzle request options.
      */
     public function __construct(
         array $options = [],
         ?ClientInterface $httpClient = null,
         ?LoggerInterface $logger = null,
     ) {
-        $this->jsonRpcClient = new JsonRpcClient(new HttpClient($httpClient, $options), $logger);
+        $options = ZabbixApiOptions::fromArray($options);
+        $this->jsonRpcClient = new JsonRpcClient(new HttpClient($httpClient, $options->http), $logger);
         $this->logger = $logger ?? new NullLogger();
         $this->requests = new ZabbixRequestApi();
         $this->bindApiGroups();
-    }
+        $this->loginRequest = $options->login;
 
-    /**
-     * Configure this client once for bearer-token API calls.
-     *
-     * @throws ZabbixApiException
-     */
-    public function connect(string $zabUrl, ?string $zabToken = null): self
-    {
-        $this->credentials = Credentials::fromEndpoint($zabUrl, $zabToken);
-        $this->logConfiguration();
-        $this->apiVersion = $this->getApiVersion();
-
-        return $this;
+        if (null !== $options->url) {
+            $this->configure($options->url, $options->token);
+        }
     }
 
     public function setLogger(LoggerInterface $logger): self
@@ -216,7 +269,7 @@ class ZabbixApi
     {
         $response = $this->send($method, $params);
 
-        if ($response->error !== null) {
+        if (null !== $response->error) {
             throw self::zabbixError($response->error);
         }
 
@@ -238,6 +291,15 @@ class ZabbixApi
     public function requests(): ZabbixRequestApi
     {
         return $this->requests;
+    }
+
+    /**
+     * @throws ZabbixApiException
+     */
+    private function configure(string $zabUrl, ?string $zabToken = null): void
+    {
+        $this->credentials = Credentials::fromEndpoint($zabUrl, $zabToken);
+        $this->logConfiguration();
     }
 
     private function bindApiGroups(): void
@@ -306,6 +368,7 @@ class ZabbixApi
      * @template TBuilder of object
      *
      * @param TBuilder $requests
+     *
      * @return ZabbixApiGroup<TBuilder>
      */
     private function apiGroup(object $requests): ZabbixApiGroup
@@ -321,15 +384,52 @@ class ZabbixApi
         ]);
     }
 
-    private function send(string $method, array $params = []): \IntelliTrend\Zabbix\JsonRpc\Response
+    private function send(string $method, array $params = []): \Idiot\Zabbix\JsonRpc\Response
     {
+        $bearerToken = $this->bearerTokenFor($method);
+
+        if (null === $this->apiVersion && 'apiinfo.version' !== $method) {
+            return $this->sendWithApiVersion($method, $params, $bearerToken);
+        }
+
         return $this->jsonRpcClient->call(
             url: $this->endpoint(),
             method: $method,
             id: self::JSON_RPC_REQUEST_ID,
             params: $params,
-            bearerToken: $this->bearerTokenFor($method)
+            bearerToken: $bearerToken,
         );
+    }
+
+    private function sendWithApiVersion(
+        string $method,
+        array $params,
+        ?string $bearerToken,
+    ): \Idiot\Zabbix\JsonRpc\Response {
+        [$versionResponse, $response] = $this->jsonRpcClient->batch(
+            url: $this->endpoint(),
+            calls: [
+                [
+                    'method' => 'apiinfo.version',
+                    'id' => self::JSON_RPC_VERSION_REQUEST_ID,
+                    'params' => [],
+                ],
+                [
+                    'method' => $method,
+                    'id' => self::JSON_RPC_BATCH_REQUEST_ID,
+                    'params' => $params,
+                ],
+            ],
+            bearerToken: $bearerToken,
+        );
+
+        if (null !== $versionResponse->error) {
+            throw self::zabbixError($versionResponse->error);
+        }
+
+        $this->apiVersion = (string)$versionResponse->result;
+
+        return $response;
     }
 
     private function bearerTokenFor(string $method): ?string
@@ -344,7 +444,7 @@ class ZabbixApi
 
     private function requireCredentials(): Credentials
     {
-        if ($this->credentials === null) {
+        if (null === $this->credentials) {
             throw new ZabbixApiException('Not connected to a Zabbix API endpoint', self::EXCEPTION_CLASS_CODE_AUTH);
         }
 
@@ -355,7 +455,12 @@ class ZabbixApi
     {
         $bearerToken = $this->requireCredentials()->bearerToken;
 
-        if ($bearerToken === null) {
+        if (null === $bearerToken && null !== $this->loginRequest) {
+            $this->loginWhenNeeded($this->loginRequest);
+            $bearerToken = $this->requireCredentials()->bearerToken;
+        }
+
+        if (null === $bearerToken) {
             throw new ZabbixApiException('No Zabbix API bearer token configured', self::EXCEPTION_CLASS_CODE_AUTH);
         }
 
@@ -369,7 +474,7 @@ class ZabbixApi
     {
         $credentials = $this->requireCredentials();
 
-        if ($credentials->bearerToken !== null) {
+        if (null !== $credentials->bearerToken) {
             return $credentials->bearerToken;
         }
 
@@ -377,7 +482,7 @@ class ZabbixApi
 
         $bearerToken = is_string($result) ? $result : (is_array($result) ? ($result['sessionid'] ?? null) : null);
 
-        if (!is_string($bearerToken) || trim($bearerToken) === '') {
+        if (!is_string($bearerToken) || '' === trim($bearerToken)) {
             throw new ZabbixApiException('user.login did not return an authentication token.', self::EXCEPTION_CLASS_CODE_AUTH);
         }
 
@@ -394,7 +499,7 @@ class ZabbixApi
         $data = $error['data'] ?? null;
 
         try {
-            $details = is_scalar($data) || $data === null
+            $details = is_scalar($data) || null === $data
                 ? (string)$data
                 : json_encode($data, JSON_THROW_ON_ERROR);
         } catch (\JsonException) {
@@ -403,7 +508,7 @@ class ZabbixApi
 
         return new ZabbixApiException(
             message: "{$error['message']} [$details]",
-            code: $error['code']
+            code: $error['code'],
         );
     }
 }

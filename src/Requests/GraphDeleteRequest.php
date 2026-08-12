@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
-final class GraphDeleteRequest extends AbstractZabbixListRequest
+final class GraphDeleteRequest extends AbstractZabbixRequest
 {
     /** @param list<GraphId> $ids */
     public function __construct(array $ids)

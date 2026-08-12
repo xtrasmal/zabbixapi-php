@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\ImageCreateRequest;
-use IntelliTrend\Zabbix\Requests\ImageDeleteRequest;
-use IntelliTrend\Zabbix\Requests\ImageGetRequest;
-use IntelliTrend\Zabbix\Requests\ImageUpdateRequest;
+use Idiot\Zabbix\Requests\ImageCreateRequest;
+use Idiot\Zabbix\Requests\ImageDeleteRequest;
+use Idiot\Zabbix\Requests\ImageGetRequest;
+use Idiot\Zabbix\Requests\ImageUpdateRequest;
 
 final class ImageApi extends AbstractApi
 {

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Whether to pause escalation during maintenance periods or not. Possible values: 0 - don't pause escalation; 1 - (default) pause escalation. Property behavior: supported if eventsource is set to "event created by a trigger".

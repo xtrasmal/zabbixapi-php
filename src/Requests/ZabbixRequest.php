@@ -1,6 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace IntelliTrend\Zabbix\Requests;
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Requests;
 
 interface ZabbixRequest
 {

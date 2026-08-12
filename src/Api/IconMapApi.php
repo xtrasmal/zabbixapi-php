@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\IconmapCreateRequest;
-use IntelliTrend\Zabbix\Requests\IconmapDeleteRequest;
-use IntelliTrend\Zabbix\Requests\IconmapGetRequest;
-use IntelliTrend\Zabbix\Requests\IconmapUpdateRequest;
+use Idiot\Zabbix\Requests\IconmapCreateRequest;
+use Idiot\Zabbix\Requests\IconmapDeleteRequest;
+use Idiot\Zabbix\Requests\IconmapGetRequest;
+use Idiot\Zabbix\Requests\IconmapUpdateRequest;
 
 final class IconMapApi extends AbstractApi
 {

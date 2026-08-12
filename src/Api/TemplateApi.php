@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\TemplateCreateRequest;
-use IntelliTrend\Zabbix\Requests\TemplateDeleteRequest;
-use IntelliTrend\Zabbix\Requests\TemplateGetRequest;
-use IntelliTrend\Zabbix\Requests\TemplateMassaddRequest;
-use IntelliTrend\Zabbix\Requests\TemplateMassremoveRequest;
-use IntelliTrend\Zabbix\Requests\TemplateMassupdateRequest;
-use IntelliTrend\Zabbix\Requests\TemplateUpdateRequest;
+use Idiot\Zabbix\Requests\TemplateCreateRequest;
+use Idiot\Zabbix\Requests\TemplateDeleteRequest;
+use Idiot\Zabbix\Requests\TemplateGetRequest;
+use Idiot\Zabbix\Requests\TemplateMassaddRequest;
+use Idiot\Zabbix\Requests\TemplateMassremoveRequest;
+use Idiot\Zabbix\Requests\TemplateMassupdateRequest;
+use Idiot\Zabbix\Requests\TemplateUpdateRequest;
 
 final class TemplateApi extends AbstractApi
 {

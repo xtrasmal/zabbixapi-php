@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\ZabbixRequest;
-use IntelliTrend\Zabbix\ZabbixApi;
+use Idiot\Zabbix\Requests\ZabbixRequest;
+use Idiot\Zabbix\ZabbixApi;
 
 /**
  * Executes calls from one Zabbix request-builder group.
@@ -20,8 +20,7 @@ final class ZabbixApiGroup
     public function __construct(
         private readonly ZabbixApi $client,
         private readonly object $requests,
-    ) {
-    }
+    ) {}
 
     /** @param array<string, mixed>|ZabbixRequest $request */
     public function get(array|ZabbixRequest $request = []): array|bool|float|int|string|null
@@ -59,9 +58,12 @@ final class ZabbixApiGroup
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
 
-    public function __call(string $name, array $arguments): array|bool|float|int|string|null
+    /**
+     * @return TBuilder
+     */
+    public function requests(): object
     {
-        return $this->dispatch($name, $arguments);
+        return $this->requests;
     }
 
     private function dispatch(string $name, array $arguments): array|bool|float|int|string|null
@@ -88,11 +90,8 @@ final class ZabbixApiGroup
         return $this->client->request($request);
     }
 
-    /**
-     * @return TBuilder
-     */
-    public function requests(): object
+    public function __call(string $name, array $arguments): array|bool|float|int|string|null
     {
-        return $this->requests;
+        return $this->dispatch($name, $arguments);
     }
 }

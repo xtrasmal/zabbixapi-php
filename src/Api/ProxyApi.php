@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\ProxyCreateRequest;
-use IntelliTrend\Zabbix\Requests\ProxyDeleteRequest;
-use IntelliTrend\Zabbix\Requests\ProxyGetRequest;
-use IntelliTrend\Zabbix\Requests\ProxyUpdateRequest;
+use Idiot\Zabbix\Requests\ProxyCreateRequest;
+use Idiot\Zabbix\Requests\ProxyDeleteRequest;
+use Idiot\Zabbix\Requests\ProxyGetRequest;
+use Idiot\Zabbix\Requests\ProxyUpdateRequest;
 
 final class ProxyApi extends AbstractApi
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\DhostGetRequest;
+use Idiot\Zabbix\Requests\DhostGetRequest;
 
 final class DHostApi extends AbstractApi
 {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\UsergroupCreateRequest;
-use IntelliTrend\Zabbix\Requests\UsergroupDeleteRequest;
-use IntelliTrend\Zabbix\Requests\UsergroupGetRequest;
-use IntelliTrend\Zabbix\Requests\UsergroupUpdateRequest;
+use Idiot\Zabbix\Requests\UsergroupCreateRequest;
+use Idiot\Zabbix\Requests\UsergroupDeleteRequest;
+use Idiot\Zabbix\Requests\UsergroupGetRequest;
+use Idiot\Zabbix\Requests\UsergroupUpdateRequest;
 
 final class UserGroupApi extends AbstractApi
 {

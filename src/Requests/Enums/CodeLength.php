@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Verification code length. Possible values: 6 - 6-digit long; 8 - 8-digit long. Required if type is set to "TOTP".

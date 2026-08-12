@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\HostprototypeCreateRequest;
-use IntelliTrend\Zabbix\Requests\HostprototypeDeleteRequest;
-use IntelliTrend\Zabbix\Requests\HostprototypeGetRequest;
-use IntelliTrend\Zabbix\Requests\HostprototypeUpdateRequest;
+use Idiot\Zabbix\Requests\HostprototypeCreateRequest;
+use Idiot\Zabbix\Requests\HostprototypeDeleteRequest;
+use Idiot\Zabbix\Requests\HostprototypeGetRequest;
+use Idiot\Zabbix\Requests\HostprototypeUpdateRequest;
 
 final class HostPrototypeApi extends AbstractApi
 {

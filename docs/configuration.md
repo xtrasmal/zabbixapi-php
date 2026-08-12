@@ -1,38 +1,20 @@
 # Configuration
 
-The constructor accepts Guzzle request options.
+The constructor accepts Zabbix setup options and normal Guzzle request options.
 
 ```php
-use IntelliTrend\Zabbix\ZabbixApi;
+use Idiot\Zabbix\ZabbixApi;
 
 $zabbix = new ZabbixApi(
     options: [
-        'timeout' => 10,
-        'connect_timeout' => 3,
+        'url' => 'https://zabbix.example',
+        'token' => 'your-zabbix-api-token',
         'verify' => false,
-        'proxy' => 'http://proxy.example:8080',
     ]
-);
-
-$zabbix->connect(
-    zabUrl: 'https://zabbix.example',
-    zabToken: 'your-zabbix-api-token'
 );
 ```
 
-Useful Guzzle options include:
-
-- `timeout`
-- `connect_timeout`
-- `verify`
-- `cert`
-- `ssl_key`
-- `proxy`
-- `allow_redirects`
-- `decode_content`
-- `on_stats`
-
-See the official [Guzzle request options documentation](https://docs.guzzlephp.org/en/stable/request-options.html) for the full list.
+Use Guzzle request options only when your application needs transport configuration. The common case is TLS verification with `verify`.
 
 The client always sets the JSON-RPC request body and required JSON-RPC headers itself. Do not use options to override `body`, `http_errors`, `Content-Type`, or `Authorization`.
 

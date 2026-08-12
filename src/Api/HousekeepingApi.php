@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\HousekeepingGetRequest;
-use IntelliTrend\Zabbix\Requests\HousekeepingUpdateRequest;
+use Idiot\Zabbix\Requests\HousekeepingGetRequest;
+use Idiot\Zabbix\Requests\HousekeepingUpdateRequest;
 
 final class HousekeepingApi extends AbstractApi
 {

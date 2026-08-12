@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\SlaCreateRequest;
-use IntelliTrend\Zabbix\Requests\SlaDeleteRequest;
-use IntelliTrend\Zabbix\Requests\SlaGetRequest;
-use IntelliTrend\Zabbix\Requests\SlaGetsliRequest;
-use IntelliTrend\Zabbix\Requests\SlaUpdateRequest;
+use Idiot\Zabbix\Requests\SlaCreateRequest;
+use Idiot\Zabbix\Requests\SlaDeleteRequest;
+use Idiot\Zabbix\Requests\SlaGetRequest;
+use Idiot\Zabbix\Requests\SlaGetsliRequest;
+use Idiot\Zabbix\Requests\SlaUpdateRequest;
 
 final class SlaApi extends AbstractApi
 {

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Case sensitivity. Possible values: 0 - Case insensitive; 1 - Case sensitive. Default: 0.

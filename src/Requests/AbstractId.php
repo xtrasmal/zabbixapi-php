@@ -1,6 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace IntelliTrend\Zabbix\Requests;
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Requests;
 
 /**
  * Base for typed Zabbix IDs (HostId, ItemId, ...). Zabbix IDs travel as numeric
@@ -11,11 +13,16 @@ abstract class AbstractId implements ZabbixParameter
 {
     private function __construct(private string $value) {}
 
+    public function toZabbixValue(): string
+    {
+        return $this->value;
+    }
+
     public static function fromString(string $value): static
     {
-        if ($value === '' || !ctype_digit($value)) {
+        if ('' === $value || !ctype_digit($value)) {
             throw new \InvalidArgumentException(
-                static::class . ": id must be a numeric string, got '{$value}'."
+                static::class . ": id must be a numeric string, got '{$value}'.",
             );
         }
 
@@ -24,11 +31,6 @@ abstract class AbstractId implements ZabbixParameter
 
     public static function fromInt(int $value): static
     {
-        return static::fromString((string) $value);
-    }
-
-    public function toZabbixValue(): string
-    {
-        return $this->value;
+        return static::fromString((string)$value);
     }
 }

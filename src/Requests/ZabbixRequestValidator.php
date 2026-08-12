@@ -1,8 +1,10 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace IntelliTrend\Zabbix\Requests;
+declare(strict_types=1);
 
-use IntelliTrend\Zabbix\Requests\Schemas\StaticSchemaRegistry;
+namespace Idiot\Zabbix\Requests;
+
+use Idiot\Zabbix\Requests\Schemas\StaticSchemaRegistry;
 
 /**
  * Validates a request's params against its compiled schema before it leaves the
@@ -16,21 +18,21 @@ final class ZabbixRequestValidator
         private SchemaValidator $validator,
     ) {}
 
+    public function validate(ZabbixRequest $request): void
+    {
+        $schema = $this->registry->schemaFor($request->method());
+        $violations = $this->validator->validate($request->params(), $schema);
+
+        if ([] !== $violations) {
+            throw InvalidZabbixRequest::fromViolations($request->method(), $violations);
+        }
+    }
+
     public static function createDefault(): self
     {
         return new self(
             new StaticSchemaRegistry(),
             new OpisSchemaValidator(),
         );
-    }
-
-    public function validate(ZabbixRequest $request): void
-    {
-        $schema = $this->registry->schemaFor($request->method());
-        $violations = $this->validator->validate($request->params(), $schema);
-
-        if ($violations !== []) {
-            throw InvalidZabbixRequest::fromViolations($request->method(), $violations);
-        }
     }
 }

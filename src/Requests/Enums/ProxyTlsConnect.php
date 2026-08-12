@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Connections to proxy. Possible values: 1 - (default) No encryption; 2 - PSK; 4 - certificate.

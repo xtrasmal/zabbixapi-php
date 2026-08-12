@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\AbstractZabbixListRequest;
-use IntelliTrend\Zabbix\Requests\AbstractZabbixRequest;
-use IntelliTrend\Zabbix\Requests\ZabbixRequest;
+use Idiot\Zabbix\Requests\AbstractZabbixRequest;
+use Idiot\Zabbix\Requests\ZabbixRequest;
 
 abstract class AbstractApi
 {
     /**
-     * @template T of AbstractZabbixRequest|AbstractZabbixListRequest
+     * @template T of AbstractZabbixRequest
      *
-     * @param class-string<T> $requestClass
+     * @param class-string<T>                    $requestClass
      * @param T|array<string, mixed>|list<mixed> $request
+     *
      * @return T
      */
     protected function request(string $requestClass, ZabbixRequest|array $request)
@@ -36,23 +36,19 @@ abstract class AbstractApi
             return $requestClass::fromParams($request);
         }
 
-        if (is_a($requestClass, AbstractZabbixListRequest::class, true)) {
-            return $requestClass::fromParams($request);
-        }
-
         throw new \InvalidArgumentException(sprintf(
-            'Request class %s must extend %s or %s.',
+            'Request class %s must extend %s.',
             $requestClass,
             AbstractZabbixRequest::class,
-            AbstractZabbixListRequest::class,
         ));
     }
 
     /**
      * @template T of AbstractZabbixRequest
      *
-     * @param class-string<T> $requestClass
+     * @param class-string<T>      $requestClass
      * @param array<string, mixed> $filter
+     *
      * @return T
      */
     protected function filterRequest(string $requestClass, array $filter)

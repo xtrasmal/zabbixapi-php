@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Log unmatched SNMP traps. Possible values: 0 - Do not log unmatched SNMP traps; 1 - (default) Log unmatched SNMP traps.

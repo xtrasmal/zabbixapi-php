@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
-final class ImageDeleteRequest extends AbstractZabbixListRequest
+final class ImageDeleteRequest extends AbstractZabbixRequest
 {
     /** @param list<ImageId> $ids */
     public function __construct(array $ids)

@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\UserCreateRequest;
-use IntelliTrend\Zabbix\Requests\UserCheckAuthenticationRequest;
-use IntelliTrend\Zabbix\Requests\UserDeleteRequest;
-use IntelliTrend\Zabbix\Requests\UserGetRequest;
-use IntelliTrend\Zabbix\Requests\UserLoginRequest;
-use IntelliTrend\Zabbix\Requests\UserProvisionRequest;
-use IntelliTrend\Zabbix\Requests\UserResettotpRequest;
-use IntelliTrend\Zabbix\Requests\UserUnblockRequest;
-use IntelliTrend\Zabbix\Requests\UserUpdateRequest;
+use Idiot\Zabbix\Requests\UserCheckAuthenticationRequest;
+use Idiot\Zabbix\Requests\UserCreateRequest;
+use Idiot\Zabbix\Requests\UserDeleteRequest;
+use Idiot\Zabbix\Requests\UserGetRequest;
+use Idiot\Zabbix\Requests\UserLoginRequest;
+use Idiot\Zabbix\Requests\UserProvisionRequest;
+use Idiot\Zabbix\Requests\UserResettotpRequest;
+use Idiot\Zabbix\Requests\UserUnblockRequest;
+use Idiot\Zabbix\Requests\UserUpdateRequest;
 
 final class UserApi extends AbstractApi
 {

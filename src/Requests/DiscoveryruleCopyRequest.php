@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
 /**
  * discoveryrule.copy - Copy LLD rules with all of the prototypes to the given hosts. Deprecated: configure LLD rules on templates and link the templates to other templates/hosts instead.

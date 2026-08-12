@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\HttptestCreateRequest;
-use IntelliTrend\Zabbix\Requests\HttptestDeleteRequest;
-use IntelliTrend\Zabbix\Requests\HttptestGetRequest;
-use IntelliTrend\Zabbix\Requests\HttptestUpdateRequest;
+use Idiot\Zabbix\Requests\HttptestCreateRequest;
+use Idiot\Zabbix\Requests\HttptestDeleteRequest;
+use Idiot\Zabbix\Requests\HttptestGetRequest;
+use Idiot\Zabbix\Requests\HttptestUpdateRequest;
 
 final class HttpTestApi extends AbstractApi
 {

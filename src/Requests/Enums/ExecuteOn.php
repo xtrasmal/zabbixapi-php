@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Where to run the script. Supported if type is set to "Script". Possible values: 0 - run on Zabbix agent; 1 - run on Zabbix server (supported only if execution of global scripts is enabled on Zabbix server); 2 - (default) run on Zabbix server or proxy.

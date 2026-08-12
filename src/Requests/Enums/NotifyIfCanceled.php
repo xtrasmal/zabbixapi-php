@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Whether to notify when escalation is canceled. Possible values: 0 - don't notify when escalation is canceled; 1 - (default) notify when escalation is canceled. Property behavior: supported if eventsource is set to "event created by a trigger".

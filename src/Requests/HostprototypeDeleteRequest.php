@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
-final class HostprototypeDeleteRequest extends AbstractZabbixListRequest
+final class HostprototypeDeleteRequest extends AbstractZabbixRequest
 {
     /** @param list<HostprototypeId> $ids */
     public function __construct(array $ids)

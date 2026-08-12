@@ -1,37 +1,22 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace IntelliTrend\Zabbix\Clients;
+declare(strict_types=1);
 
-use IntelliTrend\Zabbix\ZabbixApi;
-use IntelliTrend\Zabbix\ZabbixApiException;
+namespace Idiot\Zabbix\Clients;
+
+use Idiot\Zabbix\ZabbixApi;
+use Idiot\Zabbix\ZabbixApiException;
 
 final class Credentials
 {
     private function __construct(
         public readonly string $baseUrl,
         public readonly ?string $bearerToken = null,
-    ) {
-    }
-
-    /**
-     * @throws ZabbixApiException
-     */
-    public static function fromEndpoint(string $zabUrl, ?string $zabToken = null): self
-    {
-        if (trim($zabUrl) === '') {
-            throw new ZabbixApiException('Missing Zabbix URL.', ZabbixApi::EXCEPTION_CLASS_CODE);
-        }
-
-        if ($zabToken !== null && trim($zabToken) === '') {
-            throw new ZabbixApiException('Missing Zabbix API token.', ZabbixApi::EXCEPTION_CLASS_CODE_AUTH);
-        }
-
-        return new self($zabUrl, $zabToken);
-    }
+    ) {}
 
     public function withBearerToken(string $bearerToken): self
     {
-        if (trim($bearerToken) === '') {
+        if ('' === trim($bearerToken)) {
             throw new ZabbixApiException('Missing Zabbix API token.', ZabbixApi::EXCEPTION_CLASS_CODE_AUTH);
         }
 
@@ -41,5 +26,21 @@ final class Credentials
     public function endpoint(): string
     {
         return rtrim($this->baseUrl, '/') . '/api_jsonrpc.php';
+    }
+
+    /**
+     * @throws ZabbixApiException
+     */
+    public static function fromEndpoint(string $zabUrl, ?string $zabToken = null): self
+    {
+        if ('' === trim($zabUrl)) {
+            throw new ZabbixApiException('Missing Zabbix URL.', ZabbixApi::EXCEPTION_CLASS_CODE);
+        }
+
+        if (null !== $zabToken && '' === trim($zabToken)) {
+            throw new ZabbixApiException('Missing Zabbix API token.', ZabbixApi::EXCEPTION_CLASS_CODE_AUTH);
+        }
+
+        return new self($zabUrl, $zabToken);
     }
 }

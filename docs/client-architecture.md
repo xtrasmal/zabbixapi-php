@@ -2,22 +2,22 @@
 
 The client stack is split by responsibility:
 
-- `IntelliTrend\Zabbix\Clients\HttpClient`
-- `IntelliTrend\Zabbix\Clients\JsonRpcClient`
-- `IntelliTrend\Zabbix\ZabbixApi`
-- `IntelliTrend\Zabbix\Api\ZabbixApiGroup`
-- `IntelliTrend\Zabbix\Api\ZabbixRequestApi`
-- `IntelliTrend\Zabbix\Requests\RequestFactory`
-- `IntelliTrend\Zabbix\JsonRpc\Request`
-- `IntelliTrend\Zabbix\JsonRpc\Response`
+- `Idiot\Zabbix\Clients\HttpClient`
+- `Idiot\Zabbix\Clients\JsonRpcClient`
+- `Idiot\Zabbix\ZabbixApi`
+- `Idiot\Zabbix\Api\ZabbixApiGroup`
+- `Idiot\Zabbix\Api\ZabbixRequestApi`
+- `Idiot\Zabbix\Requests\RequestFactory`
+- `Idiot\Zabbix\JsonRpc\Request`
+- `Idiot\Zabbix\JsonRpc\Response`
 
 ## Responsibilities
 
 `HttpClient` owns HTTP transport concerns. It sends JSON-RPC bytes through Guzzle, adds JSON-RPC headers, adds the bearer `Authorization` header when provided, and decodes the HTTP response body once.
 
-`JsonRpcClient` owns JSON-RPC envelope concerns. It encodes JSON-RPC requests and validates decoded JSON-RPC 2.0 response envelopes.
+`JsonRpcClient` owns JSON-RPC envelope concerns. It encodes JSON-RPC requests, sends single or batch payloads through the injected transport, validates decoded JSON-RPC 2.0 response envelopes, and reorders batch responses by id.
 
-`ZabbixApi` owns Zabbix endpoint/token state and delegates transport work. Its public API group properties, such as `$hosts`, `$items`, and `$triggers`, are bound dispatchers for normal application code.
+`ZabbixApi` owns Zabbix endpoint/token state configured at construction and delegates transport work. Its public API group properties, such as `$hosts`, `$items`, and `$triggers`, are bound dispatchers for normal application code. Construction does not send HTTP; the required `apiinfo.version` call is made once and batched with the first possible request.
 
 `ZabbixApiGroup` binds one request-builder group to a configured `ZabbixApi` instance. It turns `$zabbix->hosts->get([...])` into a request object and immediately sends it.
 

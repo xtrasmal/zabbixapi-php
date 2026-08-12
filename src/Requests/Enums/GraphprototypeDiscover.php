@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Graph prototype discovery status. Possible values: 0 - (default) new graphs will be discovered; 1 - new graphs will not be discovered and existing graphs will be marked as lost.

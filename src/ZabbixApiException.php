@@ -1,6 +1,8 @@
 <?php
 
-namespace IntelliTrend\Zabbix;
+declare(strict_types=1);
+
+namespace Idiot\Zabbix;
 
 class ZabbixApiException extends \Exception
 {

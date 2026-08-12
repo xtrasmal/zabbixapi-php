@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Support;
 
@@ -89,7 +91,8 @@ final class SchemaSampleFactory
 
     /**
      * @param list<array<string, mixed>> $branches
-     * @param array<string, mixed> $root
+     * @param array<string, mixed>       $root
+     *
      * @return array<string, mixed>
      */
     private static function chooseBranch(array $branches, array $root, bool $preferList): array
@@ -99,7 +102,7 @@ final class SchemaSampleFactory
                 $resolved = self::resolveRef($branch, $root);
                 $type = $resolved['type'] ?? self::inferType($resolved);
 
-                if ($type === 'array' || (is_array($type) && in_array('array', $type, true))) {
+                if ('array' === $type || (is_array($type) && in_array('array', $type, true))) {
                     return $branch;
                 }
             }
@@ -111,6 +114,7 @@ final class SchemaSampleFactory
     /**
      * @param array<string, mixed> $schema
      * @param array<string, mixed> $root
+     *
      * @return array<string, mixed>
      */
     private static function resolveRef(array $schema, array $root): array
@@ -121,7 +125,7 @@ final class SchemaSampleFactory
 
         $ref = $schema['$ref'];
         if (!is_string($ref) || !str_starts_with($ref, '#/')) {
-            throw new \LogicException(sprintf('Unsupported schema reference: %s', (string) $ref));
+            throw new \LogicException(sprintf('Unsupported schema reference: %s', (string)$ref));
         }
 
         $current = $root;
@@ -145,6 +149,7 @@ final class SchemaSampleFactory
     /**
      * @param array<string, mixed> $schema
      * @param array<string, mixed> $root
+     *
      * @return array<string, mixed>
      */
     private static function objectFor(array $schema, array $root): array
@@ -177,10 +182,11 @@ final class SchemaSampleFactory
                 : '1';
         }
 
-        if ($object === [] && isset($schema['minProperties']) && is_int($schema['minProperties']) && $schema['minProperties'] > 0) {
+        if ([] === $object && isset($schema['minProperties']) && is_int($schema['minProperties']) && $schema['minProperties'] > 0) {
             foreach ($properties as $name => $propertySchema) {
                 if (is_string($name) && is_array($propertySchema)) {
                     $object[$name] = self::valueFor($propertySchema, $root);
+
                     break;
                 }
             }
@@ -238,7 +244,7 @@ final class SchemaSampleFactory
     /** @param array<string, mixed> $schema */
     private static function stringFor(array $schema): string
     {
-        if (isset($schema['format']) && $schema['format'] === 'uri') {
+        if (isset($schema['format']) && 'uri' === $schema['format']) {
             return 'https://example.com';
         }
 
@@ -278,18 +284,21 @@ final class SchemaSampleFactory
     /**
      * @param array<string, mixed> $base
      * @param array<string, mixed> $overlay
+     *
      * @return array<string, mixed>
      */
     private static function mergeSchema(array $base, array $overlay): array
     {
         foreach ($overlay as $key => $value) {
-            if ($key === 'required' && isset($base[$key]) && is_array($base[$key]) && is_array($value)) {
+            if ('required' === $key && isset($base[$key]) && is_array($base[$key]) && is_array($value)) {
                 $base[$key] = array_values(array_unique(array_merge($base[$key], $value)));
+
                 continue;
             }
 
-            if ($key === 'properties' && isset($base[$key]) && is_array($base[$key]) && is_array($value)) {
+            if ('properties' === $key && isset($base[$key]) && is_array($base[$key]) && is_array($value)) {
                 $base[$key] = array_replace($base[$key], $value);
+
                 continue;
             }
 

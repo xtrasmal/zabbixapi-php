@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * ID of the host inventory field to match the expression against. Property behavior: required. Refer to the host inventory object (host.object) for the full list of supported inventory fields. Possible values: 1 - type; 2 - type_full; 3 - name; 4 - alias; 5 - os; 6 - os_full; 7 - os_short; 8 - serialno_a; 9 - serialno_b; 10 - tag; 11 - asset_tag; 12 - macaddress_a; 13 - macaddress_b; 14 - hardware; 15 - hardware_full; 16 - software; 17 - software_full; 18 - software_app_a; 19 - software_app_b; 20 - software_app_c; 21 - software_app_d; 22 - software_app_e; 23 - contact; 24 - location; 25 - location_lat; 26 - location_lon; 27 - notes; 28 - chassis; 29 - model; 30 - hw_arch; 31 - vendor; 32 - contract_number; 33 - installer_name; 34 - deployment_status; 35 - url_a; 36 - url_b; 37 - url_c; 38 - host_networks; 39 - host_netmask; 40 - host_router; 41 - oob_ip; 42 - oob_netmask; 43 - oob_router; 44 - date_hw_purchase; 45 - date_hw_install; 46 - date_hw_expiry; 47 - date_hw_decomm; 48 - site_address_a; 49 - site_address_b; 50 - site_address_c; 51 - site_city; 52 - site_state; 53 - site_country; 54 - site_zip; 55 - site_rack; 56 - site_notes; 57 - poc_1_name; 58 - poc_1_email; 59 - poc_1_phone_a; 60 - poc_1_phone_b; 61 - poc_1_cell; 62 - poc_1_screen; 63 - poc_1_notes; 64 - poc_2_name; 65 - poc_2_email; 66 - poc_2_phone_a; 67 - poc_2_phone_b; 68 - poc_2_cell; 69 - poc_2_screen; 70 - poc_2_notes.

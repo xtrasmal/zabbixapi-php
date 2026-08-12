@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Schemas;
+namespace Idiot\Zabbix\Requests\Schemas;
 
-use IntelliTrend\Zabbix\Requests\RequestSchema;
-use IntelliTrend\Zabbix\Requests\UnknownZabbixMethod;
-use IntelliTrend\Zabbix\Requests\ZabbixRequestSchemaRegistry;
+use Idiot\Zabbix\Requests\RequestSchema;
+use Idiot\Zabbix\Requests\UnknownZabbixMethod;
+use Idiot\Zabbix\Requests\ZabbixRequestSchemaRegistry;
 
 /**
  * Maps a Zabbix method name to its compiled RequestSchema.

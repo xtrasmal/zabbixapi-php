@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\UsermacroCreateRequest;
-use IntelliTrend\Zabbix\Requests\UsermacroCreateglobalRequest;
-use IntelliTrend\Zabbix\Requests\UsermacroDeleteRequest;
-use IntelliTrend\Zabbix\Requests\UsermacroDeleteglobalRequest;
-use IntelliTrend\Zabbix\Requests\UsermacroGetRequest;
-use IntelliTrend\Zabbix\Requests\UsermacroUpdateRequest;
-use IntelliTrend\Zabbix\Requests\UsermacroUpdateglobalRequest;
+use Idiot\Zabbix\Requests\UsermacroCreateglobalRequest;
+use Idiot\Zabbix\Requests\UsermacroCreateRequest;
+use Idiot\Zabbix\Requests\UsermacroDeleteglobalRequest;
+use Idiot\Zabbix\Requests\UsermacroDeleteRequest;
+use Idiot\Zabbix\Requests\UsermacroGetRequest;
+use Idiot\Zabbix\Requests\UsermacroUpdateglobalRequest;
+use Idiot\Zabbix\Requests\UsermacroUpdateRequest;
 
 final class UserMacroApi extends AbstractApi
 {

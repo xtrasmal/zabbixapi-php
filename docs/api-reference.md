@@ -4,11 +4,7 @@
 
 ### `new ZabbixApi(array $options = [], ?GuzzleHttp\ClientInterface $httpClient = null, ?Psr\Log\LoggerInterface $logger = null)`
 
-Creates a client. `$options` are Guzzle request options. Passing a Guzzle client or PSR-3 logger is useful for tests, custom handlers, or application logging.
-
-### `connect(string $zabUrl, ?string $zabToken = null): self`
-
-Configures the client for a Zabbix server and optional bearer token, verifies the API version, and returns the same client instance.
+Creates a client. `$options['url']` configures the Zabbix base URL, `$options['token']` configures the bearer token, `$options['username']` and `$options['password']` configure automatic `user.login` fallback, and other options are passed to Guzzle as request options. Passing a Guzzle client or PSR-3 logger is useful for tests, custom handlers, or application logging.
 
 ### `call(string $method, array $params = []): array|bool|float|int|string|null`
 
@@ -18,21 +14,21 @@ Calls a Zabbix API method using an explicit method name and params array.
 
 Executes a request through a Zabbix API group. The public groups mirror Zabbix API areas, for example `$zabbix->hosts`, `$zabbix->items`, `$zabbix->triggers`, `$zabbix->users`, and `$zabbix->templates`.
 
-### `request(IntelliTrend\Zabbix\Requests\ZabbixRequest $request): array|bool|float|int|string|null`
+### `request(Idiot\Zabbix\Requests\ZabbixRequest $request): array|bool|float|int|string|null`
 
 Calls a Zabbix API method from a request object.
 
-### `requests(): IntelliTrend\Zabbix\Api\ZabbixRequestApi`
+### `requests(): Idiot\Zabbix\Api\ZabbixRequestApi`
 
 Returns the request-builder facade for composing request objects before sending them through `request()`.
 
 ### `getApiVersion(): string`
 
-Calls `apiinfo.version` and stores the returned API version.
+Returns the cached Zabbix API version. If no request has loaded it yet, calls `apiinfo.version` and stores the returned value.
 
 ### `getAuthToken(): string`
 
-Returns the configured bearer token or throws when no token is configured.
+Returns the configured bearer token. When username/password credentials are configured and no token exists yet, this performs `user.login` once and returns the stored token.
 
 ### `setLogger(Psr\Log\LoggerInterface $logger): self`
 

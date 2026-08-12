@@ -1,6 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace IntelliTrend\Zabbix\JsonRpc;
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\JsonRpc;
 
 use InvalidArgumentException;
 
@@ -13,7 +15,19 @@ final class Request implements \JsonSerializable
         public readonly ?array $params = null,
         public readonly int|string|null $id = null,
         private readonly bool $hasId = false,
-    ) {
+    ) {}
+
+    /**
+     * @return array{jsonrpc: string, method: string, id?: int|string|null, params?: array}
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'jsonrpc' => self::VERSION,
+            'method' => $this->method,
+            ...($this->hasId ? ['id' => $this->id] : []),
+            ...(is_null($this->params) ? [] : ['params' => $this->params]),
+        ];
     }
 
     public static function request(string $method, int|string|null $id, ?array $params = null): self
@@ -35,18 +49,5 @@ final class Request implements \JsonSerializable
         if (str_starts_with($method, 'rpc.')) {
             throw new InvalidArgumentException('Methods beginning with "rpc." are reserved.');
         }
-    }
-
-    /**
-     * @return array{jsonrpc: string, method: string, id?: int|string|null, params?: array}
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'jsonrpc' => self::VERSION,
-            'method' => $this->method,
-            ...($this->hasId ? ['id' => $this->id] : []),
-            ...(is_null($this->params) ? [] : ['params' => $this->params]),
-        ];
     }
 }

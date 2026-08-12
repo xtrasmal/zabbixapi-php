@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\HostgroupCreateRequest;
-use IntelliTrend\Zabbix\Requests\HostgroupDeleteRequest;
-use IntelliTrend\Zabbix\Requests\HostgroupGetRequest;
-use IntelliTrend\Zabbix\Requests\HostgroupMassaddRequest;
-use IntelliTrend\Zabbix\Requests\HostgroupMassremoveRequest;
-use IntelliTrend\Zabbix\Requests\HostgroupMassupdateRequest;
-use IntelliTrend\Zabbix\Requests\HostgroupPropagateRequest;
-use IntelliTrend\Zabbix\Requests\HostgroupUpdateRequest;
+use Idiot\Zabbix\Requests\HostgroupCreateRequest;
+use Idiot\Zabbix\Requests\HostgroupDeleteRequest;
+use Idiot\Zabbix\Requests\HostgroupGetRequest;
+use Idiot\Zabbix\Requests\HostgroupMassaddRequest;
+use Idiot\Zabbix\Requests\HostgroupMassremoveRequest;
+use Idiot\Zabbix\Requests\HostgroupMassupdateRequest;
+use Idiot\Zabbix\Requests\HostgroupPropagateRequest;
+use Idiot\Zabbix\Requests\HostgroupUpdateRequest;
 
 final class HostGroupApi extends AbstractApi
 {

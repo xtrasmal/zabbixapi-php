@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Clients;
+namespace Idiot\Zabbix\Clients;
 
-use IntelliTrend\Zabbix\JsonRpc\Request;
-use IntelliTrend\Zabbix\JsonRpc\Response;
-use IntelliTrend\Zabbix\ZabbixApi;
-use IntelliTrend\Zabbix\ZabbixApiException;
+use Idiot\Zabbix\JsonRpc\Request;
+use Idiot\Zabbix\JsonRpc\Response;
+use Idiot\Zabbix\ZabbixApi;
+use Idiot\Zabbix\ZabbixApiException;
 use JsonException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -34,8 +34,7 @@ final class JsonRpcClient
     public function __construct(
         private readonly HttpClient $transport,
         private ?LoggerInterface $logger = null,
-    ) {
-    }
+    ) {}
 
     public function setLogger(LoggerInterface $logger): self
     {
@@ -59,7 +58,7 @@ final class JsonRpcClient
                 ->query($method, $id, $params)
                 ->encode();
 
-            if ($body === null) {
+            if (null === $body) {
                 throw new UnexpectedValueException('Failed to encode JSON-RPC request.');
             }
 
@@ -72,7 +71,7 @@ final class JsonRpcClient
             $response = $this->transport->postJsonRpc(
                 url: $url,
                 body: $body,
-                bearerToken: $bearerToken
+                bearerToken: $bearerToken,
             );
 
             $this->log()->debug('Received Zabbix JSON-RPC response.', [
@@ -85,7 +84,63 @@ final class JsonRpcClient
             throw new ZabbixApiException(
                 message: $e->getMessage(),
                 code: ZabbixApi::EXCEPTION_CLASS_CODE,
-                previous: $e
+                previous: $e,
+            );
+        }
+    }
+
+    /**
+     * @param list<array{method: string, id: int|string|null, params?: array<string, mixed>|list<mixed>}> $calls
+     *
+     * @throws ZabbixApiException
+     *
+     * @return list<Response>
+     */
+    public function batch(
+        string $url,
+        array $calls,
+        ?string $bearerToken = null,
+    ): array {
+        if ([] === $calls) {
+            throw new ZabbixApiException('Cannot send an empty JSON-RPC batch.', ZabbixApi::EXCEPTION_CLASS_CODE);
+        }
+
+        $ids = [];
+
+        try {
+            foreach ($calls as $call) {
+                $ids[] = $call['id'];
+                $this->query($call['method'], $call['id'], $call['params'] ?? []);
+            }
+
+            $body = $this->encode();
+
+            if (null === $body) {
+                throw new UnexpectedValueException('Failed to encode JSON-RPC batch request.');
+            }
+
+            $this->log()->debug('Sending Zabbix JSON-RPC batch request.', [
+                'methods' => array_column($calls, 'method'),
+                'body' => $body,
+            ]);
+
+            $response = $this->transport->postJsonRpc(
+                url: $url,
+                body: $body,
+                bearerToken: $bearerToken,
+            );
+
+            $this->log()->debug('Received Zabbix JSON-RPC batch response.', [
+                'methods' => array_column($calls, 'method'),
+                'response' => $response,
+            ]);
+
+            return $this->orderedResponses($this->decode($response), $ids);
+        } catch (UnexpectedValueException $e) {
+            throw new ZabbixApiException(
+                message: $e->getMessage(),
+                code: ZabbixApi::EXCEPTION_CLASS_CODE,
+                previous: $e,
             );
         }
     }
@@ -115,15 +170,16 @@ final class JsonRpcClient
      *
      * A single message encodes as a lone object, multiple as a batch array.
      * Returns null when nothing is queued.
+     *
      * @throws UnexpectedValueException when the request cannot be encoded as JSON.
      */
     public function encode(): ?string
     {
-        if ($this->messages === []) {
+        if ([] === $this->messages) {
             return null;
         }
 
-        $payload = count($this->messages) === 1 ? $this->messages[0] : $this->messages;
+        $payload = 1 === count($this->messages) ? $this->messages[0] : $this->messages;
         $this->messages = [];
 
         try {
@@ -138,12 +194,14 @@ final class JsonRpcClient
      * received.
      *
      * @param JsonRpcEnvelope $payload
-     * @return list<Response>
+     *
      * @throws UnexpectedValueException on a non-conforming envelope.
+     *
+     * @return list<Response>
      */
     public function decode(array $payload): array
     {
-        if ($payload === []) {
+        if ([] === $payload) {
             throw new UnexpectedValueException('Empty batch responses are invalid JSON-RPC responses.');
         }
 
@@ -201,7 +259,7 @@ final class JsonRpcClient
 
     private function normalizeId(array|bool|float|int|string|null $id): int|string|null
     {
-        if (is_int($id) || is_string($id) || $id === null) {
+        if (is_int($id) || is_string($id) || null === $id) {
             return $id;
         }
 
@@ -210,11 +268,12 @@ final class JsonRpcClient
 
     /**
      * @param list<Response> $responses
+     *
      * @throws UnexpectedValueException
      */
     private function singleResponse(array $responses, int|string|null $requestId): Response
     {
-        if (count($responses) !== 1) {
+        if (1 !== count($responses)) {
             throw new UnexpectedValueException('Expected exactly one JSON-RPC response.');
         }
 
@@ -225,6 +284,50 @@ final class JsonRpcClient
         }
 
         return $response;
+    }
+
+    /**
+     * @param list<Response>        $responses
+     * @param list<int|string|null> $requestIds
+     *
+     * @return list<Response>
+     */
+    private function orderedResponses(array $responses, array $requestIds): array
+    {
+        if (count($responses) !== count($requestIds)) {
+            throw new UnexpectedValueException('JSON-RPC batch response count did not match request count.');
+        }
+
+        $byId = [];
+
+        foreach ($responses as $response) {
+            $key = $this->responseKey($response->id);
+
+            if (array_key_exists($key, $byId)) {
+                throw new UnexpectedValueException('JSON-RPC batch response contained a duplicate id.');
+            }
+
+            $byId[$key] = $response;
+        }
+
+        $ordered = [];
+
+        foreach ($requestIds as $requestId) {
+            $key = $this->responseKey($requestId);
+
+            if (!array_key_exists($key, $byId)) {
+                throw new UnexpectedValueException('JSON-RPC batch response id did not match request id.');
+            }
+
+            $ordered[] = $byId[$key];
+        }
+
+        return $ordered;
+    }
+
+    private function responseKey(int|string|null $id): string
+    {
+        return get_debug_type($id) . ':' . serialize($id);
     }
 
     private function log(): LoggerInterface

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\JsonRpc;
+namespace Idiot\Zabbix\JsonRpc;
 
 use InvalidArgumentException;
 
@@ -27,6 +27,26 @@ use InvalidArgumentException;
  */
 final class Response implements \JsonSerializable
 {
+    private function __construct(
+        public readonly int|string|null $id,
+        public readonly array|bool|float|int|string|null $result = null,
+        /** @var array{code: int, message: string, data?: array|bool|float|int|string|null}|null */
+        public readonly ?array $error = null,
+        private readonly bool $hasResult = false,
+    ) {}
+
+    /**
+     * @return array{jsonrpc: Request::VERSION, id: int|string|null, result?: array|bool|float|int|string|null, error?: array{code: int, message: string, data?: array|bool|float|int|string|null}}
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'jsonrpc' => Request::VERSION,
+            'id' => $this->id,
+            ...($this->hasResult ? ['result' => $this->result] : ['error' => $this->error]),
+        ];
+    }
+
     public static function fromResult(int|string|null $id, array|bool|float|int|string|null $result = null): self
     {
         return new self($id, result: $result, hasResult: true);
@@ -38,15 +58,6 @@ final class Response implements \JsonSerializable
     public static function fromError(int|string|null $id, array $error): self
     {
         return new self($id, error: self::validatedError($error));
-    }
-
-    private function __construct(
-        public readonly int|string|null $id,
-        public readonly array|bool|float|int|string|null $result = null,
-        /** @var array{code: int, message: string, data?: array|bool|float|int|string|null}|null */
-        public readonly ?array $error = null,
-        private readonly bool $hasResult = false,
-    ) {
     }
 
     /**
@@ -66,18 +77,6 @@ final class Response implements \JsonSerializable
             'code' => $error['code'],
             'message' => $error['message'],
             ...(array_key_exists('data', $error) ? ['data' => $error['data']] : []),
-        ];
-    }
-
-    /**
-     * @return array{jsonrpc: Request::VERSION, id: int|string|null, result?: array|bool|float|int|string|null, error?: array{code: int, message: string, data?: array|bool|float|int|string|null}}
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'jsonrpc' => Request::VERSION,
-            'id' => $this->id,
-            ...($this->hasResult ? ['result' => $this->result] : ['error' => $this->error]),
         ];
     }
 }

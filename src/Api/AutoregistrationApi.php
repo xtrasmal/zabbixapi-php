@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\AutoregistrationGetRequest;
-use IntelliTrend\Zabbix\Requests\AutoregistrationUpdateRequest;
+use Idiot\Zabbix\Requests\AutoregistrationGetRequest;
+use Idiot\Zabbix\Requests\AutoregistrationUpdateRequest;
 
 final class AutoregistrationApi extends AbstractApi
 {

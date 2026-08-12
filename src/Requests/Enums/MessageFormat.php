@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Message format.  Possible values: 0 - Plain text; 1 - (default) HTML.  Property behavior: - supported if type is set to "Email"

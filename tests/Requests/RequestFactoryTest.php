@@ -1,11 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Requests;
 
-use IntelliTrend\Zabbix\Requests\HostGetRequest;
-use IntelliTrend\Zabbix\Requests\InvalidZabbixRequest;
-use IntelliTrend\Zabbix\Requests\RequestFactory;
-use IntelliTrend\Zabbix\Requests\UnknownZabbixMethod;
+use Idiot\Zabbix\Requests\HostGetRequest;
+use Idiot\Zabbix\Requests\InvalidZabbixRequest;
+use Idiot\Zabbix\Requests\RequestFactory;
+use Idiot\Zabbix\Requests\UnknownZabbixMethod;
 use PHPUnit\Framework\TestCase;
 
 final class RequestFactoryTest extends TestCase

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\ActionCreateRequest;
-use IntelliTrend\Zabbix\Requests\ActionDeleteRequest;
-use IntelliTrend\Zabbix\Requests\ActionGetRequest;
-use IntelliTrend\Zabbix\Requests\ActionUpdateRequest;
+use Idiot\Zabbix\Requests\ActionCreateRequest;
+use Idiot\Zabbix\Requests\ActionDeleteRequest;
+use Idiot\Zabbix\Requests\ActionGetRequest;
+use Idiot\Zabbix\Requests\ActionUpdateRequest;
 
 final class ActionApi extends AbstractApi
 {

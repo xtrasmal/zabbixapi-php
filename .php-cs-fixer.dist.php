@@ -5,24 +5,233 @@ declare(strict_types=1);
 use PhpCsFixer\Config;
 use PhpCsFixer\Finder;
 
-return (new Config())
-    ->setRiskyAllowed(false)
-    ->setRules([
-        '@auto' => true
+$maintainedRequestFiles = [
+    __DIR__ . '/src/Requests/AbstractId.php',
+    __DIR__ . '/src/Requests/AbstractZabbixRequest.php',
+    __DIR__ . '/src/Requests/InvalidZabbixRequest.php',
+    __DIR__ . '/src/Requests/OpisSchemaValidator.php',
+    __DIR__ . '/src/Requests/RequestFactory.php',
+    __DIR__ . '/src/Requests/RequestSchema.php',
+    __DIR__ . '/src/Requests/SchemaValidator.php',
+    __DIR__ . '/src/Requests/StaticRequestRegistry.php',
+    __DIR__ . '/src/Requests/UnknownZabbixMethod.php',
+    __DIR__ . '/src/Requests/ZabbixParameter.php',
+    __DIR__ . '/src/Requests/ZabbixRequest.php',
+    __DIR__ . '/src/Requests/ZabbixRequestEncoder.php',
+    __DIR__ . '/src/Requests/ZabbixRequestRegistry.php',
+    __DIR__ . '/src/Requests/ZabbixRequestSchemaRegistry.php',
+    __DIR__ . '/src/Requests/ZabbixRequestValidator.php',
+];
+
+$finder = Finder::create()
+    ->files()
+    ->name('*.php')
+    ->in([
+        __DIR__ . '/examples',
+        __DIR__ . '/src/Api',
+        __DIR__ . '/src/Clients',
+        __DIR__ . '/src/JsonRpc',
+        __DIR__ . '/tests',
     ])
-    // 💡 by default, Fixer looks for `*.php` files excluding `./vendor/` - here, you can groom this config
-    ->setFinder(
-        (new Finder())
-            // 💡 root folder to check
-            ->in(__DIR__)
-            // 💡 additional files, eg bin entry file
-            // ->append([__DIR__.'/bin-entry-file'])
-            // 💡 folders to exclude, if any
-            // ->exclude([/* ... */])
-            // 💡 path patterns to exclude, if any
-            // ->notPath([/* ... */])
-            // 💡 extra configs
-            // ->ignoreDotFiles(false) // true by default in v3, false in v4 or future mode
-            // ->ignoreVCS(true) // true by default
-    )
-;
+    ->append([
+        __FILE__,
+        __DIR__ . '/src/ZabbixApi.php',
+        __DIR__ . '/src/ZabbixApiException.php',
+        __DIR__ . '/src/ZabbixApiOptions.php',
+        ...$maintainedRequestFiles,
+    ]);
+
+return (new Config())
+    ->setRiskyAllowed(true)
+    ->setRules([
+        '@PER-CS2x0' => true,
+        '@PSR12' => true,
+        'array_syntax' => ['syntax' => 'short'],
+        'assign_null_coalescing_to_coalesce_equal' => true,
+        'binary_operator_spaces' => [
+            'default' => 'single_space',
+            'operators' => [
+                '=>' => 'single_space',
+            ],
+        ],
+        'blank_line_after_namespace' => true,
+        'blank_line_after_opening_tag' => true,
+        'blank_line_before_statement' => [
+            'statements' => ['break', 'continue', 'declare', 'return', 'throw', 'try'],
+        ],
+        'blank_line_between_import_groups' => true,
+        'braces_position' => [
+            'allow_single_line_anonymous_functions' => false,
+            'allow_single_line_empty_anonymous_classes' => true,
+            'anonymous_classes_opening_brace' => 'same_line',
+            'anonymous_functions_opening_brace' => 'same_line',
+            'classes_opening_brace' => 'next_line_unless_newline_at_signature_end',
+            'control_structures_opening_brace' => 'same_line',
+            'functions_opening_brace' => 'next_line_unless_newline_at_signature_end',
+        ],
+        'cast_spaces' => ['space' => 'none'],
+        'class_attributes_separation' => [
+            'elements' => [
+                'case' => 'none',
+                'const' => 'none',
+                'method' => 'one',
+                'property' => 'none',
+                'trait_import' => 'none',
+            ],
+        ],
+        'clean_namespace' => true,
+        'concat_space' => ['spacing' => 'one'],
+        'constant_case' => true,
+        'declare_equal_normalize' => true,
+        'declare_strict_types' => true,
+        'elseif' => true,
+        'encoding' => true,
+        'full_opening_tag' => true,
+        'function_declaration' => true,
+        'heredoc_indentation' => true,
+        'indentation_type' => true,
+        'line_ending' => true,
+        'list_syntax' => ['syntax' => 'short'],
+        'lowercase_cast' => true,
+        'lowercase_keywords' => true,
+        'lowercase_static_reference' => true,
+        'method_argument_space' => [
+            'after_heredoc' => true,
+            'on_multiline' => 'ensure_fully_multiline',
+        ],
+        'modifier_keywords' => ['elements' => ['const', 'method', 'property']],
+        'native_function_casing' => true,
+        'new_with_parentheses' => [
+            'anonymous_class' => false,
+            'named_class' => true,
+        ],
+        'no_alias_functions' => true,
+        'no_blank_lines_after_class_opening' => true,
+        'no_break_comment' => true,
+        'no_closing_tag' => true,
+        'no_empty_statement' => true,
+        'no_extra_blank_lines' => [
+            'tokens' => [
+                'attribute',
+                'break',
+                'case',
+                'continue',
+                'curly_brace_block',
+                'default',
+                'extra',
+                'parenthesis_brace_block',
+                'return',
+                'square_brace_block',
+                'throw',
+                'use',
+            ],
+        ],
+        'no_leading_import_slash' => true,
+        'no_space_around_double_colon' => true,
+        'no_spaces_after_function_name' => true,
+        'no_superfluous_elseif' => true,
+        'no_trailing_whitespace' => true,
+        'no_trailing_whitespace_in_comment' => true,
+        'no_trailing_comma_in_singleline' => true,
+        'no_unneeded_braces' => true,
+        'no_unset_cast' => true,
+        'no_unused_imports' => true,
+        'no_useless_else' => true,
+        'no_useless_nullsafe_operator' => true,
+        'no_useless_return' => true,
+        'no_whitespace_before_comma_in_array' => ['after_heredoc' => true],
+        'no_whitespace_in_blank_line' => true,
+        'nullable_type_declaration_for_default_null_value' => true,
+        'operator_linebreak' => [
+            'only_booleans' => false,
+            'position' => 'beginning',
+        ],
+        'ordered_class_elements' => [
+            'order' => [
+                'use_trait',
+                'case',
+                'constant_public',
+                'constant_protected',
+                'constant_private',
+                'property_public_static',
+                'property_public',
+                'property_public_readonly',
+                'property_protected_static',
+                'property_protected',
+                'property_protected_readonly',
+                'property_private_static',
+                'property_private',
+                'property_private_readonly',
+                'method:__invoke',
+                'construct',
+                'destruct',
+                'phpunit',
+                'method_abstract',
+                'method_static',
+                'method_public',
+                'method_public_static',
+                'method_protected',
+                'method_protected_static',
+                'method_private',
+                'method_private_static',
+                'method_public_abstract',
+                'method_protected_abstract',
+                'method_private_abstract',
+                'method_public_abstract_static',
+                'method_protected_abstract_static',
+                'method_private_abstract_static',
+                'method:__clone',
+                'method:__set',
+                'method:__get',
+                'method:__isset',
+                'method:__unset',
+                'method:__set_state',
+                'method:__call',
+                'method:__callStatic',
+                'method:__serialize',
+                'method:__unserialize',
+                'method:__sleep',
+                'method:__wakeup',
+                'method:__toString',
+                'method:__debugInfo',
+            ],
+        ],
+        'ordered_imports' => [
+            'imports_order' => ['class', 'function', 'const'],
+            'sort_algorithm' => 'alpha',
+        ],
+        'phpdoc_align' => ['align' => 'vertical'],
+        'phpdoc_indent' => true,
+        'phpdoc_no_access' => true,
+        'phpdoc_no_empty_return' => true,
+        'phpdoc_order' => true,
+        'phpdoc_scalar' => true,
+        'phpdoc_separation' => true,
+        'phpdoc_single_line_var_spacing' => true,
+        'phpdoc_trim' => true,
+        'phpdoc_types' => true,
+        'phpdoc_var_without_name' => true,
+        'protected_to_private' => true,
+        'return_assignment' => true,
+        'return_type_declaration' => ['space_before' => 'none'],
+        'short_scalar_cast' => true,
+        'single_blank_line_at_eof' => true,
+        'single_class_element_per_statement' => ['elements' => ['const', 'property']],
+        'single_import_per_statement' => ['group_to_single_imports' => false],
+        'single_line_after_imports' => true,
+        'single_quote' => ['strings_containing_single_quote_chars' => false],
+        'single_trait_insert_per_statement' => true,
+        'spaces_inside_parentheses' => ['space' => 'none'],
+        'strict_param' => true,
+        'switch_case_semicolon_to_colon' => true,
+        'switch_case_space' => true,
+        'ternary_operator_spaces' => true,
+        'ternary_to_null_coalescing' => true,
+        'trailing_comma_in_multiline' => [
+            'after_heredoc' => true,
+            'elements' => ['arguments', 'array_destructuring', 'arrays', 'match', 'parameters'],
+        ],
+        'yoda_style' => true,
+    ])
+    ->setCacheFile(__DIR__ . '/.php-cs-fixer.cache')
+    ->setFinder($finder);

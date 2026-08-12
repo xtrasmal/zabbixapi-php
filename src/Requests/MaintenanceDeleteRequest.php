@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
-final class MaintenanceDeleteRequest extends AbstractZabbixListRequest
+final class MaintenanceDeleteRequest extends AbstractZabbixRequest
 {
     /** @param list<MaintenanceId> $ids */
     public function __construct(array $ids)

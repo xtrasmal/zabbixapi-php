@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
-final class HttptestDeleteRequest extends AbstractZabbixListRequest
+final class HttptestDeleteRequest extends AbstractZabbixRequest
 {
     /** @param list<HttptestId> $ids */
     public function __construct(array $ids)

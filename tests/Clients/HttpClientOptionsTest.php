@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Clients;
 
-use IntelliTrend\Zabbix\Clients\HttpClient;
-use IntelliTrend\Zabbix\ZabbixApi;
+use Idiot\Zabbix\Clients\HttpClient;
+use Idiot\Zabbix\ZabbixApi;
 use PHPUnit\Framework\TestCase;
 
 final class HttpClientOptionsTest extends TestCase
@@ -47,5 +49,4 @@ final class HttpClientOptionsTest extends TestCase
         self::assertSame('http://proxy.example:8080', $client->options()['proxy']);
         self::assertSame(ZabbixApi::DEFAULT_TIMEOUT, $client->options()['timeout']);
     }
-
 }

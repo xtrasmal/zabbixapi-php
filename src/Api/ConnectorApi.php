@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\ConnectorCreateRequest;
-use IntelliTrend\Zabbix\Requests\ConnectorDeleteRequest;
-use IntelliTrend\Zabbix\Requests\ConnectorGetRequest;
-use IntelliTrend\Zabbix\Requests\ConnectorUpdateRequest;
+use Idiot\Zabbix\Requests\ConnectorCreateRequest;
+use Idiot\Zabbix\Requests\ConnectorDeleteRequest;
+use Idiot\Zabbix\Requests\ConnectorGetRequest;
+use Idiot\Zabbix\Requests\ConnectorUpdateRequest;
 
 final class ConnectorApi extends AbstractApi
 {

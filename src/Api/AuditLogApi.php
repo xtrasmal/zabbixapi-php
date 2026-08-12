@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\AuditlogGetRequest;
+use Idiot\Zabbix\Requests\AuditlogGetRequest;
 
 final class AuditLogApi extends AbstractApi
 {

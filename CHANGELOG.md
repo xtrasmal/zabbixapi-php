@@ -14,7 +14,6 @@
 
 * Tested with Zabbix 6.0.
 * Added missing namespace in examples.
-* Added function `loginToken()` to log in via API tokens.
 
 ## Version 3.0.2
 
@@ -25,7 +24,7 @@
 
 * Tested with Zabbix 5.0 - 5.4.
 * Added support for Zabbix 5.4 API change in `user.login` method.
-* Added namespace `IntelliTrend\Zabbix`.
+* Added namespace `Idiot\Zabbix`.
 * Added [composer](https://getcomposer.org/) support.
 * Moved to [semver](https://semver.org/) version numbers.
 

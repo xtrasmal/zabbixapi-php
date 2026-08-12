@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\TemplategroupCreateRequest;
-use IntelliTrend\Zabbix\Requests\TemplategroupDeleteRequest;
-use IntelliTrend\Zabbix\Requests\TemplategroupGetRequest;
-use IntelliTrend\Zabbix\Requests\TemplategroupMassaddRequest;
-use IntelliTrend\Zabbix\Requests\TemplategroupMassremoveRequest;
-use IntelliTrend\Zabbix\Requests\TemplategroupMassupdateRequest;
-use IntelliTrend\Zabbix\Requests\TemplategroupPropagateRequest;
-use IntelliTrend\Zabbix\Requests\TemplategroupUpdateRequest;
+use Idiot\Zabbix\Requests\TemplategroupCreateRequest;
+use Idiot\Zabbix\Requests\TemplategroupDeleteRequest;
+use Idiot\Zabbix\Requests\TemplategroupGetRequest;
+use Idiot\Zabbix\Requests\TemplategroupMassaddRequest;
+use Idiot\Zabbix\Requests\TemplategroupMassremoveRequest;
+use Idiot\Zabbix\Requests\TemplategroupMassupdateRequest;
+use Idiot\Zabbix\Requests\TemplategroupPropagateRequest;
+use Idiot\Zabbix\Requests\TemplategroupUpdateRequest;
 
 final class TemplateGroupApi extends AbstractApi
 {

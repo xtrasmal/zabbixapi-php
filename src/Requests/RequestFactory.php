@@ -1,6 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace IntelliTrend\Zabbix\Requests;
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Requests;
 
 final class RequestFactory
 {
@@ -13,16 +15,6 @@ final class RequestFactory
         $this->map = $map ?? new StaticRequestRegistry();
     }
 
-    public static function validated(): self
-    {
-        return new self(validator: ZabbixRequestValidator::createDefault());
-    }
-
-    public static function plain(): self
-    {
-        return new self();
-    }
-
     /**
      * @param array<string, mixed>|list<mixed> $params
      */
@@ -32,5 +24,15 @@ final class RequestFactory
         $this->validator?->validate($request);
 
         return $request;
+    }
+
+    public static function validated(): self
+    {
+        return new self(validator: ZabbixRequestValidator::createDefault());
+    }
+
+    public static function plain(): self
+    {
+        return new self();
     }
 }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Clients;
 
@@ -7,8 +9,8 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response as HttpResponse;
-use IntelliTrend\Zabbix\Clients\HttpClient;
-use IntelliTrend\Zabbix\Clients\JsonRpcClient;
+use Idiot\Zabbix\Clients\HttpClient;
+use Idiot\Zabbix\Clients\JsonRpcClient;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use TypeError;
@@ -28,7 +30,7 @@ final class JsonRpcClientTest extends TestCase
             method: 'host.get',
             id: 1,
             params: ['output' => ['hostid']],
-            bearerToken: 'secret'
+            bearerToken: 'secret',
         );
 
         self::assertSame(['hostid' => '10105'], $response->result);
@@ -41,6 +43,49 @@ final class JsonRpcClientTest extends TestCase
         ], json_decode((string)$history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR));
     }
 
+    public function testBatchUsesInjectedHttpTransportAndOrdersResponsesByRequestId(): void
+    {
+        $history = [];
+        $client = new JsonRpcClient(new HttpClient(self::guzzle([
+            new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":2,"result":[{"hostid":"10105"}]},{"jsonrpc":"2.0","id":1,"result":"7.2.0"}]'),
+        ], $history)));
+
+        $responses = $client->batch(
+            url: 'https://zabbix.example/api_jsonrpc.php',
+            calls: [
+                [
+                    'method' => 'apiinfo.version',
+                    'id' => 1,
+                    'params' => [],
+                ],
+                [
+                    'method' => 'host.get',
+                    'id' => 2,
+                    'params' => ['output' => ['hostid']],
+                ],
+            ],
+            bearerToken: 'secret',
+        );
+
+        self::assertSame('7.2.0', $responses[0]->result);
+        self::assertSame([['hostid' => '10105']], $responses[1]->result);
+        self::assertSame('Bearer secret', $history[0]['request']->getHeaderLine('Authorization'));
+        self::assertSame([
+            [
+                'jsonrpc' => '2.0',
+                'method' => 'apiinfo.version',
+                'id' => 1,
+                'params' => [],
+            ],
+            [
+                'jsonrpc' => '2.0',
+                'method' => 'host.get',
+                'id' => 2,
+                'params' => ['output' => ['hostid']],
+            ],
+        ], json_decode((string)$history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR));
+    }
+
     public function testSingleQueryEncodesJsonRpc20RequestObject(): void
     {
         self::assertSame([
@@ -49,7 +94,7 @@ final class JsonRpcClientTest extends TestCase
             'id' => 1,
             'params' => [42, 23],
         ], self::encode(
-            (self::client())->query('subtract', 1, [42, 23])
+            (self::client())->query('subtract', 1, [42, 23]),
         ));
     }
 
@@ -71,7 +116,7 @@ final class JsonRpcClientTest extends TestCase
         ], self::encode(
             (self::client())
                 ->query('sum', '1', [1, 2, 4])
-                ->query('subtract', '2', [42, 23])
+                ->query('subtract', '2', [42, 23]),
         ));
     }
 
@@ -82,7 +127,7 @@ final class JsonRpcClientTest extends TestCase
             'method' => 'update',
             'params' => [1, 2, 3, 4, 5],
         ], self::encode(
-            (self::client())->notify('update', [1, 2, 3, 4, 5])
+            (self::client())->notify('update', [1, 2, 3, 4, 5]),
         ));
     }
 
@@ -103,7 +148,7 @@ final class JsonRpcClientTest extends TestCase
         ], self::encode(
             (self::client())
                 ->query('sum', '1', [1, 2, 4])
-                ->notify('notify_hello', [7])
+                ->notify('notify_hello', [7]),
         ));
     }
 
@@ -114,7 +159,7 @@ final class JsonRpcClientTest extends TestCase
             'method' => 'host.get',
             'id' => 1,
         ], self::encode(
-            (self::client())->query('host.get', 1)
+            (self::client())->query('host.get', 1),
         ));
     }
 
@@ -124,7 +169,7 @@ final class JsonRpcClientTest extends TestCase
             'jsonrpc' => '2.0',
             'method' => 'foobar',
         ], self::encode(
-            (self::client())->notify('foobar')
+            (self::client())->notify('foobar'),
         ));
     }
 
@@ -135,7 +180,7 @@ final class JsonRpcClientTest extends TestCase
     public function testQueryAllowsJsonRpcScalarIds(int|string|null $id): void
     {
         self::assertSame($id, self::encode(
-            (self::client())->query('host.get', $id)
+            (self::client())->query('host.get', $id),
         )['id']);
     }
 
@@ -166,14 +211,14 @@ final class JsonRpcClientTest extends TestCase
     public function testMethodNamesArePreservedCaseSensitively(): void
     {
         self::assertSame('Host.Get', self::encode(
-            (self::client())->query('Host.Get', 1)
+            (self::client())->query('Host.Get', 1),
         )['method']);
     }
 
     public function testPositionalParamsEncodeAsJsonArray(): void
     {
         self::assertSame([42, 23], self::encode(
-            (self::client())->query('subtract', 1, [42, 23])
+            (self::client())->query('subtract', 1, [42, 23]),
         )['params']);
     }
 
@@ -185,7 +230,7 @@ final class JsonRpcClientTest extends TestCase
 
         self::assertSame(
             '{"jsonrpc":"2.0","method":"subtract","id":1,"params":{"minuend":42,"Subtrahend":23}}',
-            $payload
+            $payload,
         );
     }
 
@@ -530,7 +575,8 @@ final class JsonRpcClientTest extends TestCase
 
     /**
      * @param array<string, mixed>|list<mixed> $payload
-     * @return list<\IntelliTrend\Zabbix\JsonRpc\Response>
+     *
+     * @return list<\Idiot\Zabbix\JsonRpc\Response>
      */
     private static function decode(array $payload): array
     {
@@ -543,7 +589,7 @@ final class JsonRpcClientTest extends TestCase
     }
 
     /**
-     * @param list<HttpResponse> $responses
+     * @param list<HttpResponse>               $responses
      * @param array<int, array<string, mixed>> $history
      */
     private static function guzzle(array $responses, array &$history): GuzzleClient

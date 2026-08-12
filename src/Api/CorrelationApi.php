@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\CorrelationCreateRequest;
-use IntelliTrend\Zabbix\Requests\CorrelationDeleteRequest;
-use IntelliTrend\Zabbix\Requests\CorrelationGetRequest;
-use IntelliTrend\Zabbix\Requests\CorrelationUpdateRequest;
+use Idiot\Zabbix\Requests\CorrelationCreateRequest;
+use Idiot\Zabbix\Requests\CorrelationDeleteRequest;
+use Idiot\Zabbix\Requests\CorrelationGetRequest;
+use Idiot\Zabbix\Requests\CorrelationUpdateRequest;
 
 final class CorrelationApi extends AbstractApi
 {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\DruleCreateRequest;
-use IntelliTrend\Zabbix\Requests\DruleDeleteRequest;
-use IntelliTrend\Zabbix\Requests\DruleGetRequest;
-use IntelliTrend\Zabbix\Requests\DruleUpdateRequest;
+use Idiot\Zabbix\Requests\DruleCreateRequest;
+use Idiot\Zabbix\Requests\DruleDeleteRequest;
+use Idiot\Zabbix\Requests\DruleGetRequest;
+use Idiot\Zabbix\Requests\DruleUpdateRequest;
 
 final class DRuleApi extends AbstractApi
 {

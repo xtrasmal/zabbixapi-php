@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\MaintenanceCreateRequest;
-use IntelliTrend\Zabbix\Requests\MaintenanceDeleteRequest;
-use IntelliTrend\Zabbix\Requests\MaintenanceGetRequest;
-use IntelliTrend\Zabbix\Requests\MaintenanceUpdateRequest;
+use Idiot\Zabbix\Requests\MaintenanceCreateRequest;
+use Idiot\Zabbix\Requests\MaintenanceDeleteRequest;
+use Idiot\Zabbix\Requests\MaintenanceGetRequest;
+use Idiot\Zabbix\Requests\MaintenanceUpdateRequest;
 
 final class MaintenanceApi extends AbstractApi
 {

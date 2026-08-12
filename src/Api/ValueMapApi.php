@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\ValuemapCreateRequest;
-use IntelliTrend\Zabbix\Requests\ValuemapDeleteRequest;
-use IntelliTrend\Zabbix\Requests\ValuemapGetRequest;
-use IntelliTrend\Zabbix\Requests\ValuemapUpdateRequest;
+use Idiot\Zabbix\Requests\ValuemapCreateRequest;
+use Idiot\Zabbix\Requests\ValuemapDeleteRequest;
+use Idiot\Zabbix\Requests\ValuemapGetRequest;
+use Idiot\Zabbix\Requests\ValuemapUpdateRequest;
 
 final class ValueMapApi extends AbstractApi
 {

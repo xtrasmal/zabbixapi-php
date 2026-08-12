@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Whether to use bulk SNMP requests. Possible values: 0 - don't use bulk requests; 1 - (default) use bulk requests.

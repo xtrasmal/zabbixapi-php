@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
-final class UsermacroUpdateRequest extends AbstractZabbixListRequest
+final class UsermacroUpdateRequest extends AbstractZabbixRequest
 {
     /** @param list<array> $ids */
     public function __construct(array $ids)

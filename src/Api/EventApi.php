@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\EventAcknowledgeRequest;
-use IntelliTrend\Zabbix\Requests\EventGetRequest;
+use Idiot\Zabbix\Requests\EventAcknowledgeRequest;
+use Idiot\Zabbix\Requests\EventGetRequest;
 
 final class EventApi extends AbstractApi
 {

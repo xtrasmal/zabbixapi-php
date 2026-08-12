@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\DiscoveryruleCopyRequest;
-use IntelliTrend\Zabbix\Requests\DiscoveryruleCreateRequest;
-use IntelliTrend\Zabbix\Requests\DiscoveryruleDeleteRequest;
-use IntelliTrend\Zabbix\Requests\DiscoveryruleGetRequest;
-use IntelliTrend\Zabbix\Requests\DiscoveryruleUpdateRequest;
+use Idiot\Zabbix\Requests\DiscoveryruleCopyRequest;
+use Idiot\Zabbix\Requests\DiscoveryruleCreateRequest;
+use Idiot\Zabbix\Requests\DiscoveryruleDeleteRequest;
+use Idiot\Zabbix\Requests\DiscoveryruleGetRequest;
+use Idiot\Zabbix\Requests\DiscoveryruleUpdateRequest;
 
 final class DiscoveryRuleApi extends AbstractApi
 {

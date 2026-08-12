@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\HistoryClearRequest;
-use IntelliTrend\Zabbix\Requests\HistoryGetRequest;
-use IntelliTrend\Zabbix\Requests\HistoryPushRequest;
+use Idiot\Zabbix\Requests\HistoryClearRequest;
+use Idiot\Zabbix\Requests\HistoryGetRequest;
+use Idiot\Zabbix\Requests\HistoryPushRequest;
 
 final class HistoryApi extends AbstractApi
 {

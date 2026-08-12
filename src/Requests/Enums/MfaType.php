@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Type of the MFA method. Possible values: 1 - TOTP (Time-based One-Time Passwords); 2 - Duo Universal Prompt.

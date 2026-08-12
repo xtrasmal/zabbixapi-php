@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\AlertGetRequest;
+use Idiot\Zabbix\Requests\AlertGetRequest;
 
 final class AlertApi extends AbstractApi
 {

@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
-final class TriggerprototypeDeleteRequest extends AbstractZabbixListRequest
+final class TriggerprototypeDeleteRequest extends AbstractZabbixRequest
 {
     /** @param list<TriggerprototypeId> $ids */
     public function __construct(array $ids)

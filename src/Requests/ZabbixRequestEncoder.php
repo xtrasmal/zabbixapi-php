@@ -1,6 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace IntelliTrend\Zabbix\Requests;
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Requests;
 
 /**
  * Serializes a request's params() to the JSON-RPC "params" bytes. params() is a
@@ -14,7 +16,9 @@ final class ZabbixRequestEncoder
     public function encodeParams(ZabbixRequest $request): string
     {
         $params = $request->params();
-        $data = $request instanceof AbstractZabbixListRequest ? $params : (object) $params;
+        $data = $request instanceof AbstractZabbixRequest && $request->paramsAreList()
+            ? $params
+            : (object)$params;
 
         return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
     }

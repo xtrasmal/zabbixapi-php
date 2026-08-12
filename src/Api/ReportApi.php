@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\ReportCreateRequest;
-use IntelliTrend\Zabbix\Requests\ReportDeleteRequest;
-use IntelliTrend\Zabbix\Requests\ReportGetRequest;
-use IntelliTrend\Zabbix\Requests\ReportUpdateRequest;
+use Idiot\Zabbix\Requests\ReportCreateRequest;
+use Idiot\Zabbix\Requests\ReportDeleteRequest;
+use Idiot\Zabbix\Requests\ReportGetRequest;
+use Idiot\Zabbix\Requests\ReportUpdateRequest;
 
 final class ReportApi extends AbstractApi
 {

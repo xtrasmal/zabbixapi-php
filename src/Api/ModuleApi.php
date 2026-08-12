@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\ModuleCreateRequest;
-use IntelliTrend\Zabbix\Requests\ModuleDeleteRequest;
-use IntelliTrend\Zabbix\Requests\ModuleGetRequest;
-use IntelliTrend\Zabbix\Requests\ModuleUpdateRequest;
+use Idiot\Zabbix\Requests\ModuleCreateRequest;
+use Idiot\Zabbix\Requests\ModuleDeleteRequest;
+use Idiot\Zabbix\Requests\ModuleGetRequest;
+use Idiot\Zabbix\Requests\ModuleUpdateRequest;
 
 final class ModuleApi extends AbstractApi
 {

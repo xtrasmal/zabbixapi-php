@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Override the host prototype inventory mode. Possible values: -1 - disabled; 0 - (default) manual; 1 - automatic. Property behavior: required.

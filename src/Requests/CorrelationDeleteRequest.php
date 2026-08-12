@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
-final class CorrelationDeleteRequest extends AbstractZabbixListRequest
+final class CorrelationDeleteRequest extends AbstractZabbixRequest
 {
     /** @param list<CorrelationId> $ids */
     public function __construct(array $ids)

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\MediatypeCreateRequest;
-use IntelliTrend\Zabbix\Requests\MediatypeDeleteRequest;
-use IntelliTrend\Zabbix\Requests\MediatypeGetRequest;
-use IntelliTrend\Zabbix\Requests\MediatypeUpdateRequest;
+use Idiot\Zabbix\Requests\MediatypeCreateRequest;
+use Idiot\Zabbix\Requests\MediatypeDeleteRequest;
+use Idiot\Zabbix\Requests\MediatypeGetRequest;
+use Idiot\Zabbix\Requests\MediatypeUpdateRequest;
 
 final class MediaTypeApi extends AbstractApi
 {

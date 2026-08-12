@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
-final class MfaDeleteRequest extends AbstractZabbixListRequest
+final class MfaDeleteRequest extends AbstractZabbixRequest
 {
     /** @param list<MfaId> $ids */
     public function __construct(array $ids)

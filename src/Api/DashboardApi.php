@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\DashboardCreateRequest;
-use IntelliTrend\Zabbix\Requests\DashboardDeleteRequest;
-use IntelliTrend\Zabbix\Requests\DashboardGetRequest;
-use IntelliTrend\Zabbix\Requests\DashboardUpdateRequest;
+use Idiot\Zabbix\Requests\DashboardCreateRequest;
+use Idiot\Zabbix\Requests\DashboardDeleteRequest;
+use Idiot\Zabbix\Requests\DashboardGetRequest;
+use Idiot\Zabbix\Requests\DashboardUpdateRequest;
 
 final class DashboardApi extends AbstractApi
 {

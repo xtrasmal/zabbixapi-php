@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
-final class RegexpDeleteRequest extends AbstractZabbixListRequest
+final class RegexpDeleteRequest extends AbstractZabbixRequest
 {
     /** @param list<RegexpId> $ids */
     public function __construct(array $ids)

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Scenario to disable lost LLD resources. Possible values: 0 - Disable after lifetime threshold is reached; 1 - Do not disable; 2 - (default) Disable immediately.

@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
-final class TokenGenerateRequest extends AbstractZabbixListRequest
+final class TokenGenerateRequest extends AbstractZabbixRequest
 {
     /** @param list<TokenId> $ids */
     public function __construct(array $ids)

@@ -7,7 +7,7 @@ This library sends JSON-RPC 2.0 requests to `api_jsonrpc.php` and authenticates 
 ## Installation
 
 ```bash
-composer require intellitrend/zabbixapi
+composer require idiot/zabbixapi
 ```
 
 Requirements:
@@ -19,12 +19,12 @@ Requirements:
 ## Quick Start
 
 ```php
-use IntelliTrend\Zabbix\ZabbixApi;
+use Idiot\Zabbix\ZabbixApi;
 
-$zabbix = (new ZabbixApi())->connect(
-    zabUrl: 'https://zabbix.example',
-    zabToken: 'your-zabbix-api-token'
-);
+$zabbix = new ZabbixApi([
+    'url' => 'https://zabbix.example',
+    'token' => 'your-zabbix-api-token',
+]);
 
 $hosts = $zabbix->hosts->get([
     'output' => ['hostid', 'host'],
@@ -39,6 +39,7 @@ $hosts = $zabbix->hosts->get([
 - [Error handling](docs/error-handling.md)
 - [API reference](docs/api-reference.md)
 - [Client architecture](docs/client-architecture.md)
+- [Development](docs/development.md)
 - [Changelog](CHANGELOG.md)
 
 ## License

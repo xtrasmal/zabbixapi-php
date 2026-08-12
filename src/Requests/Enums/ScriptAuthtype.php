@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Authentication method used for SSH script type. Supported if type is set to "SSH". Possible values: 0 - password; 1 - public key.

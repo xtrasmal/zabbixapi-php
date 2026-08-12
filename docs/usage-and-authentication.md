@@ -1,21 +1,23 @@
 # Usage and authentication
 
-`ZabbixApi::connect()` configures the Zabbix endpoint and optionally stores a bearer token.
+Configure the Zabbix endpoint and bearer token when the client is constructed.
 
 ```php
-use IntelliTrend\Zabbix\ZabbixApi;
+use Idiot\Zabbix\ZabbixApi;
 
-$zabbix = (new ZabbixApi())->connect(
-    zabUrl: 'https://zabbix.example',
-    zabToken: 'your-zabbix-api-token'
-);
+$zabbix = new ZabbixApi([
+    'url' => 'https://zabbix.example',
+    'token' => 'your-zabbix-api-token',
+]);
 
 $hosts = $zabbix->hosts->get([
     'output' => ['hostid', 'host'],
 ]);
 ```
 
-`connect()` validates the base URL and optional token, calls `apiinfo.version` once, and returns the same client instance.
+The constructor validates the base URL and optional token and stores the connection state for later calls. It does not send an HTTP request by itself.
+
+The client calls `apiinfo.version` once. When possible, that version probe is batched into the first real Zabbix request instead of being sent as a separate HTTP request.
 
 ## Bearer Tokens
 
@@ -29,48 +31,38 @@ The token is never placed in the JSON-RPC request body.
 
 ## `user.login`
 
-Zabbix still ships `user.login` as an official method. This library supports it as a request, not as the primary client setup API.
+Zabbix still ships `user.login` as an official method. This library can use it behind the scenes when username/password credentials are configured.
 
-If a bearer token is already configured, a `user.login` request object is skipped and the existing token is returned:
+Prefer bearer tokens:
 
 ```php
-use IntelliTrend\Zabbix\Requests\UserLoginRequest;
-
-$zabbix = (new ZabbixApi())->connect(
-    zabUrl: 'https://zabbix.example',
-    zabToken: 'existing-token'
-);
-
-$token = $zabbix->request(new UserLoginRequest(
-    username: 'Admin',
-    password: 'zabbix'
-));
+$zabbix = new ZabbixApi([
+    'url' => 'https://zabbix.example',
+    'token' => 'existing-token',
+]);
 ```
 
-If no bearer token is configured, `user.login` is sent unauthenticated and the returned token is stored for later calls:
+When only username/password credentials are configured, the first authenticated API call sends `user.login` unauthenticated, stores the returned token, and then sends the intended request with a bearer header:
 
 ```php
-use IntelliTrend\Zabbix\Requests\UserLoginRequest;
-
-$zabbix = (new ZabbixApi())->connect('https://zabbix.example');
-
-$token = $zabbix->request(new UserLoginRequest(
-    username: 'Admin',
-    password: 'zabbix'
-));
+$zabbix = new ZabbixApi([
+    'url' => 'https://zabbix.example',
+    'username' => 'Admin',
+    'password' => 'zabbix',
+]);
 
 $hosts = $zabbix->hosts->get([
     'output' => ['hostid', 'host'],
 ]);
 ```
 
-When `userData` is requested, Zabbix returns an object. The client stores `sessionid` as the bearer token and returns the original response array.
+If a bearer token is configured, username/password credentials are ignored and `user.login` is not sent.
 
 ## Laravel Singleton
 
 ```php
 use Illuminate\Foundation\Application;
-use IntelliTrend\Zabbix\ZabbixApi;
+use Idiot\Zabbix\ZabbixApi;
 use Psr\Log\LoggerInterface;
 
 public function register(): void
@@ -78,14 +70,17 @@ public function register(): void
     $this->app->singleton(
         abstract: ZabbixApi::class,
         concrete: function (Application $app): ZabbixApi {
-            return (new ZabbixApi(
+            $config = $app['config'];
+
+            return new ZabbixApi(
                 options: [
-                    'verify' => false,
+                    'url' => (string)$config->get('idiot-zabbix.server'),
+                    'token' => $config->get('idiot-zabbix.token'),
+                    'username' => $config->get('idiot-zabbix.username'),
+                    'password' => $config->get('idiot-zabbix.password'),
+                    'verify' => (bool)$config->get('idiot-zabbix.verify', true),
                 ],
                 logger: $app->make(LoggerInterface::class)
-            ))->connect(
-                zabUrl: (string) $app['config']['idiot-zabbix.server'],
-                zabToken: (string) $app['config']['idiot-zabbix.token']
             );
         }
     );

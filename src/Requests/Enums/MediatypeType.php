@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Transport used by the media type.  Possible values: 0 - Email; 1 - Script; 2 - SMS; 4 - Webhook.

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\TriggerCreateRequest;
-use IntelliTrend\Zabbix\Requests\TriggerDeleteRequest;
-use IntelliTrend\Zabbix\Requests\TriggerGetRequest;
-use IntelliTrend\Zabbix\Requests\TriggerUpdateRequest;
+use Idiot\Zabbix\Requests\TriggerCreateRequest;
+use Idiot\Zabbix\Requests\TriggerDeleteRequest;
+use Idiot\Zabbix\Requests\TriggerGetRequest;
+use Idiot\Zabbix\Requests\TriggerUpdateRequest;
 
 final class TriggerApi extends AbstractApi
 {

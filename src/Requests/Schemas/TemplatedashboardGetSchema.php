@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Schemas;
+namespace Idiot\Zabbix\Requests\Schemas;
 
-use IntelliTrend\Zabbix\Requests\RequestSchema;
+use Idiot\Zabbix\Requests\RequestSchema;
 
 final class TemplatedashboardGetSchema extends RequestSchema
 {

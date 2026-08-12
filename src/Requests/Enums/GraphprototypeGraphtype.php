@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Graph prototype's layout type. Possible values: 0 - (default) normal; 1 - stacked; 2 - pie; 3 - exploded.

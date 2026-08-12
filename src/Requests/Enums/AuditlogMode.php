@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Whether to enable audit logging of low-level discovery, network discovery and autoregistration activities performed by the server (System user). Possible values: 0 - Disable; 1 - (default) Enable.

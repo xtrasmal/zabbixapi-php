@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests;
+namespace Idiot\Zabbix\Requests;
 
 /**
  * sla.getsli - Calculate the Service Level Indicator (SLI) data for a Service Level Agreement (SLA).

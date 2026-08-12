@@ -1,6 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace IntelliTrend\Zabbix\Requests;
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Requests;
 
 /**
  * Maps a Zabbix method name to its generated request class.
@@ -246,10 +248,7 @@ final class StaticRequestRegistry implements ZabbixRequestRegistry
     {
         $requestClass = $this->requestClassFor($method);
 
-        if (
-            is_a($requestClass, AbstractZabbixRequest::class, true)
-            || is_a($requestClass, AbstractZabbixListRequest::class, true)
-        ) {
+        if (is_a($requestClass, AbstractZabbixRequest::class, true)) {
             return $requestClass::fromParams($params);
         }
 

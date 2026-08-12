@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\ServiceCreateRequest;
-use IntelliTrend\Zabbix\Requests\ServiceDeleteRequest;
-use IntelliTrend\Zabbix\Requests\ServiceGetRequest;
-use IntelliTrend\Zabbix\Requests\ServiceUpdateRequest;
+use Idiot\Zabbix\Requests\ServiceCreateRequest;
+use Idiot\Zabbix\Requests\ServiceDeleteRequest;
+use Idiot\Zabbix\Requests\ServiceGetRequest;
+use Idiot\Zabbix\Requests\ServiceUpdateRequest;
 
 final class ServiceApi extends AbstractApi
 {

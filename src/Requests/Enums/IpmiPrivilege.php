@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * IPMI privilege level. Possible values: 1 - callback; 2 - (default) user; 3 - operator; 4 - admin; 5 - OEM.

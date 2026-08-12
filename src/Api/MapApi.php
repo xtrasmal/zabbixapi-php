@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
-use IntelliTrend\Zabbix\Requests\MapCreateRequest;
-use IntelliTrend\Zabbix\Requests\MapDeleteRequest;
-use IntelliTrend\Zabbix\Requests\MapGetRequest;
-use IntelliTrend\Zabbix\Requests\MapUpdateRequest;
+use Idiot\Zabbix\Requests\MapCreateRequest;
+use Idiot\Zabbix\Requests\MapDeleteRequest;
+use Idiot\Zabbix\Requests\MapGetRequest;
+use Idiot\Zabbix\Requests\MapUpdateRequest;
 
 final class MapApi extends AbstractApi
 {

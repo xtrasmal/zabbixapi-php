@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Api;
+namespace Idiot\Zabbix\Api;
 
 final class ZabbixRequestApi
 {

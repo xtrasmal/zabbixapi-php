@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace IntelliTrend\Zabbix\Requests\Enums;
+namespace Idiot\Zabbix\Requests\Enums;
 
 /**
  * Source for visible name. Possible values: 0 - (default) not specified; 1 - DNS; 2 - IP; 3 - discovery value of this check.
