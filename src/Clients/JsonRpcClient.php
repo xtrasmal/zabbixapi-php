@@ -185,7 +185,7 @@ final class JsonRpcClient
      * Decode a JSON-RPC reply into one {@see JsonRpcResponse} per result, in the order
      * received.
      *
-     * @param JsonRpcEnvelope $payload
+     * @param array<string, mixed>|list<mixed> $payload
      *
      * @throws UnexpectedValueException on a non-conforming envelope.
      *
@@ -213,7 +213,7 @@ final class JsonRpcClient
     }
 
     /**
-     * @param JsonRpcObject $envelope
+     * @param array<string, mixed> $envelope
      */
     private function toResponse(array $envelope): JsonRpcResponse
     {
@@ -232,7 +232,11 @@ final class JsonRpcClient
             throw new UnexpectedValueException('JSON-RPC responses must contain exactly one of result or error.');
         }
 
-        $id = $this->normalizeId($envelope['id']);
+        $id = $envelope['id'];
+
+        if (!is_int($id) && !is_string($id) && null !== $id) {
+            throw new UnexpectedValueException('JSON-RPC response ids must be strings, integers, or null.');
+        }
 
         if ($hasError) {
             if (!is_array($envelope['error']) || array_is_list($envelope['error'])) {
@@ -247,15 +251,6 @@ final class JsonRpcClient
         }
 
         return JsonRpcResponse::fromResult($id, $envelope['result']);
-    }
-
-    private function normalizeId(array|bool|float|int|string|null $id): int|string|null
-    {
-        if (is_int($id) || is_string($id) || null === $id) {
-            return $id;
-        }
-
-        throw new UnexpectedValueException('JSON-RPC response ids must be strings, integers, or null.');
     }
 
     /**

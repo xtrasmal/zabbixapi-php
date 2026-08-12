@@ -505,6 +505,8 @@ final class JsonRpcClientTest extends TestCase
     public static function invalidIds(): iterable
     {
         yield 'boolean' => [true];
+        yield 'float' => [1.25];
+        yield 'array' => [[1]];
         yield 'object' => [['unexpected' => 'object']];
     }
 
