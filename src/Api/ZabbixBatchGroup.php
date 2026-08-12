@@ -16,11 +16,11 @@ use LogicException;
 final class ZabbixBatchGroup
 {
     /**
-     * @param TBuilder $requests
+     * @param TBuilder $builder
      */
     public function __construct(
         private readonly ZabbixBatch $batch,
-        private readonly object $requests,
+        private readonly object $builder,
     ) {}
 
     /** @param array<string, mixed>|ZabbixRequest $request */
@@ -67,20 +67,20 @@ final class ZabbixBatchGroup
 
     private function queue(string $name, array $arguments): ZabbixRequest
     {
-        if (!method_exists($this->requests, $name)) {
+        if (!method_exists($this->builder, $name)) {
             throw new BadMethodCallException(sprintf(
                 'Unknown Zabbix API helper %s::%s().',
-                $this->requests::class,
+                $this->builder::class,
                 $name,
             ));
         }
 
-        $request = $this->requests->{$name}(...$arguments);
+        $request = $this->builder->{$name}(...$arguments);
 
         if (!$request instanceof ZabbixRequest) {
             throw new LogicException(sprintf(
                 'Zabbix API helper %s::%s() must return a %s.',
-                $this->requests::class,
+                $this->builder::class,
                 $name,
                 ZabbixRequest::class,
             ));

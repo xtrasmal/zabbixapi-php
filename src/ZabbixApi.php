@@ -65,7 +65,6 @@ use Idiot\Zabbix\Api\UserMacroApi;
 use Idiot\Zabbix\Api\ValueMapApi;
 use Idiot\Zabbix\Api\ZabbixApiGroup;
 use Idiot\Zabbix\Api\ZabbixBatch;
-use Idiot\Zabbix\Api\ZabbixRequestApi;
 use Idiot\Zabbix\Clients\Credentials;
 use Idiot\Zabbix\Clients\HttpClient;
 use Idiot\Zabbix\Clients\JsonRpcClient;
@@ -75,6 +74,7 @@ use Idiot\Zabbix\Requests\UserLoginRequest;
 use Idiot\Zabbix\Requests\ZabbixRequest;
 use Idiot\Zabbix\Requests\ZabbixRequestValidator;
 use InvalidArgumentException;
+use LogicException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -270,28 +270,33 @@ class ZabbixApi
     private ?string $apiVersion = null;
     private JsonRpcClient $jsonRpcClient;
     private LoggerInterface $logger;
-    private ZabbixRequestApi $requests;
+
+    /** @var array<string, object> */
+    private array $requestBuilders;
+
     private ZabbixRequestValidator $requestValidator;
-    private ?UserLoginRequest $loginRequest = null;
+    private ?UserLoginRequest $loginRequest;
 
     /**
      * @param array<string, mixed> $options Zabbix options plus Guzzle request options.
+     *
+     * @throws ZabbixApiException
      */
     public function __construct(
         array $options = [],
         ?ClientInterface $httpClient = null,
         ?LoggerInterface $logger = null,
     ) {
-        $options = ZabbixApiOptions::fromArray($options);
-        $this->jsonRpcClient = new JsonRpcClient(new HttpClient($httpClient, $options->http), $logger);
+        $config = ZabbixApiOptions::fromArray($options);
+        $this->jsonRpcClient = new JsonRpcClient(new HttpClient($httpClient, $config->http), $logger);
         $this->logger = $logger ?? new NullLogger();
-        $this->requests = new ZabbixRequestApi();
+        $this->requestBuilders = $this->createRequestBuilders();
         $this->requestValidator = ZabbixRequestValidator::createDefault();
         $this->bindApiGroups();
-        $this->loginRequest = $options->login;
+        $this->loginRequest = $config->login;
 
-        if (null !== $options->url) {
-            $this->configure($options->url, $options->token);
+        if (null !== $config->url) {
+            $this->configure($config->url, $config->token);
         }
     }
 
@@ -357,6 +362,8 @@ class ZabbixApi
     /**
      * Queue several Zabbix API calls and send them as one JSON-RPC batch.
      *
+     * @throws ZabbixApiException
+     *
      * @return list<mixed>
      */
     public function batch(callable|ZabbixRequest ...$requests): array
@@ -407,78 +414,156 @@ class ZabbixApi
 
     private function bindApiGroups(): void
     {
-        $this->actions = $this->apiGroup($this->requests->actions);
-        $this->alerts = $this->apiGroup($this->requests->alerts);
-        $this->apiInfo = $this->apiGroup($this->requests->apiInfo);
-        $this->auditLogs = $this->apiGroup($this->requests->auditLogs);
-        $this->authentication = $this->apiGroup($this->requests->authentication);
-        $this->autoregistration = $this->apiGroup($this->requests->autoregistration);
-        $this->connectors = $this->apiGroup($this->requests->connectors);
-        $this->correlations = $this->apiGroup($this->requests->correlations);
-        $this->dashboards = $this->apiGroup($this->requests->dashboards);
-        $this->dchecks = $this->apiGroup($this->requests->dchecks);
-        $this->dhosts = $this->apiGroup($this->requests->dhosts);
-        $this->discoveryRules = $this->apiGroup($this->requests->discoveryRules);
-        $this->drules = $this->apiGroup($this->requests->drules);
-        $this->dservices = $this->apiGroup($this->requests->dservices);
-        $this->events = $this->apiGroup($this->requests->events);
-        $this->graphItems = $this->apiGroup($this->requests->graphItems);
-        $this->graphPrototypes = $this->apiGroup($this->requests->graphPrototypes);
-        $this->graphs = $this->apiGroup($this->requests->graphs);
-        $this->haNodes = $this->apiGroup($this->requests->haNodes);
-        $this->history = $this->apiGroup($this->requests->history);
-        $this->hostGroups = $this->apiGroup($this->requests->hostGroups);
-        $this->hostInterfaces = $this->apiGroup($this->requests->hostInterfaces);
-        $this->hostPrototypes = $this->apiGroup($this->requests->hostPrototypes);
-        $this->hosts = $this->apiGroup($this->requests->hosts);
-        $this->housekeeping = $this->apiGroup($this->requests->housekeeping);
-        $this->httpTests = $this->apiGroup($this->requests->httpTests);
-        $this->iconMaps = $this->apiGroup($this->requests->iconMaps);
-        $this->images = $this->apiGroup($this->requests->images);
-        $this->itemPrototypes = $this->apiGroup($this->requests->itemPrototypes);
-        $this->items = $this->apiGroup($this->requests->items);
-        $this->maintenance = $this->apiGroup($this->requests->maintenance);
-        $this->maps = $this->apiGroup($this->requests->maps);
-        $this->mediaTypes = $this->apiGroup($this->requests->mediaTypes);
-        $this->mfa = $this->apiGroup($this->requests->mfa);
-        $this->modules = $this->apiGroup($this->requests->modules);
-        $this->problems = $this->apiGroup($this->requests->problems);
-        $this->proxies = $this->apiGroup($this->requests->proxies);
-        $this->proxyGroups = $this->apiGroup($this->requests->proxyGroups);
-        $this->regexps = $this->apiGroup($this->requests->regexps);
-        $this->reports = $this->apiGroup($this->requests->reports);
-        $this->roles = $this->apiGroup($this->requests->roles);
-        $this->scripts = $this->apiGroup($this->requests->scripts);
-        $this->services = $this->apiGroup($this->requests->services);
-        $this->settings = $this->apiGroup($this->requests->settings);
-        $this->slas = $this->apiGroup($this->requests->slas);
-        $this->tasks = $this->apiGroup($this->requests->tasks);
-        $this->templateDashboards = $this->apiGroup($this->requests->templateDashboards);
-        $this->templateGroups = $this->apiGroup($this->requests->templateGroups);
-        $this->templates = $this->apiGroup($this->requests->templates);
-        $this->tokens = $this->apiGroup($this->requests->tokens);
-        $this->trends = $this->apiGroup($this->requests->trends);
-        $this->triggerPrototypes = $this->apiGroup($this->requests->triggerPrototypes);
-        $this->triggers = $this->apiGroup($this->requests->triggers);
-        $this->userDirectories = $this->apiGroup($this->requests->userDirectories);
-        $this->userGroups = $this->apiGroup($this->requests->userGroups);
-        $this->userMacros = $this->apiGroup($this->requests->userMacros);
-        $this->users = $this->apiGroup($this->requests->users);
-        $this->valueMaps = $this->apiGroup($this->requests->valueMaps);
+        $this->actions = $this->apiGroup($this->requestBuilder('actions'));
+        $this->alerts = $this->apiGroup($this->requestBuilder('alerts'));
+        $this->apiInfo = $this->apiGroup($this->requestBuilder('apiInfo'));
+        $this->auditLogs = $this->apiGroup($this->requestBuilder('auditLogs'));
+        $this->authentication = $this->apiGroup($this->requestBuilder('authentication'));
+        $this->autoregistration = $this->apiGroup($this->requestBuilder('autoregistration'));
+        $this->connectors = $this->apiGroup($this->requestBuilder('connectors'));
+        $this->correlations = $this->apiGroup($this->requestBuilder('correlations'));
+        $this->dashboards = $this->apiGroup($this->requestBuilder('dashboards'));
+        $this->dchecks = $this->apiGroup($this->requestBuilder('dchecks'));
+        $this->dhosts = $this->apiGroup($this->requestBuilder('dhosts'));
+        $this->discoveryRules = $this->apiGroup($this->requestBuilder('discoveryRules'));
+        $this->drules = $this->apiGroup($this->requestBuilder('drules'));
+        $this->dservices = $this->apiGroup($this->requestBuilder('dservices'));
+        $this->events = $this->apiGroup($this->requestBuilder('events'));
+        $this->graphItems = $this->apiGroup($this->requestBuilder('graphItems'));
+        $this->graphPrototypes = $this->apiGroup($this->requestBuilder('graphPrototypes'));
+        $this->graphs = $this->apiGroup($this->requestBuilder('graphs'));
+        $this->haNodes = $this->apiGroup($this->requestBuilder('haNodes'));
+        $this->history = $this->apiGroup($this->requestBuilder('history'));
+        $this->hostGroups = $this->apiGroup($this->requestBuilder('hostGroups'));
+        $this->hostInterfaces = $this->apiGroup($this->requestBuilder('hostInterfaces'));
+        $this->hostPrototypes = $this->apiGroup($this->requestBuilder('hostPrototypes'));
+        $this->hosts = $this->apiGroup($this->requestBuilder('hosts'));
+        $this->housekeeping = $this->apiGroup($this->requestBuilder('housekeeping'));
+        $this->httpTests = $this->apiGroup($this->requestBuilder('httpTests'));
+        $this->iconMaps = $this->apiGroup($this->requestBuilder('iconMaps'));
+        $this->images = $this->apiGroup($this->requestBuilder('images'));
+        $this->itemPrototypes = $this->apiGroup($this->requestBuilder('itemPrototypes'));
+        $this->items = $this->apiGroup($this->requestBuilder('items'));
+        $this->maintenance = $this->apiGroup($this->requestBuilder('maintenance'));
+        $this->maps = $this->apiGroup($this->requestBuilder('maps'));
+        $this->mediaTypes = $this->apiGroup($this->requestBuilder('mediaTypes'));
+        $this->mfa = $this->apiGroup($this->requestBuilder('mfa'));
+        $this->modules = $this->apiGroup($this->requestBuilder('modules'));
+        $this->problems = $this->apiGroup($this->requestBuilder('problems'));
+        $this->proxies = $this->apiGroup($this->requestBuilder('proxies'));
+        $this->proxyGroups = $this->apiGroup($this->requestBuilder('proxyGroups'));
+        $this->regexps = $this->apiGroup($this->requestBuilder('regexps'));
+        $this->reports = $this->apiGroup($this->requestBuilder('reports'));
+        $this->roles = $this->apiGroup($this->requestBuilder('roles'));
+        $this->scripts = $this->apiGroup($this->requestBuilder('scripts'));
+        $this->services = $this->apiGroup($this->requestBuilder('services'));
+        $this->settings = $this->apiGroup($this->requestBuilder('settings'));
+        $this->slas = $this->apiGroup($this->requestBuilder('slas'));
+        $this->tasks = $this->apiGroup($this->requestBuilder('tasks'));
+        $this->templateDashboards = $this->apiGroup($this->requestBuilder('templateDashboards'));
+        $this->templateGroups = $this->apiGroup($this->requestBuilder('templateGroups'));
+        $this->templates = $this->apiGroup($this->requestBuilder('templates'));
+        $this->tokens = $this->apiGroup($this->requestBuilder('tokens'));
+        $this->trends = $this->apiGroup($this->requestBuilder('trends'));
+        $this->triggerPrototypes = $this->apiGroup($this->requestBuilder('triggerPrototypes'));
+        $this->triggers = $this->apiGroup($this->requestBuilder('triggers'));
+        $this->userDirectories = $this->apiGroup($this->requestBuilder('userDirectories'));
+        $this->userGroups = $this->apiGroup($this->requestBuilder('userGroups'));
+        $this->userMacros = $this->apiGroup($this->requestBuilder('userMacros'));
+        $this->users = $this->apiGroup($this->requestBuilder('users'));
+        $this->valueMaps = $this->apiGroup($this->requestBuilder('valueMaps'));
+    }
+
+    private function requestBuilder(string $name): object
+    {
+        return $this->requestBuilders[$name] ?? throw new LogicException(sprintf(
+            'Unknown Zabbix API group %s.',
+            $name,
+        ));
+    }
+
+    /**
+     * @return array<string, object>
+     */
+    private function createRequestBuilders(): array
+    {
+        return [
+            'actions' => new ActionApi(),
+            'alerts' => new AlertApi(),
+            'apiInfo' => new ApiInfoApi(),
+            'auditLogs' => new AuditLogApi(),
+            'authentication' => new AuthenticationApi(),
+            'autoregistration' => new AutoregistrationApi(),
+            'connectors' => new ConnectorApi(),
+            'correlations' => new CorrelationApi(),
+            'dashboards' => new DashboardApi(),
+            'dchecks' => new DCheckApi(),
+            'dhosts' => new DHostApi(),
+            'discoveryRules' => new DiscoveryRuleApi(),
+            'drules' => new DRuleApi(),
+            'dservices' => new DServiceApi(),
+            'events' => new EventApi(),
+            'graphItems' => new GraphItemApi(),
+            'graphPrototypes' => new GraphPrototypeApi(),
+            'graphs' => new GraphApi(),
+            'haNodes' => new HaNodeApi(),
+            'history' => new HistoryApi(),
+            'hostGroups' => new HostGroupApi(),
+            'hostInterfaces' => new HostInterfaceApi(),
+            'hostPrototypes' => new HostPrototypeApi(),
+            'hosts' => new HostApi(),
+            'housekeeping' => new HousekeepingApi(),
+            'httpTests' => new HttpTestApi(),
+            'iconMaps' => new IconMapApi(),
+            'images' => new ImageApi(),
+            'itemPrototypes' => new ItemPrototypeApi(),
+            'items' => new ItemApi(),
+            'maintenance' => new MaintenanceApi(),
+            'maps' => new MapApi(),
+            'mediaTypes' => new MediaTypeApi(),
+            'mfa' => new MfaApi(),
+            'modules' => new ModuleApi(),
+            'problems' => new ProblemApi(),
+            'proxies' => new ProxyApi(),
+            'proxyGroups' => new ProxyGroupApi(),
+            'regexps' => new RegexpApi(),
+            'reports' => new ReportApi(),
+            'roles' => new RoleApi(),
+            'scripts' => new ScriptApi(),
+            'services' => new ServiceApi(),
+            'settings' => new SettingsApi(),
+            'slas' => new SlaApi(),
+            'tasks' => new TaskApi(),
+            'templateDashboards' => new TemplateDashboardApi(),
+            'templateGroups' => new TemplateGroupApi(),
+            'templates' => new TemplateApi(),
+            'tokens' => new TokenApi(),
+            'trends' => new TrendApi(),
+            'triggerPrototypes' => new TriggerPrototypeApi(),
+            'triggers' => new TriggerApi(),
+            'userDirectories' => new UserDirectoryApi(),
+            'userGroups' => new UserGroupApi(),
+            'userMacros' => new UserMacroApi(),
+            'users' => new UserApi(),
+            'valueMaps' => new ValueMapApi(),
+        ];
     }
 
     /**
      * @template TBuilder of object
      *
-     * @param TBuilder $requests
+     * @param TBuilder $builder
      *
      * @return ZabbixApiGroup<TBuilder>
      */
-    private function apiGroup(object $requests): ZabbixApiGroup
+    private function apiGroup(object $builder): ZabbixApiGroup
     {
-        return new ZabbixApiGroup($this, $requests);
+        return new ZabbixApiGroup($this, $builder);
     }
 
+    /**
+     * @throws ZabbixApiException
+     */
     private function logConfiguration(): void
     {
         $this->logger->debug('Configured Zabbix HTTP client.', [
@@ -487,6 +572,9 @@ class ZabbixApi
         ]);
     }
 
+    /**
+     * @throws ZabbixApiException
+     */
     private function send(string $method, array $params = []): Clients\JsonRpcResponse
     {
         $bearerToken = $this->bearerTokenFor($method);
@@ -504,6 +592,9 @@ class ZabbixApi
         );
     }
 
+    /**
+     * @throws ZabbixApiException
+     */
     private function sendWithApiVersion(
         string $method,
         array $params,
@@ -543,7 +634,7 @@ class ZabbixApi
     private function collectBatchRequests(array $requests): array
     {
         if (1 === count($requests) && is_callable($requests[0]) && !$requests[0] instanceof ZabbixRequest) {
-            $batch = new ZabbixBatch($this->requests);
+            $batch = new ZabbixBatch($this->requestBuilders);
             $requests[0]($batch);
 
             return $batch->queuedRequests();
@@ -560,6 +651,8 @@ class ZabbixApi
 
     /**
      * @param list<ZabbixRequest> $requests
+     *
+     * @throws ZabbixApiException
      *
      * @return list<JsonRpcResponse>
      */
@@ -617,7 +710,11 @@ class ZabbixApi
         return false;
     }
 
-    /** @param list<ZabbixRequest> $requests */
+    /**
+     * @param list<ZabbixRequest> $requests
+     *
+     * @throws ZabbixApiException
+     */
     private function bearerTokenForBatch(array $requests): ?string
     {
         foreach ($requests as $request) {
@@ -629,16 +726,25 @@ class ZabbixApi
         return null;
     }
 
+    /**
+     * @throws ZabbixApiException
+     */
     private function bearerTokenFor(string $method): ?string
     {
         return in_array($method, self::UNAUTHENTICATED_METHODS, true) ? null : $this->requireBearerToken();
     }
 
+    /**
+     * @throws ZabbixApiException
+     */
     private function endpoint(): string
     {
         return $this->requireCredentials()->endpoint();
     }
 
+    /**
+     * @throws ZabbixApiException
+     */
     private function requireCredentials(): Credentials
     {
         if (null === $this->credentials) {
@@ -648,6 +754,9 @@ class ZabbixApi
         return $this->credentials;
     }
 
+    /**
+     * @throws ZabbixApiException
+     */
     private function requireBearerToken(): string
     {
         $bearerToken = $this->requireCredentials()->bearerToken;
@@ -681,10 +790,17 @@ class ZabbixApi
         return $result;
     }
 
+    /**
+     * @throws ZabbixApiException
+     */
     private function storeBearerTokenFromLoginResult(mixed $result): void
     {
         $credentials = $this->requireCredentials();
-        $bearerToken = is_string($result) ? $result : (is_array($result) ? ($result['sessionid'] ?? null) : null);
+        $bearerToken = is_string($result) ? $result : null;
+
+        if (null === $bearerToken && is_array($result)) {
+            $bearerToken = $result['sessionid'] ?? null;
+        }
 
         if (!is_string($bearerToken) || '' === trim($bearerToken)) {
             throw new ZabbixApiException('user.login did not return an authentication token.', self::EXCEPTION_CLASS_CODE_AUTH);

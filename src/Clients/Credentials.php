@@ -14,6 +14,9 @@ final class Credentials
         public readonly ?string $bearerToken = null,
     ) {}
 
+    /**
+     * @throws ZabbixApiException
+     */
     public function withBearerToken(string $bearerToken): self
     {
         if ('' === trim($bearerToken)) {

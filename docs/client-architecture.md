@@ -7,7 +7,6 @@ The client stack is split by responsibility:
 - `Idiot\Zabbix\ZabbixApi`
 - `Idiot\Zabbix\Api\ZabbixApiGroup`
 - `Idiot\Zabbix\Api\ZabbixBatch`
-- `Idiot\Zabbix\Api\ZabbixRequestApi`
 - `Idiot\Zabbix\Requests\RequestFactory`
 - `Idiot\Zabbix\Clients\JsonRpcRequest`
 - `Idiot\Zabbix\Clients\JsonRpcResponse`
@@ -28,6 +27,6 @@ The client stack is split by responsibility:
 
 `JsonFileSchemaProvider` loads bundled Zabbix 7.0 JSON schemas from `schemas/7.0` for validation. The JSON files are the schema source of truth; generated PHP schema classes are not part of the runtime API.
 
-`ZabbixRequestApi` contains the internal request-builder facade used by the bound API groups and batch accumulator.
+Generated request-builder objects are private implementation details owned by `ZabbixApi`. They are shared with `ZabbixBatch` so the same grouped method names work in immediate and deferred execution without exposing a separate request API.
 
 Generated request classes stay behind these smaller APIs for normal application code.

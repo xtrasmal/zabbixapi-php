@@ -20,6 +20,8 @@ final class ZabbixApiOptions
 
     /**
      * @param array<string, mixed> $options
+     *
+     * @throws ZabbixApiException
      */
     public static function fromArray(array $options): self
     {
@@ -63,6 +65,11 @@ final class ZabbixApiOptions
 
     /**
      * @param array<string, mixed> $options
+     * @param string               $key
+     *
+     * @throws ZabbixApiException
+     *
+     * @return string|null
      */
     private static function optionalString(array $options, string $key): ?string
     {
@@ -88,6 +95,8 @@ final class ZabbixApiOptions
 
     /**
      * @param array<string, mixed> $options
+     *
+     * @throws ZabbixApiException
      *
      * @return array<string, mixed>
      */

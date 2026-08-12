@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Idiot\Zabbix\Api;
 
 use Idiot\Zabbix\Requests\ZabbixRequest;
+use LogicException;
 use OutOfBoundsException;
 
 /**
@@ -12,7 +13,8 @@ use OutOfBoundsException;
  */
 final class ZabbixBatch
 {
-    private ZabbixRequestApi $requests;
+    /** @var array<string, object> */
+    private array $requestBuilders;
 
     /** @var array<string, ZabbixBatchGroup> */
     private array $groups = [];
@@ -20,9 +22,12 @@ final class ZabbixBatch
     /** @var list<ZabbixRequest> */
     private array $queued = [];
 
-    public function __construct(?ZabbixRequestApi $requests = null)
+    /**
+     * @param array<string, object> $requestBuilders
+     */
+    public function __construct(array $requestBuilders)
     {
-        $this->requests = $requests ?? new ZabbixRequestApi();
+        $this->requestBuilders = $requestBuilders;
     }
 
     public function add(ZabbixRequest $request): ZabbixRequest
@@ -38,12 +43,22 @@ final class ZabbixBatch
         return $this->queued;
     }
 
+    public function __set(string $name, mixed $_value): void
+    {
+        throw new LogicException(sprintf('Zabbix API batch group %s is read-only.', $name));
+    }
+
     public function __get(string $name): ZabbixBatchGroup
     {
-        if (!property_exists($this->requests, $name)) {
+        if (!array_key_exists($name, $this->requestBuilders)) {
             throw new OutOfBoundsException(sprintf('Unknown Zabbix API group %s.', $name));
         }
 
-        return $this->groups[$name] ??= new ZabbixBatchGroup($this, $this->requests->{$name});
+        return $this->groups[$name] ??= new ZabbixBatchGroup($this, $this->requestBuilders[$name]);
+    }
+
+    public function __isset(string $name): bool
+    {
+        return array_key_exists($name, $this->requestBuilders);
     }
 }
