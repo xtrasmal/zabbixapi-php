@@ -1,6 +1,6 @@
 {
     "name": "intellitrend/zabbixapi",
-    "description": "Zabbix API client for PHP with session cache and SSL management",
+    "description": "Token-only Zabbix JSON-RPC API client for PHP",
     "type": "library",
     "require": {
         "php": ">=8.1",
