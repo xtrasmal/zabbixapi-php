@@ -210,6 +210,53 @@ final class ZabbixApiTest extends TestCase
         ], json_decode((string)$history[1]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR));
     }
 
+    public function testDomainApiPropertiesBuildAndExecuteRequests(): void
+    {
+        $history = [];
+        $api = new ZabbixApi(httpClient: self::guzzle([
+            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
+            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":[{"hostid":"10105","host":"srv-01"}]}'),
+        ], $history));
+
+        $api->connect('https://zabbix.example', 'secret');
+
+        self::assertSame(
+            [['hostid' => '10105', 'host' => 'srv-01']],
+            $api->hosts->get([
+                'output' => ['hostid', 'host'],
+                'filter' => ['host' => ['srv-01']],
+            ])
+        );
+
+        self::assertSame([
+            'jsonrpc' => '2.0',
+            'method' => 'host.get',
+            'id' => 1,
+            'params' => [
+                'output' => ['hostid', 'host'],
+                'filter' => ['host' => ['srv-01']],
+            ],
+        ], json_decode((string)$history[1]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR));
+    }
+
+    public function testRequestBuildersRemainAvailableForComposedRequests(): void
+    {
+        $api = new ZabbixApi();
+
+        $request = $api
+            ->requests()
+            ->hosts
+            ->get()
+            ->filter(['host' => ['srv-01']])
+            ->output(['hostid', 'host']);
+
+        self::assertInstanceOf(HostGetRequest::class, $request);
+        self::assertSame([
+            'filter' => ['host' => ['srv-01']],
+            'output' => ['hostid', 'host'],
+        ], $request->params());
+    }
+
     public function testCallConvertsJsonRpcErrorsToExceptions(): void
     {
         $history = [];

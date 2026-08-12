@@ -26,8 +26,8 @@ $zabbix = (new ZabbixApi())->connect(
     zabToken: 'your-zabbix-api-token'
 );
 
-$count = $zabbix->call('host.get', [
-    'countOutput' => true,
+$hosts = $zabbix->hosts->get([
+    'output' => ['hostid', 'host'],
 ]);
 ```
 

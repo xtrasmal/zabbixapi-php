@@ -10,7 +10,7 @@ $zabbix = (new ZabbixApi())->connect(
     zabToken: 'your-zabbix-api-token'
 );
 
-$hosts = $zabbix->call('host.get', [
+$hosts = $zabbix->hosts->get([
     'output' => ['hostid', 'host'],
 ]);
 ```
@@ -59,7 +59,7 @@ $token = $zabbix->request(new UserLoginRequest(
     password: 'zabbix'
 ));
 
-$hosts = $zabbix->call('host.get', [
+$hosts = $zabbix->hosts->get([
     'output' => ['hostid', 'host'],
 ]);
 ```
