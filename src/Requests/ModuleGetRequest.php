@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * module.get - Retrieve modules according to the given parameters.
  */
-final class ModuleGetRequest extends AbstractZabbixFilteredGetRequest
+final class ModuleGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public string|array|null $moduleids = null,

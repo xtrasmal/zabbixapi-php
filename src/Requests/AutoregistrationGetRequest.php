@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * autoregistration.get - Retrieve autoregistration settings. Restricted to users with Super admin status.
  */
-final class AutoregistrationGetRequest extends AbstractZabbixGetRequest
+final class AutoregistrationGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public array|string|null $output = null,

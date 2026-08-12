@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * item.get - Retrieve items according to the given parameters.
  */
-final class ItemGetRequest extends AbstractZabbixFilteredGetRequest
+final class ItemGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public string|array|null $itemids = null,

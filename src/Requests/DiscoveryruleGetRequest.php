@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * discoveryrule.get - Retrieve LLD rules according to the given parameters.
  */
-final class DiscoveryruleGetRequest extends AbstractZabbixFilteredGetRequest
+final class DiscoveryruleGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public string|array|null $itemids = null,

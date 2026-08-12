@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * task.get - Retrieve tasks according to the given parameters. Only available to Super admin user type.
  */
-final class TaskGetRequest extends AbstractZabbixGetRequest
+final class TaskGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public string|array|null $taskids = null,

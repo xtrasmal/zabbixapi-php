@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * action.get - Retrieve actions according to the given parameters.
  */
-final class ActionGetRequest extends AbstractZabbixFilteredGetRequest
+final class ActionGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public string|array|null $actionids = null,

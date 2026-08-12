@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * image.get - Retrieve images according to the given parameters.
  */
-final class ImageGetRequest extends AbstractZabbixFilteredGetRequest
+final class ImageGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public string|array|null $imageids = null,

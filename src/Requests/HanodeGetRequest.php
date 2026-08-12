@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * hanode.get - Retrieve a list of High availability cluster nodes according to the given parameters. Only available to Super admin user types.
  */
-final class HanodeGetRequest extends AbstractZabbixFilteredGetRequest
+final class HanodeGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public string|array|null $ha_nodeids = null,

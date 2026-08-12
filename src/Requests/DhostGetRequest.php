@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * dhost.get - Retrieve discovered hosts according to the given parameters.
  */
-final class DhostGetRequest extends AbstractZabbixFilteredGetRequest
+final class DhostGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public string|array|null $dhostids = null,

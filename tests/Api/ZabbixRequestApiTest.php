@@ -55,11 +55,15 @@ final class ZabbixRequestApiTest extends TestCase
         self::assertSame(['output' => 'extend'], $request->params());
     }
 
-    public function testOnlyFilteredGetRequestsExposeFilterConvenience(): void
+    public function testObjectRequestsExposeSharedFluentParams(): void
     {
         $api = new ZabbixRequestApi();
 
         self::assertTrue(method_exists($api->hosts->get(), 'filter'));
-        self::assertFalse(method_exists($api->settings->get(), 'filter'));
+        self::assertTrue(method_exists($api->settings->get(), 'filter'));
+        self::assertSame([
+            'filter' => ['host' => ['srv-01']],
+            'output' => ['hostid'],
+        ], $api->hosts->get()->filter(['host' => ['srv-01']])->output(['hostid'])->params());
     }
 }

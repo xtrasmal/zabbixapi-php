@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * drule.get - Retrieve network discovery rules according to the given parameters.
  */
-final class DruleGetRequest extends AbstractZabbixFilteredGetRequest
+final class DruleGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public string|array|null $dhostids = null,

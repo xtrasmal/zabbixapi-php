@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * script.get - Retrieve scripts according to the given parameters.
  */
-final class ScriptGetRequest extends AbstractZabbixFilteredGetRequest
+final class ScriptGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public string|array|null $groupids = null,

@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * token.get - Retrieve tokens according to the given parameters.
  */
-final class TokenGetRequest extends AbstractZabbixFilteredGetRequest
+final class TokenGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public string|array|null $tokenids = null,

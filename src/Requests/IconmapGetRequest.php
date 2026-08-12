@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * iconmap.get - Retrieve icon maps according to the given parameters.
  */
-final class IconmapGetRequest extends AbstractZabbixFilteredGetRequest
+final class IconmapGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public string|array|null $iconmapids = null,

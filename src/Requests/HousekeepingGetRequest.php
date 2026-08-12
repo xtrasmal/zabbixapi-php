@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * housekeeping.get - Retrieve housekeeping object according to the given parameters.
  */
-final class HousekeepingGetRequest extends AbstractZabbixGetRequest
+final class HousekeepingGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public array|string|null $output = null,

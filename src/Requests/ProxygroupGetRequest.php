@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * proxygroup.get - Retrieve proxy groups according to the given parameters.
  */
-final class ProxygroupGetRequest extends AbstractZabbixFilteredGetRequest
+final class ProxygroupGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public string|array|null $proxy_groupids = null,

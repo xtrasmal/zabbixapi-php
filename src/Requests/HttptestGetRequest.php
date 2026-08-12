@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * httptest.get - Retrieve web scenarios according to the given parameters.
  */
-final class HttptestGetRequest extends AbstractZabbixFilteredGetRequest
+final class HttptestGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public string|array|null $groupids = null,

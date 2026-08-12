@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * usergroup.get - Retrieve user groups according to the given parameters.
  */
-final class UsergroupGetRequest extends AbstractZabbixFilteredGetRequest
+final class UsergroupGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public string|array|null $mfaids = null,

@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * mfa.get - Retrieve MFA methods according to the given parameters.
  */
-final class MfaGetRequest extends AbstractZabbixFilteredGetRequest
+final class MfaGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public string|array|null $mfaids = null,

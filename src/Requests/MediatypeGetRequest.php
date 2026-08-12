@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * mediatype.get - Retrieve media types according to the given parameters.
  */
-final class MediatypeGetRequest extends AbstractZabbixFilteredGetRequest
+final class MediatypeGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public string|array|null $mediatypeids = null,

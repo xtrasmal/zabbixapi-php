@@ -32,6 +32,22 @@ abstract class AbstractZabbixRequest implements ZabbixRequest
         return static::fromParams(array_replace($this->params(), [$name => $value]));
     }
 
+    final public function with(string $name, mixed $value): static
+    {
+        return $this->withParam($name, $value);
+    }
+
+    /** @param array<string, mixed> $filter */
+    final public function filter(array $filter): static
+    {
+        return $this->withParam('filter', $filter);
+    }
+
+    final public function output(array|string|\BackedEnum|null $output): static
+    {
+        return $this->withParam('output', $output);
+    }
+
     final public function params(): array
     {
         if ($this->manualParams !== null) {

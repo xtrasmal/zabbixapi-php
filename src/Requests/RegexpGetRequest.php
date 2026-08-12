@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * regexp.get - Retrieve global regular expressions according to the given parameters.
  */
-final class RegexpGetRequest extends AbstractZabbixFilteredGetRequest
+final class RegexpGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public string|array|null $regexpids = null,

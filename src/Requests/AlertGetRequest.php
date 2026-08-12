@@ -5,7 +5,7 @@ namespace IntelliTrend\Zabbix\Requests;
 /**
  * alert.get - Retrieve alerts according to the given parameters.
  */
-final class AlertGetRequest extends AbstractZabbixFilteredGetRequest
+final class AlertGetRequest extends AbstractZabbixRequest
 {
     public function __construct(
         public string|array|null $alertids = null,
