@@ -7,13 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class RegexpUpdateRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public string $regexpid,
-        public ?string $name = null,
-        public ?string $test_string = null,
-        public ?array $expressions = null,
-    ) {}
-
     public function method(): string
     {
         return 'regexp.update';

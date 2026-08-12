@@ -7,11 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class HostgroupMassupdateRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public array $groups,
-        public array $hosts,
-    ) {}
-
     public function method(): string
     {
         return 'hostgroup.massupdate';

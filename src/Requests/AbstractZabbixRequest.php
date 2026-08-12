@@ -4,28 +4,24 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Requests;
 
-use ReflectionException;
+use Idiot\Zabbix\Requests\Schemas\StaticSchemaRegistry;
 
 /**
- * Base for generated Zabbix requests. Object-shaped requests collect every
- * non-null public property into a plain array; list-shaped requests pass their
- * payload through as the JSON-RPC params array. Constructor values are already
- * wire-ready scalars and arrays; normalization only unwraps backed enums and
- * ZabbixParameter values.
+ * Base for generated Zabbix requests. Requests are method-specific envelopes
+ * around the plain Zabbix params array; the compiled schema registry owns the
+ * method shape and validation rules.
  */
 abstract class AbstractZabbixRequest implements ZabbixRequest
 {
     /** @var array<string, mixed>|list<mixed>|null */
-    private ?array $manualParams = null;
+    private array $params;
 
     /**
      * @param array<string, mixed>|list<mixed> $payload
      */
-    public function __construct(array $payload = [])
+    final protected function __construct(array $payload = [])
     {
-        if ($this->paramsAreList()) {
-            $this->manualParams = $payload;
-        }
+        $this->params = $this->shape($payload);
     }
 
     final public function with(string $name, mixed $value): static
@@ -46,45 +42,27 @@ abstract class AbstractZabbixRequest implements ZabbixRequest
 
     final public function params(): array
     {
-        if (null !== $this->manualParams) {
-            return $this->shape($this->manualParams);
-        }
-
-        $params = [];
-        foreach (get_object_vars($this) as $name => $value) {
-            if ('manualParams' === $name) {
-                continue;
-            }
-            if (null === $value) {
-                continue;
-            }
-            $params[$name] = $this->normalize($value);
-        }
-
-        return $this->shape($params);
+        return $this->params;
     }
 
     final public function paramsAreList(): bool
     {
-        /** @var array<class-string, bool> $listParamsByClass */
-        static $listParamsByClass = [];
+        /** @var array<string, bool> $listParamsByMethod */
+        static $listParamsByMethod = [];
 
-        return $listParamsByClass[static::class] ??= $this->constructorAcceptsListPayload();
+        return $listParamsByMethod[$this->method()] ??= (new StaticSchemaRegistry())
+            ->schemaFor($this->method())
+            ->paramsAreList();
     }
 
     /**
      * Build a request directly from the method's manual-shaped params.
      *
      * @param array<string, mixed>|list<mixed> $params
-     *
-     * @throws ReflectionException
      */
     final public static function fromParams(array $params): static
     {
-        $request = (new \ReflectionClass(static::class))->newInstanceWithoutConstructor();
-        $request->manualParams = $params;
-
-        return $request;
+        return new static($params);
     }
 
     final protected function withParam(string $name, mixed $value): static
@@ -99,30 +77,7 @@ abstract class AbstractZabbixRequest implements ZabbixRequest
      */
     private function shape(array $params): array
     {
-        $params = $this->normalize($params);
-
-        return $this->paramsAreList() ? array_values($params) : $params;
-    }
-
-    private function constructorAcceptsListPayload(): bool
-    {
-        $constructor = (new \ReflectionClass(static::class))->getConstructor();
-
-        if (null === $constructor || static::class !== $constructor->getDeclaringClass()->getName()) {
-            return false;
-        }
-
-        $parameters = $constructor->getParameters();
-
-        if (1 !== count($parameters)) {
-            return false;
-        }
-
-        $parameter = $parameters[0];
-
-        return !$parameter->isPromoted()
-            && $parameter->hasType()
-            && 'array' === (string)$parameter->getType();
+        return $this->normalize($params);
     }
 
     private function normalize(mixed $value): mixed

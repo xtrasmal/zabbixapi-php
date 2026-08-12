@@ -7,11 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class HostinterfaceReplacehostinterfacesRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public array $interfaces,
-        public string $hostid,
-    ) {}
-
     public function method(): string
     {
         return 'hostinterface.replacehostinterfaces';

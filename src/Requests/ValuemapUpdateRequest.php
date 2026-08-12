@@ -7,14 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class ValuemapUpdateRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public string $valuemapid,
-        public ?string $hostid = null,
-        public ?string $name = null,
-        public ?array $mappings = null,
-        public ?string $uuid = null,
-    ) {}
-
     public function method(): string
     {
         return 'valuemap.update';

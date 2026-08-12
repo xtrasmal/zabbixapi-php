@@ -53,7 +53,10 @@ final class ZabbixApiOptions
         return new self(
             url: $url,
             token: $token,
-            login: null === $username ? null : new UserLoginRequest($username, $password),
+            login: null === $username ? null : UserLoginRequest::fromParams([
+                'username' => $username,
+                'password' => $password,
+            ]),
             http: $http,
         );
     }

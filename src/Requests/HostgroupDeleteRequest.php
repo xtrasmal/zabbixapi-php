@@ -4,12 +4,6 @@ namespace Idiot\Zabbix\Requests;
 
 final class HostgroupDeleteRequest extends AbstractZabbixRequest
 {
-    /** @param list<HostgroupId> $ids */
-    public function __construct(array $ids)
-    {
-        parent::__construct($ids);
-    }
-
     public function method(): string
     {
         return 'hostgroup.delete';

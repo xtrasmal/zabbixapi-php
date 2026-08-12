@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Tests\Requests;
 
 use Idiot\Zabbix\Requests\AbstractZabbixRequest;
+use Idiot\Zabbix\Requests\HistoryPushRequest;
+use Idiot\Zabbix\Requests\HostDeleteRequest;
+use Idiot\Zabbix\Requests\HostGetRequest;
 use Idiot\Zabbix\Requests\InvalidZabbixRequest;
 use Idiot\Zabbix\Requests\RequestSchema;
 use Idiot\Zabbix\Requests\Schemas\StaticSchemaRegistry;
@@ -97,6 +100,47 @@ final class ZabbixApiMethodSchemaTest extends TestCase
             'username' => 'api-user',
             'password' => 'secret',
         ], $request->params());
+    }
+
+    public function testGeneratedRequestsDoNotExposePublicConstructors(): void
+    {
+        $requestFiles = glob(__DIR__ . '/../../src/Requests/*Request.php');
+        self::assertIsArray($requestFiles);
+
+        foreach ($requestFiles as $requestFile) {
+            $shortName = basename($requestFile, '.php');
+            if ('ZabbixRequest' === $shortName) {
+                continue;
+            }
+
+            $class = 'Idiot\\Zabbix\\Requests\\' . $shortName;
+
+            self::assertTrue(class_exists($class), sprintf('Request class %s does not exist.', $class));
+            if (!is_subclass_of($class, AbstractZabbixRequest::class)) {
+                continue;
+            }
+
+            $constructor = (new \ReflectionClass($class))->getConstructor();
+
+            self::assertNotNull($constructor, sprintf('%s must inherit the base params constructor.', $class));
+            self::assertSame(
+                AbstractZabbixRequest::class,
+                $constructor->getDeclaringClass()->getName(),
+                sprintf('%s must not declare its own constructor.', $class),
+            );
+            self::assertFalse($constructor->isPublic(), sprintf('%s constructor must not be public API.', $class));
+        }
+    }
+
+    public function testRequestRootShapeComesFromSchema(): void
+    {
+        self::assertFalse(HostGetRequest::fromParams([])->paramsAreList());
+        self::assertTrue(HostDeleteRequest::fromParams(['10105'])->paramsAreList());
+        self::assertFalse(HistoryPushRequest::fromParams([
+            'host' => 'srv-01',
+            'key' => 'trap.value',
+            'value' => 17,
+        ])->paramsAreList());
     }
 
     public function testStaticRequestRegistryRejectsUnknownMethods(): void

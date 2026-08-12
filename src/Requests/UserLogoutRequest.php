@@ -4,12 +4,6 @@ namespace Idiot\Zabbix\Requests;
 
 final class UserLogoutRequest extends AbstractZabbixRequest
 {
-    /** @param list<UserId> $ids */
-    public function __construct(array $ids)
-    {
-        parent::__construct($ids);
-    }
-
     public function method(): string
     {
         return 'user.logout';

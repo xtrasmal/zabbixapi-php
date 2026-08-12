@@ -7,12 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class TaskCreateRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public Enums\TaskType $type,
-        public array $request,
-        public ?string $proxyid = null,
-    ) {}
-
     public function method(): string
     {
         return 'task.create';

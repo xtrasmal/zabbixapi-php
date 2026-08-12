@@ -7,12 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class UserCheckAuthenticationRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public ?bool $extend = null,
-        public ?string $sessionid = null,
-        public ?string $token = null,
-    ) {}
-
     public function method(): string
     {
         return 'user.checkAuthentication';

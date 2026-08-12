@@ -7,11 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class HostgroupMassaddRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public array $groups,
-        public ?array $hosts = null,
-    ) {}
-
     public function method(): string
     {
         return 'hostgroup.massadd';

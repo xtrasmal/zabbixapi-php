@@ -7,14 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class ProxygroupUpdateRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public string $proxy_groupid,
-        public ?string $name = null,
-        public ?string $description = null,
-        public ?string $failover_delay = null,
-        public ?string $min_online = null,
-    ) {}
-
     public function method(): string
     {
         return 'proxygroup.update';

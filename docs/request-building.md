@@ -125,4 +125,4 @@ $request = $zabbix->requests()->hosts->get([
 $hosts = $zabbix->request($request);
 ```
 
-Generated request classes are implementation details for the API groups, fluent builders, registry, and validation tooling. Application code should not instantiate generated requests or rely on their constructor parameter lists.
+Generated request classes are implementation details for the API groups, fluent builders, registry, and validation tooling. They are method-specific params envelopes built through `fromParams()`; application code should not instantiate generated requests directly.

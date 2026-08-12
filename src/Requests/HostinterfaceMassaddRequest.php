@@ -7,11 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class HostinterfaceMassaddRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public array $interfaces,
-        public array $hosts,
-    ) {}
-
     public function method(): string
     {
         return 'hostinterface.massadd';

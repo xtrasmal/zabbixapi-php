@@ -7,11 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class TemplategroupMassupdateRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public array $groups,
-        public array $templates,
-    ) {}
-
     public function method(): string
     {
         return 'templategroup.massupdate';

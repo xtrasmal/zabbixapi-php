@@ -7,12 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class ImageCreateRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public string $name,
-        public Enums\ImageImagetype $imagetype,
-        public string $image,
-    ) {}
-
     public function method(): string
     {
         return 'image.create';

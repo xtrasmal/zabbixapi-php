@@ -7,12 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class AutoregistrationUpdateRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public ?Enums\TlsAccept $tls_accept = null,
-        public ?string $tls_psk_identity = null,
-        public ?string $tls_psk = null,
-    ) {}
-
     public function method(): string
     {
         return 'autoregistration.update';

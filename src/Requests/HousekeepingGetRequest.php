@@ -7,10 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class HousekeepingGetRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public array|string|null $output = null,
-    ) {}
-
     public function method(): string
     {
         return 'housekeeping.get';

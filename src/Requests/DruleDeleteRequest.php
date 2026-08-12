@@ -4,12 +4,6 @@ namespace Idiot\Zabbix\Requests;
 
 final class DruleDeleteRequest extends AbstractZabbixRequest
 {
-    /** @param list<DruleId> $ids */
-    public function __construct(array $ids)
-    {
-        parent::__construct($ids);
-    }
-
     public function method(): string
     {
         return 'drule.delete';

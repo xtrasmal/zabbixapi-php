@@ -7,14 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class SlaGetsliRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public string $slaid,
-        public ?int $period_from = null,
-        public ?int $period_to = null,
-        public ?int $periods = null,
-        public string|array|null $serviceids = null,
-    ) {}
-
     public function method(): string
     {
         return 'sla.getsli';

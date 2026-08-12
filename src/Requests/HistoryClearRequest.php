@@ -4,12 +4,6 @@ namespace Idiot\Zabbix\Requests;
 
 final class HistoryClearRequest extends AbstractZabbixRequest
 {
-    /** @param list<HistoryId> $ids */
-    public function __construct(array $ids)
-    {
-        parent::__construct($ids);
-    }
-
     public function method(): string
     {
         return 'history.clear';

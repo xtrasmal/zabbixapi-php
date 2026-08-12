@@ -7,12 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class HostgroupPropagateRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public array $groups,
-        public ?bool $permissions = null,
-        public ?bool $tag_filters = null,
-    ) {}
-
     public function method(): string
     {
         return 'hostgroup.propagate';

@@ -7,13 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class ScriptExecuteRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public string $scriptid,
-        public ?string $hostid = null,
-        public ?string $eventid = null,
-        public ?string $manualinput = null,
-    ) {}
-
     public function method(): string
     {
         return 'script.execute';

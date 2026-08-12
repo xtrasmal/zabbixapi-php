@@ -7,12 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class IconmapCreateRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public string $name,
-        public string $default_iconid,
-        public array $mappings,
-    ) {}
-
     public function method(): string
     {
         return 'iconmap.create';

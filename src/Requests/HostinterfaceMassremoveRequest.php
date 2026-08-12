@@ -7,11 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class HostinterfaceMassremoveRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public array $interfaces,
-        public string|array $hostids,
-    ) {}
-
     public function method(): string
     {
         return 'hostinterface.massremove';

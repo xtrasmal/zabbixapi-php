@@ -7,13 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class ModuleCreateRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public string $id,
-        public string $relative_path,
-        public ?Enums\ModuleStatus $status = null,
-        public ?array $config = null,
-    ) {}
-
     public function method(): string
     {
         return 'module.create';

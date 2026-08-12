@@ -32,7 +32,7 @@ final class ZabbixRequestValidator
     {
         return new self(
             new StaticSchemaRegistry(),
-            new OpisSchemaValidator(),
+            new JsonSchemaValidator(),
         );
     }
 }

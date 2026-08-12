@@ -7,12 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class UserLoginRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public string $username,
-        public string $password,
-        public ?bool $userData = null,
-    ) {}
-
     public function method(): string
     {
         return 'user.login';

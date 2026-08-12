@@ -7,15 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class TokenUpdateRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public string $tokenid,
-        public ?string $name = null,
-        public ?string $description = null,
-        public ?string $userid = null,
-        public ?Enums\TokenStatus $status = null,
-        public ?int $expires_at = null,
-    ) {}
-
     public function method(): string
     {
         return 'token.update';

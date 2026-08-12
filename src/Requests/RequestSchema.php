@@ -10,6 +10,11 @@ namespace Idiot\Zabbix\Requests;
  */
 abstract class RequestSchema
 {
+    public function paramsAreList(): bool
+    {
+        return 'array' === ($this->definition()['type'] ?? null);
+    }
+
     /** @return array<string,mixed> */
     abstract public function definition(): array;
 }

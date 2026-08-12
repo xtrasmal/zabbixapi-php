@@ -7,11 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class DiscoveryruleCopyRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public array $discoveryids,
-        public array $hostids,
-    ) {}
-
     public function method(): string
     {
         return 'discoveryrule.copy';

@@ -7,11 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class TemplategroupPropagateRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public array $groups,
-        public bool $permissions,
-    ) {}
-
     public function method(): string
     {
         return 'templategroup.propagate';

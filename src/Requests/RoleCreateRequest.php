@@ -7,12 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class RoleCreateRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public string $name,
-        public Enums\RoleType $type,
-        public ?array $rules = null,
-    ) {}
-
     public function method(): string
     {
         return 'role.create';

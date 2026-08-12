@@ -7,11 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class TemplategroupMassremoveRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public string|array $groupids,
-        public string|array $templateids,
-    ) {}
-
     public function method(): string
     {
         return 'templategroup.massremove';

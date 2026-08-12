@@ -7,10 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class AutoregistrationGetRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public array|string|null $output = null,
-    ) {}
-
     public function method(): string
     {
         return 'autoregistration.get';

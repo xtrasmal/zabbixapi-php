@@ -7,12 +7,6 @@ namespace Idiot\Zabbix\Requests;
  */
 final class TaskGetRequest extends AbstractZabbixRequest
 {
-    public function __construct(
-        public string|array|null $taskids = null,
-        public array|string|null $output = null,
-        public ?bool $preservekeys = null,
-    ) {}
-
     public function method(): string
     {
         return 'task.get';
