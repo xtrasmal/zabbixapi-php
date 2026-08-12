@@ -58,6 +58,16 @@ $hosts = $zabbix->hosts->get([
 
 If a bearer token is configured, username/password credentials are ignored and `user.login` is not sent.
 
+## `user.logout`
+
+`user.logout` is available as an explicit API call:
+
+```php
+$zabbix->users->logout([]);
+```
+
+The client does not run a local session lifecycle or automatic logout flow. Logout is just another Zabbix method call when your application chooses to send it.
+
 ## Laravel Singleton
 
 ```php
