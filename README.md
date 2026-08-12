@@ -44,4 +44,4 @@ $hosts = $zabbix->hosts->get([
 
 ## License
 
-This software is licensed under the GNU Lesser General Public License v3.0.
+This software is licensed under the [MIT License](LICENSE).
