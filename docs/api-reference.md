@@ -8,11 +8,17 @@ Creates a client. `$options['url']` configures the Zabbix base URL, `$options['t
 
 ### `call(string $method, array $params = []): array|bool|float|int|string|null`
 
-Calls a Zabbix API method using an explicit method name and params array.
+Calls a Zabbix API method using an explicit method name and params array. Prefer API groups in application code; this method is useful for unsupported methods, debugging, or small adapters.
 
 ### `$zabbix->hosts->get(array $params = []): array|bool|float|int|string|null`
 
 Executes a request through a Zabbix API group. The public groups mirror Zabbix API areas, for example `$zabbix->hosts`, `$zabbix->items`, `$zabbix->triggers`, `$zabbix->users`, and `$zabbix->templates`.
+
+```php
+$zabbix->hosts->get(['output' => ['hostid', 'host']]);
+$zabbix->hostGroups->create(['name' => 'Linux servers']);
+$zabbix->items->get(['hostids' => ['10105'], 'output' => 'extend']);
+```
 
 ### `request(Idiot\Zabbix\Requests\ZabbixRequest $request): array|bool|float|int|string|null`
 
@@ -40,6 +46,6 @@ Returns the library version.
 
 ## Request Mapping
 
-`StaticRequestRegistry` maps Zabbix method names to generated request classes.
+`StaticRequestRegistry` maps Zabbix method names to generated request classes for tooling and adapters.
 
-`RequestFactory` is the small API for method-name driven request creation.
+`RequestFactory` creates request objects from method names and params arrays when code already works with method-name strings. It is not the normal developer-facing API; prefer `$zabbix->hosts->get([...])`, `$zabbix->templates->get([...])`, and the other public groups.

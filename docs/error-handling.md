@@ -17,4 +17,4 @@ try {
 
 Malformed JSON-RPC responses, invalid client state, and transport errors are converted to `ZabbixApiException`.
 
-Request validation errors are raised before the request is sent when using `RequestFactory::validated()`.
+Method-name driven adapters that use `RequestFactory::validated()` receive request validation errors before the request is sent. Normal grouped calls still return Zabbix JSON-RPC validation errors from the server.

@@ -7,12 +7,26 @@ $hosts = $zabbix->hosts->get([
     'output' => ['hostid', 'host'],
 ]);
 
+$filteredHosts = $zabbix->hosts->get([
+    'filter' => ['host' => ['srv-01']],
+    'output' => ['hostid'],
+]);
+
+$hostsByName = $zabbix->hosts->filter([
+    'host' => ['srv-01'],
+]);
+
 $groups = $zabbix->hostGroups->get([
     'output' => ['groupid', 'name'],
+]);
+
+$group = $zabbix->hostGroups->create([
+    'name' => 'Linux servers',
 ]);
 ```
 
 Those helpers build the matching request object and immediately send it through `ZabbixApi::request()`.
+Pass the same plain params array that Zabbix documents for the underlying method.
 
 ## Composed Requests
 
@@ -33,9 +47,9 @@ Each request object exposes:
 - `method()`: the Zabbix JSON-RPC method name, such as `host.get`
 - `params()`: the method params array sent through JSON-RPC
 
-## Request Factory
+## Adapter Request Factory
 
-For method-name driven adapters, use `RequestFactory` instead of generated constructors:
+For method-name driven adapters, use `RequestFactory`. This is useful when code receives method names as strings and still wants the request registry or optional local validation:
 
 ```php
 use Idiot\Zabbix\Requests\RequestFactory;
@@ -100,19 +114,15 @@ $zabbix->items->get(['hostids' => ['10105'], 'output' => 'extend']);
 $zabbix->triggers->get(['output' => 'extend']);
 ```
 
-Request builders accept plain arrays or request objects. Prefer arrays for controller and service code:
+Request builders accept plain arrays. Prefer arrays for controller and service code:
 
 ```php
-use Idiot\Zabbix\Requests\HostGetRequest;
-
 $request = $zabbix->requests()->hosts->get([
     'hostids' => ['10105'],
     'output' => ['hostid', 'host'],
 ]);
 
-$sameRequest = HostGetRequest::fromParams([
-    'hostids' => ['10105'],
-])->output(['hostid', 'host']);
-
 $hosts = $zabbix->request($request);
 ```
+
+Generated request classes are implementation details for the API groups, fluent builders, registry, and validation tooling. Application code should not instantiate generated requests or rely on their constructor parameter lists.

@@ -76,6 +76,7 @@ abstract class AbstractZabbixRequest implements ZabbixRequest
      * Build a request directly from the method's manual-shaped params.
      *
      * @param array<string, mixed>|list<mixed> $params
+     *
      * @throws ReflectionException
      */
     final public static function fromParams(array $params): static
@@ -137,6 +138,5 @@ abstract class AbstractZabbixRequest implements ZabbixRequest
         return is_array($value) ? array_map(function ($item) {
             return $this->normalize($item);
         }, $value) : $value;
-
     }
 }

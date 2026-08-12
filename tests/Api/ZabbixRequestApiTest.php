@@ -6,7 +6,6 @@ namespace Tests\Api;
 
 use Idiot\Zabbix\Api\ZabbixRequestApi;
 use Idiot\Zabbix\Requests\Enums\Output;
-use Idiot\Zabbix\Requests\HostGetRequest;
 use Idiot\Zabbix\Requests\SettingsGetRequest;
 use PHPUnit\Framework\TestCase;
 
@@ -28,7 +27,6 @@ final class ZabbixRequestApiTest extends TestCase
             ->filter(['host' => ['srv-01', 'srv-22']])
             ->output(['hostid', 'host']);
 
-        self::assertInstanceOf(HostGetRequest::class, $request);
         self::assertSame('host.get', $request->method());
         self::assertSame([
             'filter' => [
@@ -75,5 +73,54 @@ final class ZabbixRequestApiTest extends TestCase
 
         self::assertTrue(method_exists($api->users, 'login'));
         self::assertFalse(method_exists($api->users, 'logout'));
+    }
+
+    public function testRequestBuilderMethodsAcceptPlainArrayParams(): void
+    {
+        $apiFiles = glob(__DIR__ . '/../../src/Api/*Api.php');
+        self::assertIsArray($apiFiles);
+
+        foreach ($apiFiles as $apiFile) {
+            $shortName = basename($apiFile, '.php');
+            if (in_array($shortName, ['AbstractApi', 'ZabbixRequestApi'], true)) {
+                continue;
+            }
+
+            $class = 'Idiot\\Zabbix\\Api\\' . $shortName;
+            self::assertTrue(class_exists($class), sprintf('API class %s does not exist.', $class));
+
+            $reflection = new \ReflectionClass($class);
+            foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+                if ($method->getDeclaringClass()->getName() !== $class) {
+                    continue;
+                }
+
+                $parameter = $method->getParameters()[0] ?? null;
+                self::assertNotNull($parameter, sprintf('%s::%s() must accept array params.', $class, $method->getName()));
+                self::assertTrue(
+                    self::parameterAcceptsArray($parameter),
+                    sprintf('%s::%s() must accept array params.', $class, $method->getName()),
+                );
+            }
+        }
+    }
+
+    private static function parameterAcceptsArray(\ReflectionParameter $parameter): bool
+    {
+        $type = $parameter->getType();
+
+        if ($type instanceof \ReflectionNamedType) {
+            return 'array' === $type->getName();
+        }
+
+        if ($type instanceof \ReflectionUnionType) {
+            foreach ($type->getTypes() as $unionType) {
+                if ('array' === $unionType->getName()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

@@ -9,7 +9,6 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response as HttpResponse;
-use Idiot\Zabbix\Requests\HostGetRequest;
 use Idiot\Zabbix\ZabbixApi;
 use Idiot\Zabbix\ZabbixApiException;
 use PHPUnit\Framework\TestCase;
@@ -232,7 +231,7 @@ final class ZabbixApiTest extends TestCase
 
         self::assertSame(
             [['hostid' => '10105']],
-            $api->request(HostGetRequest::fromParams(['output' => ['hostid']])),
+            $api->request($api->requests()->hosts->get(['output' => ['hostid']])),
         );
 
         self::assertSame(['apiinfo.version', 'host.get'], self::requestMethods($history[0]));
@@ -270,6 +269,49 @@ final class ZabbixApiTest extends TestCase
         ], json_decode((string)$history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR)[1]);
     }
 
+    public function testPublicApiGroupsAcceptPlainArrayParams(): void
+    {
+        $history = [];
+        $api = new ZabbixApi(
+            options: [
+                'url' => 'https://zabbix.example',
+                'token' => 'secret',
+            ],
+            httpClient: self::guzzle([
+                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":{"groupids":["17"]}}]'),
+                new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":[{"templateid":"10001"}]}'),
+                new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":[{"itemid":"30001"}]}'),
+            ], $history),
+        );
+
+        self::assertSame(['groupids' => ['17']], $api->hostGroups->create(['name' => 'Linux servers']));
+        self::assertSame([['templateid' => '10001']], $api->templates->get([
+            'filter' => ['host' => ['Template OS Linux']],
+            'output' => ['templateid'],
+        ]));
+        self::assertSame([['itemid' => '30001']], $api->items->get([
+            'hostids' => ['10105'],
+            'output' => ['itemid'],
+        ]));
+
+        $firstBody = json_decode((string)$history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+        $secondBody = json_decode((string)$history[1]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+        $thirdBody = json_decode((string)$history[2]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
+
+        self::assertSame('hostgroup.create', $firstBody[1]['method']);
+        self::assertSame(['name' => 'Linux servers'], $firstBody[1]['params']);
+        self::assertSame('template.get', $secondBody['method']);
+        self::assertSame([
+            'filter' => ['host' => ['Template OS Linux']],
+            'output' => ['templateid'],
+        ], $secondBody['params']);
+        self::assertSame('item.get', $thirdBody['method']);
+        self::assertSame([
+            'hostids' => ['10105'],
+            'output' => ['itemid'],
+        ], $thirdBody['params']);
+    }
+
     public function testApiVersionLookupIsLazyUnauthenticatedAndCached(): void
     {
         $history = [];
@@ -303,7 +345,7 @@ final class ZabbixApiTest extends TestCase
             ->filter(['host' => ['srv-01']])
             ->output(['hostid', 'host']);
 
-        self::assertInstanceOf(HostGetRequest::class, $request);
+        self::assertSame('host.get', $request->method());
         self::assertSame([
             'filter' => ['host' => ['srv-01']],
             'output' => ['hostid', 'host'],

@@ -29,6 +29,19 @@ $zabbix = new ZabbixApi([
 $hosts = $zabbix->hosts->get([
     'output' => ['hostid', 'host'],
 ]);
+
+$filteredHosts = $zabbix->hosts->get([
+    'filter' => ['host' => ['srv-01']],
+    'output' => ['hostid'],
+]);
+
+$hostsByName = $zabbix->hosts->filter([
+    'host' => ['srv-01'],
+]);
+
+$group = $zabbix->hostGroups->create([
+    'name' => 'Linux servers',
+]);
 ```
 
 ## Table of contents
