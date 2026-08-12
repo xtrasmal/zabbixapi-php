@@ -477,7 +477,7 @@ class ZabbixApi
             $batch = new ZabbixBatch($this->requests);
             $requests[0]($batch);
 
-            return $batch->requests();
+            return $batch->queuedRequests();
         }
 
         foreach ($requests as $request) {

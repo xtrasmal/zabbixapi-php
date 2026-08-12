@@ -32,7 +32,7 @@ final class ZabbixBatch
     }
 
     /** @return list<ZabbixRequest> */
-    public function requests(): array
+    public function queuedRequests(): array
     {
         return $this->queued;
     }
