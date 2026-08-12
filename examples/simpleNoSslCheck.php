@@ -5,18 +5,17 @@ use IntelliTrend\Zabbix\ZabbixApi;
 use IntelliTrend\Zabbix\ZabbixApiException;
 
 print "Zabbix API Example\n";
-print " Connect to API, ignore certificate/hostname and get number of hosts\n";
+print " Connect to API, disable TLS certificate verification and get number of hosts\n";
 print "=====================================================\n";
 
 $zabUrl ='https://my.zabbixurl.com/zabbix';
-$zabUser = 'myusername';
-$zabPassword = 'mypassword';
+$zabToken = '123456789abcdef123456789abcdef123456789abcdef123456789abcdef1234';
 
-$zbx = new ZabbixApi();
 try {
-	// disable verification of certificate and hostname
-	$options = array('sslVerifyPeer' => false, 'sslVerifyHost' => false);
-	$zbx->login($zabUrl, $zabUser, $zabPassword, $options);
+	// disable TLS certificate verification
+	$options = array('verify' => false);
+	$zbx = new ZabbixApi($options);
+	$zbx->login($zabUrl, $zabToken);
 	//this is similar to: $result = $zbx->call('apiinfo.version');
 	$result = $zbx->getApiVersion();
 	print "Remote Zabbix API Version:$result\n";

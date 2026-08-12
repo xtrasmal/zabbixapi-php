@@ -6,27 +6,22 @@ use IntelliTrend\Zabbix\ZabbixApiException;
 
 print "Zabbix API Example\n";
 print " Connect to API and get some hostdata as list\n";
-print " Ignore certificate/hostname\n";
-print " Enable / Disable debug output while running\n";
+print " Disable TLS certificate verification\n";
 print "=====================================================\n";
 
 $zabUrl ='https://my.zabbixurl.com/zabbix';
-$zabUser = 'myusername';
-$zabPassword = 'mypassword';
+$zabToken = '123456789abcdef123456789abcdef123456789abcdef123456789abcdef1234';
 
-$zbx = new ZabbixApi();
-print "ZabbixApi library version:". $zbx->getVersion(). "\n";
 try {
-	// disable validation off certificate and host 
-	$options = array('sslVerifyPeer' => false, 'sslVerifyHost' => false);
-	$zbx->login($zabUrl, $zabUser, $zabPassword, $options);
+	// disable TLS certificate verification
+	$options = array('verify' => false);
+	$zbx = new ZabbixApi($options);
+	print "ZabbixApi library version:". $zbx->getVersion(). "\n";
+	$zbx->login($zabUrl, $zabToken);
 
 	//this is similar to: $result = $zbx->call('apiinfo.version');
 	$result = $zbx->getApiVersion();
 	print "Remote Zabbix API Version:$result\n";
-	
-	print "Debugging set to on\n";
-	$zbx->setDebug(true);
 	
 	// Get host count
 	$params = array(		
@@ -35,9 +30,6 @@ try {
 	);
 	$result = $zbx->call('host.get',$params);
 	print "Number of Hosts:$result\n";
-	
-	print "Debugging set to off\n";
-	$zbx->setDebug(false);
 
 	$limit = 5;
 	$params = array(
@@ -58,8 +50,6 @@ try {
 		print "hostid:$hostid, status:$status, hostname:$hostname, alias:$name\n";
 	}
 
-	// logout() would logout from api and also delete the session file locally
-	//$zbx->logout();
 } catch (ZabbixApiException $e) {
 	print "==== Zabbix API Exception ===\n";
 	print 'Errorcode: '.$e->getCode()."\n";

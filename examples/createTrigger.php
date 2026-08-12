@@ -9,13 +9,12 @@ print " Connect to API, create a trigger'\n";
 print "=====================================================\n";
 
 $zabUrl ='https://my.zabbixurl.com/zabbix';
-$zabUser = 'myusername';
-$zabPassword = 'mypassword';
+$zabToken = '123456789abcdef123456789abcdef123456789abcdef123456789abcdef1234';
 
 $zbx = new ZabbixApi();
 try {
 	// default is to verify certificate and hostname
-	$zbx->login($zabUrl, $zabUser, $zabPassword);
+	$zbx->login($zabUrl, $zabToken);
 
 	// this is similar to: $result = $zbx->call('apiinfo.version');
 	$result = $zbx->getApiVersion();
