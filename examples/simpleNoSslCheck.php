@@ -15,7 +15,7 @@ try {
 	// disable TLS certificate verification
 	$options = array('verify' => false);
 	$zbx = new ZabbixApi($options);
-	$zbx->login($zabUrl, $zabToken);
+	$zbx->connect($zabUrl, $zabToken);
 	//this is similar to: $result = $zbx->call('apiinfo.version');
 	$result = $zbx->getApiVersion();
 	print "Remote Zabbix API Version:$result\n";

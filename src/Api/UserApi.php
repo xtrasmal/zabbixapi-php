@@ -9,7 +9,6 @@ use IntelliTrend\Zabbix\Requests\UserCheckAuthenticationRequest;
 use IntelliTrend\Zabbix\Requests\UserDeleteRequest;
 use IntelliTrend\Zabbix\Requests\UserGetRequest;
 use IntelliTrend\Zabbix\Requests\UserLoginRequest;
-use IntelliTrend\Zabbix\Requests\UserLogoutRequest;
 use IntelliTrend\Zabbix\Requests\UserProvisionRequest;
 use IntelliTrend\Zabbix\Requests\UserResettotpRequest;
 use IntelliTrend\Zabbix\Requests\UserUnblockRequest;
@@ -51,12 +50,6 @@ final class UserApi extends AbstractApi
     public function login(UserLoginRequest|array $request): UserLoginRequest
     {
         return $this->request(UserLoginRequest::class, $request);
-    }
-
-    /** @param list<mixed> $request */
-    public function logout(UserLogoutRequest|array $request = []): UserLogoutRequest
-    {
-        return $this->request(UserLogoutRequest::class, $request);
     }
 
     /** @param list<mixed> $request */

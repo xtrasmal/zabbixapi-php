@@ -17,7 +17,7 @@ try {
 	$options = array('verify' => false);
 	$zbx = new ZabbixApi($options);
 	print "ZabbixApi library version:". $zbx->getVersion(). "\n";
-	$zbx->login($zabUrl, $zabToken);
+	$zbx->connect($zabUrl, $zabToken);
 
 	//this is similar to: $result = $zbx->call('apiinfo.version');
 	$result = $zbx->getApiVersion();

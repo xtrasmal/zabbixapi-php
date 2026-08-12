@@ -7,8 +7,7 @@ use IntelliTrend\Zabbix\Requests\UnknownZabbixMethod;
 use IntelliTrend\Zabbix\Requests\ZabbixRequestSchemaRegistry;
 
 /**
- * Maps a Zabbix method name to its compiled RequestSchema. Generated — do not
- * edit by hand; regenerate via scratchpad/generate-requests.php.
+ * Maps a Zabbix method name to its compiled RequestSchema.
  */
 final class StaticSchemaRegistry implements ZabbixRequestSchemaRegistry
 {
@@ -212,7 +211,6 @@ final class StaticSchemaRegistry implements ZabbixRequestSchemaRegistry
             'user.delete' => new UserDeleteSchema(),
             'user.get' => new UserGetSchema(),
             'user.login' => new UserLoginSchema(),
-            'user.logout' => new UserLogoutSchema(),
             'user.provision' => new UserProvisionSchema(),
             'user.resettotp' => new UserResettotpSchema(),
             'user.unblock' => new UserUnblockSchema(),

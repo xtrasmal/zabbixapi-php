@@ -6,6 +6,9 @@ use GuzzleHttp\ClientInterface;
 use IntelliTrend\Zabbix\Clients\Credentials;
 use IntelliTrend\Zabbix\Clients\HttpClient;
 use IntelliTrend\Zabbix\Clients\JsonRpcClient;
+use IntelliTrend\Zabbix\Requests\ApiinfoVersionRequest;
+use IntelliTrend\Zabbix\Requests\UserLoginRequest;
+use IntelliTrend\Zabbix\Requests\ZabbixRequest;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -18,7 +21,8 @@ class ZabbixApi
     public const DEFAULT_CONNECTION_TIMEOUT = 10;
 
     private const JSON_RPC_REQUEST_ID = 1;
-    private const API_VERSION_METHOD = 'apiinfo.version';
+    /** @var list<string> */
+    private const UNAUTHENTICATED_METHODS = ['apiinfo.version', 'user.login'];
 
     private ?Credentials $credentials = null;
     private ?string $apiVersion = null;
@@ -43,9 +47,9 @@ class ZabbixApi
      *
      * @throws ZabbixApiException
      */
-    public function login(string $zabUrl, string $zabToken): self
+    public function connect(string $zabUrl, ?string $zabToken = null): self
     {
-        $this->credentials = Credentials::fromLogin($zabUrl, $zabToken);
+        $this->credentials = Credentials::fromEndpoint($zabUrl, $zabToken);
         $this->logConfiguration();
         $this->apiVersion = $this->getApiVersion();
 
@@ -65,7 +69,7 @@ class ZabbixApi
      */
     public function getApiVersion(): string
     {
-        $this->apiVersion ??= (string)$this->call(self::API_VERSION_METHOD);
+        $this->apiVersion ??= (string)$this->request(ApiinfoVersionRequest::fromParams([]));
 
         return $this->apiVersion;
     }
@@ -80,7 +84,7 @@ class ZabbixApi
      */
     public function getAuthToken(): string
     {
-        return $this->requireCredentials()->bearerToken;
+        return $this->requireBearerToken();
     }
 
     /**
@@ -95,6 +99,18 @@ class ZabbixApi
         }
 
         return $response->result;
+    }
+
+    /**
+     * @throws ZabbixApiException
+     */
+    public function request(ZabbixRequest $request): array|bool|float|int|string|null
+    {
+        if ($request instanceof UserLoginRequest) {
+            return $this->loginWhenNeeded($request);
+        }
+
+        return $this->call($request->method(), $request->params());
     }
 
     private function logConfiguration(): void
@@ -118,7 +134,7 @@ class ZabbixApi
 
     private function bearerTokenFor(string $method): ?string
     {
-        return $method === self::API_VERSION_METHOD ? null : $this->getAuthToken();
+        return in_array($method, self::UNAUTHENTICATED_METHODS, true) ? null : $this->requireBearerToken();
     }
 
     private function endpoint(): string
@@ -129,10 +145,45 @@ class ZabbixApi
     private function requireCredentials(): Credentials
     {
         if ($this->credentials === null) {
-            throw new ZabbixApiException('Not logged in and no API token', self::EXCEPTION_CLASS_CODE_AUTH);
+            throw new ZabbixApiException('Not connected to a Zabbix API endpoint', self::EXCEPTION_CLASS_CODE_AUTH);
         }
 
         return $this->credentials;
+    }
+
+    private function requireBearerToken(): string
+    {
+        $bearerToken = $this->requireCredentials()->bearerToken;
+
+        if ($bearerToken === null) {
+            throw new ZabbixApiException('No Zabbix API bearer token configured', self::EXCEPTION_CLASS_CODE_AUTH);
+        }
+
+        return $bearerToken;
+    }
+
+    /**
+     * @throws ZabbixApiException
+     */
+    private function loginWhenNeeded(UserLoginRequest $request): array|bool|float|int|string|null
+    {
+        $credentials = $this->requireCredentials();
+
+        if ($credentials->bearerToken !== null) {
+            return $credentials->bearerToken;
+        }
+
+        $result = $this->call($request->method(), $request->params());
+
+        $bearerToken = is_string($result) ? $result : (is_array($result) ? ($result['sessionid'] ?? null) : null);
+
+        if (!is_string($bearerToken) || trim($bearerToken) === '') {
+            throw new ZabbixApiException('user.login did not return an authentication token.', self::EXCEPTION_CLASS_CODE_AUTH);
+        }
+
+        $this->credentials = $credentials->withBearerToken($bearerToken);
+
+        return $result;
     }
 
     /**

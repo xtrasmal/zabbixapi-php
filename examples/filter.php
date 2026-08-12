@@ -14,7 +14,7 @@ $zabToken = '123456789abcdef123456789abcdef123456789abcdef123456789abcdef1234';
 $zbx = new ZabbixApi();
 try {
 	// default is to verify certificate and hostname
-	$zbx->login($zabUrl, $zabToken);
+	$zbx->connect($zabUrl, $zabToken);
 	
 	//this is similar to: $result = $zbx->call('apiinfo.version');
 	$result = $zbx->getApiVersion();
