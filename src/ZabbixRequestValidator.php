@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix;
 
-use Idiot\Zabbix\Request;
-
 /**
  * Validates a request's params against its Zabbix schema before it leaves the
  * client. If Zabbix ever returns an input-shape validation error, this gate

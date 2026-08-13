@@ -12,7 +12,7 @@ abstract class AbstractApi
     /**
      * @template T of AbstractRequest
      *
-     * @param class-string<T>                    $requestClass
+     * @param class-string<T>                                  $requestClass
      * @param AbstractRequest|array<string, mixed>|list<mixed> $request
      *
      * @return AbstractRequest

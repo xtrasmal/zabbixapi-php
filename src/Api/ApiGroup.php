@@ -6,7 +6,6 @@ namespace Idiot\Zabbix\Api;
 
 use BadMethodCallException;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\ZabbixApi;
 use Idiot\Zabbix\ZabbixApiException;
 use LogicException;
 
@@ -15,13 +14,12 @@ use LogicException;
  *
  * @template TBuilder of object
  */
-final class ZabbixApiGroup
+final class ApiGroup
 {
     /**
      * @param TBuilder $builder
      */
     public function __construct(
-        private readonly ZabbixApi $client,
         private readonly object $builder,
     ) {}
 
@@ -30,7 +28,7 @@ final class ZabbixApiGroup
      *
      * @throws ZabbixApiException
      */
-    public function get(array|Request $request = []): mixed
+    public function get(array|Request $request = []): Request
     {
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
@@ -40,7 +38,7 @@ final class ZabbixApiGroup
      *
      * @throws ZabbixApiException
      */
-    public function create(array|Request $request): mixed
+    public function create(array|Request $request): Request
     {
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
@@ -50,7 +48,7 @@ final class ZabbixApiGroup
      *
      * @throws ZabbixApiException
      */
-    public function delete(array|Request $request): mixed
+    public function delete(array|Request $request): Request
     {
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
@@ -60,7 +58,7 @@ final class ZabbixApiGroup
      *
      * @throws ZabbixApiException
      */
-    public function update(array|Request $request): mixed
+    public function update(array|Request $request): Request
     {
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
@@ -70,7 +68,7 @@ final class ZabbixApiGroup
      *
      * @throws ZabbixApiException
      */
-    public function filter(array $filter): mixed
+    public function filter(array $filter): Request
     {
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
@@ -80,7 +78,7 @@ final class ZabbixApiGroup
      *
      * @throws ZabbixApiException
      */
-    public function login(array|Request $request): mixed
+    public function login(array|Request $request): Request
     {
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
@@ -90,7 +88,7 @@ final class ZabbixApiGroup
      *
      * @throws ZabbixApiException
      */
-    public function logout(array|Request $request = []): mixed
+    public function logout(array|Request $request = []): Request
     {
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
@@ -98,7 +96,7 @@ final class ZabbixApiGroup
     /**
      * @throws ZabbixApiException
      */
-    private function dispatch(string $name, array $arguments): mixed
+    private function dispatch(string $name, array $arguments): Request
     {
         if (!method_exists($this->builder, $name)) {
             throw new BadMethodCallException(sprintf(
@@ -119,14 +117,6 @@ final class ZabbixApiGroup
             ));
         }
 
-        return $this->client->request($request);
-    }
-
-    /**
-     * @throws ZabbixApiException
-     */
-    public function __call(string $name, array $arguments): mixed
-    {
-        return $this->dispatch($name, $arguments);
+        return $request;
     }
 }

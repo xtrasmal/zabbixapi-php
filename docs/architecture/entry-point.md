@@ -1,6 +1,6 @@
 # Entry point and dispatch
 
-`ZabbixApi` is the canonical entry point for application code. Its API-area properties — `$hosts`, `$hostGroups`, `$items`, and the rest — are `ZabbixApiGroup` dispatchers bound to the same `ZabbixApi` instance at construction; they are not separate doors. `ZabbixApi` dispatches your call to the matching group, which builds the request object; `ZabbixApi` then validates and sends it. Every group call converges on that one execution hub.
+`ZabbixApi` is the canonical entry point for application code. Its API-area properties — `$hosts`, `$hostGroups`, `$items`, and the rest — are `ApiGroup` dispatchers bound to the same `ZabbixApi` instance at construction; they are not separate doors. `ZabbixApi` dispatches your call to the matching group, which builds the request object; `ZabbixApi` then validates and sends it. Every group call converges on that one execution hub.
 
 ```mermaid
 flowchart TD

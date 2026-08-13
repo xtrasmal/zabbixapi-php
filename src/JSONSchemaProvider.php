@@ -13,11 +13,11 @@ final class JSONSchemaProvider implements SchemaProvider
 {
     private const METHOD_PATTERN = '/\A[a-z][a-z0-9]*\.[A-Za-z0-9.]+\z/';
 
-    private readonly string $schemaDirectory;
-    private readonly Registry $requestRegistry;
-
     /** @var array<string, Schema> */
     private array $schemas = [];
+
+    private readonly string $schemaDirectory;
+    private readonly Registry $requestRegistry;
 
     public function __construct(
         ?string   $schemaDirectory = null,

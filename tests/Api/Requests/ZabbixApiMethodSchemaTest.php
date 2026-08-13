@@ -103,16 +103,16 @@ final class ZabbixApiMethodSchemaTest extends TestCase
 
     public function testGeneratedRequestsDoNotExposePublicConstructors(): void
     {
-        $requestFiles = glob(__DIR__ . '/../../src/Requests/*Request.php');
+        $requestFiles = glob(__DIR__ . '/../../../src/Api/Requests/*Request.php');
         self::assertIsArray($requestFiles);
 
         foreach ($requestFiles as $requestFile) {
             $shortName = basename($requestFile, '.php');
-            if ('ZabbixRequest' === $shortName) {
+            if ('AbstractRequest' === $shortName) {
                 continue;
             }
 
-            $class = 'Idiot\\Zabbix\\Requests\\' . $shortName;
+            $class = 'Idiot\\Zabbix\\Api\\Requests\\' . $shortName;
 
             self::assertTrue(class_exists($class), sprintf('Request class %s does not exist.', $class));
             if (!is_subclass_of($class, AbstractRequest::class)) {
@@ -184,7 +184,7 @@ final class ZabbixApiMethodSchemaTest extends TestCase
 
     public function testGeneratedPhpSchemaClassesAreNotRuntimeApi(): void
     {
-        $schemaFiles = glob(__DIR__ . '/../../src/Requests/Schemas/*Schema.php');
+        $schemaFiles = glob(__DIR__ . '/../../../src/Api/Requests/Schemas/*Schema.php');
 
         self::assertSame([], false === $schemaFiles ? [] : $schemaFiles);
     }
@@ -237,7 +237,7 @@ final class ZabbixApiMethodSchemaTest extends TestCase
     /** @return list<string> */
     private static function schemaFiles(): array
     {
-        $schemaFiles = glob(__DIR__ . '/../../schemas/7.0/*/*.json');
+        $schemaFiles = glob(__DIR__ . '/../../../schemas/7.0/*/*.json');
         self::assertIsArray($schemaFiles);
         self::assertNotSame([], $schemaFiles, 'No bundled Zabbix 7.0 schemas found.');
 
