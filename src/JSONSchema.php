@@ -8,12 +8,12 @@ namespace Idiot\Zabbix;
  * A Zabbix method's draft 2020-12 JSON Schema loaded from the bundled
  * versioned schema files.
  */
-final class RequestSchema
+final class JSONSchema implements Schema
 {
     /** @param array<string, mixed> $definition */
     public function __construct(
-        private string $method,
-        private array $definition,
+        private readonly string $method,
+        private readonly array  $definition,
     ) {}
 
     public function method(): string

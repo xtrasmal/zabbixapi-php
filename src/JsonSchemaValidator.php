@@ -10,9 +10,9 @@ use stdClass;
 /**
  * SchemaValidator backed by justinrainbow/json-schema.
  */
-final class JsonSchemaValidator implements SchemaValidator
+final class JSONSchemaValidator implements SchemaValidator
 {
-    public function validate(array $params, RequestSchema $schema): array
+    public function validate(array $params, JSONSchema $schema): array
     {
         $definition = $schema->definition();
         $data = [] === $params && !$schema->paramsAreList()

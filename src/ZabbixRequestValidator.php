@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix;
 
-use Idiot\Zabbix\Requests\ZabbixRequest;
+use Idiot\Zabbix\Request;
 
 /**
  * Validates a request's params against its Zabbix schema before it leaves the
@@ -14,11 +14,11 @@ use Idiot\Zabbix\Requests\ZabbixRequest;
 final class ZabbixRequestValidator
 {
     public function __construct(
-        private ZabbixSchemaProvider $schemaProvider,
-        private SchemaValidator $validator,
+        private readonly SchemaProvider  $schemaProvider,
+        private readonly SchemaValidator $validator,
     ) {}
 
-    public function validate(ZabbixRequest $request): void
+    public function validate(Request $request): void
     {
         $schema = $this->schemaProvider->schemaFor($request);
         $violations = $this->validator->validate($request->params(), $schema);
@@ -31,8 +31,8 @@ final class ZabbixRequestValidator
     public static function createDefault(): self
     {
         return new self(
-            new JsonFileSchemaProvider(),
-            new JsonSchemaValidator(),
+            new JSONSchemaProvider(),
+            new JSONSchemaValidator(),
         );
     }
 }

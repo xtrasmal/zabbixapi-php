@@ -4,31 +4,30 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix;
 
-use Idiot\Zabbix\Requests\ZabbixRequest;
 use RuntimeException;
 
 /**
  * Loads bundled Zabbix JSON schemas by method name.
  */
-final class JsonFileSchemaProvider implements ZabbixSchemaProvider
+final class JSONSchemaProvider implements SchemaProvider
 {
     private const METHOD_PATTERN = '/\A[a-z][a-z0-9]*\.[A-Za-z0-9.]+\z/';
 
-    private string $schemaDirectory;
-    private RequestRegistry $requestRegistry;
+    private readonly string $schemaDirectory;
+    private readonly Registry $requestRegistry;
 
-    /** @var array<string, RequestSchema> */
+    /** @var array<string, Schema> */
     private array $schemas = [];
 
     public function __construct(
-        ?string $schemaDirectory = null,
-        ?RequestRegistry $requestRegistry = null,
+        ?string   $schemaDirectory = null,
+        ?Registry $requestRegistry = null,
     ) {
         $this->schemaDirectory = rtrim($schemaDirectory ?? dirname(__DIR__) . '/schemas/7.0', '/');
-        $this->requestRegistry = $requestRegistry ?? new RequestRegistry();
+        $this->requestRegistry = $requestRegistry ?? new Registry();
     }
 
-    public function schemaFor(ZabbixRequest $request): RequestSchema
+    public function schemaFor(Request $request): Schema
     {
         $this->requestRegistry->requestClassFor($request);
         $method = $request->method();
@@ -36,7 +35,7 @@ final class JsonFileSchemaProvider implements ZabbixSchemaProvider
         return $this->schemas[$method] ??= $this->loadSchema($method);
     }
 
-    private function loadSchema(string $method): RequestSchema
+    private function loadSchema(string $method): Schema
     {
         if (1 !== preg_match(self::METHOD_PATTERN, $method)) {
             throw UnknownZabbixMethod::method($method);
@@ -67,6 +66,6 @@ final class JsonFileSchemaProvider implements ZabbixSchemaProvider
         }
 
         /** @var array<string, mixed> $definition */
-        return new RequestSchema($method, $definition);
+        return new JSONSchema($method, $definition);
     }
 }

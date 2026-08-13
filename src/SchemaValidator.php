@@ -11,5 +11,5 @@ interface SchemaValidator
      *
      * @return list<string> human-readable violations; an empty list means valid
      */
-    public function validate(array $params, RequestSchema $schema): array;
+    public function validate(array $params, JSONSchema $schema): array;
 }
