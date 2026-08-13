@@ -16,7 +16,7 @@ Supported options are `url`, `token`, `debug`, `verify`, `timeout`, `connect_tim
 
 The `url` option is the full Zabbix JSON-RPC endpoint, including `api_jsonrpc.php`.
 
-The resolved client always receives the JSON-RPC endpoint, bearer token, fixed JSON-RPC headers, timeout options, TLS verification, and `http_errors` behavior from `ZabbixApiOptions`. `http_errors` is derived from `debug`.
+The resolved client always receives the JSON-RPC endpoint, bearer token, fixed JSON-RPC headers, timeout options, TLS verification, and `http_errors` behavior from `Options`. `http_errors` is derived from `debug`.
 
 ## TLS Verification
 

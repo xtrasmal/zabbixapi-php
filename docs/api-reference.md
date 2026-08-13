@@ -1,57 +1,42 @@
 # API reference
 
-## `ZabbixApi`
+The public surface is the `ZabbixApi` client, its API groups, and two exception types. This page lists signatures; the linked guides carry the usage.
 
-Create a new `ZabbixApi` instance with the following constructor:
+## `ZabbixApi`
 
 ```php
 new ZabbixApi(array $options = [])
 ```
 
-### Supported options
+Constructs the client from a closed option set — `url`, `token`, `debug`, `verify`, `timeout`, `connect_timeout`, `logger`. Unknown options fail at construction. See [Configuration](configuration.md) for each option's behavior.
 
-See [Configuration](configuration.md) for supported options.
+| Method | Returns | Purpose |
+| --- | --- | --- |
+| `getApiVersion()` | `string` | The Zabbix server version, sending the one-time `apiinfo.version` probe if it has not run yet. |
+| `request(ZabbixRequest $request)` | `mixed` | Send a single request object. Application code uses the API groups instead. |
+| `batch(callable\|ZabbixRequest ...$requests)` | `array` | Send several calls in one JSON-RPC batch, results in queued order. See [Batching](batching.md). |
 
-### Zabbix API groups
+## API groups
 
-We support `$zabbix->hosts->get(array $params = []): mixed` syntax for all Zabbix API's and their methods. The `$params` array is validated against the bundled Zabbix schema. This way you can be sure that your request is valid before it is sent to the Zabbix API.
-
-Availlable groups are dependent on the Zabbix version you are using. Currently we only support Zabbix 7.0.
-
-**Some examples of using the API groups:**
+Each Zabbix API area is a group property on the client, and each documented method is a call on it:
 
 ```php
-$zabbix->hosts->get(['output' => ['hostid', 'host']]);
-$zabbix->hostGroups->create(['name' => 'Linux servers']);
-$zabbix->items->get(['hostids' => ['10105'], 'output' => 'extend']);
+$zabbix->hosts->get(array $params = []): mixed
 ```
 
-### Batching commands
+`$params` is the array Zabbix documents for the method, validated against the bundled schema before transport. The groups mirror the Zabbix 7.0 API. See [API groups and filtering](api-groups.md) for reads, writes, and the `filter()` shorthand.
 
-Use `batch(ZabbixRequest ...$requests): list<mixed>` to send multiple requests in one JSON-RPC batch. The callback receives a batch accumulator whose groups mirror the normal public API; queued params are validated before transport and results return in the same order they were queued.
+## Exceptions
 
-Example usage:
-```php
-$results = $zabbix->batch(function ($batch): void {
-    $batch->hosts->get([
-        'filter' => ['host' => ['srv-01']],
-        'output' => ['hostid', 'host'],
-    ]);
-    $batch->items->get([
-        'hostids' => ['10105'],
-        'output' => ['itemid', 'name'],
-    ]);
-});
+Both live in the `Idiot\Zabbix` namespace.
 
-foreach ($results as $result) {
-    // Handle each Zabbix result in queued order.
-}
-```
+| Exception | Raised when |
+| --- | --- |
+| `InvalidZabbixRequest` | Params fail schema validation, before anything is sent. |
+| `ZabbixApiException` | A Zabbix call returns a JSON-RPC error, or a malformed response is consumed through `ZabbixApi`. |
 
-## Request Mapping
+See [Error handling](error-handling.md) for catching them and [Schemas and validation](schemas-and-validation.md) for what validation covers.
 
-When ZabbixApi is initialized, the first request is a `apiinfo.version` request to determine the Zabbix version. The version is used to load the correct schema and load the request classes for that version.
+## Version and schema selection
 
-`RequestRegistry` tracks the generated request classes known to the runtime. It is infrastructure for schema validation and generated API coverage, not a public method-name request factory.
-
- See [Schemas and validation](schemas-and-validation.md) for more details.
+The client resolves the server version once through `apiinfo.version` and uses it to select the bundled schema set that validates params. `Registry` tracks the generated request classes behind the groups — validation infrastructure, not a public request factory. See [Entry point and dispatch](architecture/entry-point.md) for when the probe is sent and [Schemas and validation](schemas-and-validation.md) for how a method maps to its schema.

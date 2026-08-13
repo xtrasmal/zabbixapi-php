@@ -1,23 +1,13 @@
 # Zabbix API PHP Client
 
-PHP client for the Zabbix JSON-RPC API with a grouped, array-first public API.
+A PHP client for the Zabbix 7.0 JSON-RPC API. Talk to your server with grouped, array-first calls — `$zabbix->hosts->get([...])` — and let the client handle JSON-RPC, auth, and validation.
 
-This library sends JSON-RPC 2.0 requests to `api_jsonrpc.php` and authenticates API calls with an `Authorization: Bearer <token>` header. No body `auth` or local session cache is used; `user.logout` is available only as an explicit Zabbix API call.
+## Contents
 
-The intended application API is:
-
-```php
-$zabbix->hosts->get([...]);
-$zabbix->hostGroups->create([...]);
-$zabbix->items->get([...]);
-$zabbix->users->logout([]);
-$zabbix->batch(function ($batch): void {
-    $batch->hosts->get([...]);
-    $batch->items->get([...]);
-});
-```
-
-Generated request classes, bundled schemas, and the request registry exist for internals. Normal controller/service code should use the grouped API with plain arrays.
+- [Installation](#installation)
+- [Quickstart](#quickstart)
+- [Documentation](#documentation)
+- [Zabbix manual](#zabbix-manual)
 
 ## Installation
 
@@ -25,13 +15,9 @@ Generated request classes, bundled schemas, and the request registry exist for i
 composer require idiot/zabbixapi
 ```
 
-Requirements:
+Requires PHP 8.1+ with `ext-curl` and `ext-openssl`.
 
-- PHP 8.1+
-- `ext-curl`
-- `ext-openssl`
-
-## Quick Start
+## Quickstart
 
 ```php
 use Idiot\Zabbix\ZabbixApi;
@@ -44,90 +30,41 @@ $zabbix = new ZabbixApi([
 $hosts = $zabbix->hosts->get([
     'output' => ['hostid', 'host'],
 ]);
-
-$filteredHosts = $zabbix->hosts->get([
-    'filter' => ['host' => ['srv-01']],
-    'output' => ['hostid'],
-]);
-
-$hostsByName = $zabbix->hosts->filter([
-    'host' => ['srv-01'],
-]);
-
-$group = $zabbix->hostGroups->create([
-    'name' => 'Linux servers',
-]);
-
-$results = $zabbix->batch(function ($batch): void {
-    $batch->hosts->get([
-        'filter' => ['host' => ['srv-01']],
-        'output' => ['hostid', 'host'],
-    ]);
-    $batch->items->get([
-        'hostids' => ['10105'],
-        'output' => ['itemid', 'name'],
-    ]);
-});
 ```
 
-## Common Tasks
-
-### Filter Hosts
-
-Use the full `get()` params array when you want `filter` plus `output` or other Zabbix options:
-
-```php
-$hosts = $zabbix->hosts->get([
-    'filter' => ['host' => ['srv-01']],
-    'output' => ['hostid', 'host', 'name'],
-]);
-```
-
-Use `filter()` only when the filter is the whole request:
-
-```php
-$hosts = $zabbix->hosts->filter([
-    'host' => ['srv-01'],
-]);
-```
-
-### Batch Planned Work
-
-Batch mode is for monitoring workflows where you plan several API moves and then process the ordered results:
-
-```php
-$results = $zabbix->batch(function ($batch): void {
-    $batch->hosts->get([
-        'filter' => ['host' => ['srv-01']],
-        'output' => ['hostid', 'host'],
-    ]);
-
-    $batch->items->get([
-        'hostids' => ['10105'],
-        'output' => ['itemid', 'name'],
-    ]);
-});
-
-foreach ($results as $result) {
-    // Results match the queued calls above.
-}
-```
-
-Outside `batch()`, grouped calls execute immediately.
+New here? [Getting started](docs/getting-started.md) walks you from an empty file to your first three calls.
 
 ## Documentation
 
-- [Usage and authentication](docs/usage-and-authentication.md)
-- [API groups and filtering](docs/api-groups.md)
-- [Batching](docs/batching.md)
-- [Configuration](docs/configuration.md)
-- [Error handling](docs/error-handling.md)
-- [JSON-RPC client](docs/json-rpc.md)
-- [Schemas and validation](docs/schemas-and-validation.md)
-- [API reference](docs/api-reference.md)
-- [Client architecture](docs/client-architecture.md)
-- [Development](docs/development.md)
+**Start here**
+
+- [Getting started](docs/getting-started.md) — a guided first run
+
+**Guides**
+
+- [API groups and filtering](docs/api-groups.md) — the group API, `get()` vs `filter()`, reads and writes
+- [Batching](docs/batching.md) — several calls in one HTTP round trip
+- [Configuration](docs/configuration.md) — endpoint, timeouts, TLS, logging
+- [Error handling](docs/error-handling.md) — the exception types and when they surface
+- [Usage and authentication](docs/usage-and-authentication.md) — the bearer-token model and Laravel wiring
+
+**Reference and internals**
+
+- [API reference](docs/api-reference.md) — groups, methods, and exceptions
+- [Architecture](docs/architecture.md) — the layered stack and its sub-systems
+- [JSON-RPC client](docs/json-rpc.md) — how the library speaks JSON-RPC 2.0
+- [Schemas and validation](docs/schemas-and-validation.md) — the bundled schemas and what they check
+- [Development](docs/development.md) — building, testing, and contributing
+
 - [Changelog](CHANGELOG.md)
+
+## Zabbix manual
+
+Official Zabbix 7.0 documentation for the API this client speaks to:
+
+- [Zabbix 7.0 manual](https://www.zabbix.com/documentation/7.0/en/manual)
+- [API chapter](https://www.zabbix.com/documentation/7.0/en/manual/api) — the JSON-RPC request/response format and authentication
+- [API method reference](https://www.zabbix.com/documentation/7.0/en/manual/api/reference) — per-object methods, params, and return values
 
 ## License
 

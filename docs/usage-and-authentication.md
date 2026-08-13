@@ -17,11 +17,11 @@ $hosts = $zabbix->hosts->get([
 
 The constructor validates the JSON-RPC endpoint URL and token and stores the connection state for later calls. It does not send an HTTP request by itself.
 
-The client calls `apiinfo.version` once. When possible, that version probe is batched into the first real Zabbix request instead of being sent as a separate HTTP request.
+The only request the client makes on its own is a one-time `apiinfo.version` probe — see [Entry point and dispatch](architecture/entry-point.md) for how it rides along with your first call.
 
 ## Bearer Tokens
 
-Every API call is sent through the client configured by `ZabbixApiOptions`, including the bearer header:
+Every API call is sent through the client configured by `Options`, including the bearer header:
 
 ```text
 Authorization: Bearer <token>

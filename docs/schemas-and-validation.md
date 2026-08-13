@@ -2,9 +2,9 @@
 
 The bundled schemas live under `schemas/7.0` and describe Zabbix 7.0 API params.
 
-Runtime validation uses `justinrainbow/json-schema` through `JsonSchemaValidator`.
+Runtime validation uses `justinrainbow/json-schema` through `JSONSchemaValidator`.
 
-`JsonFileSchemaProvider` loads the JSON schema for a `ZabbixRequest` by reading the request object's method:
+`JSONSchemaProvider` loads the JSON schema for a `Request` by reading the request object's method:
 
 ```text
 host.get -> schemas/7.0/host/host.get.json
