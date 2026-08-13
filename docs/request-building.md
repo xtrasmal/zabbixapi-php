@@ -4,7 +4,6 @@ Request building is covered by focused docs:
 
 - [API groups and filtering](api-groups.md)
 - [Batching](batching.md)
-- [RequestFactory and adapters](request-factory.md)
 - [JSON-RPC client](json-rpc.md)
 - [Schemas and validation](schemas-and-validation.md)
 

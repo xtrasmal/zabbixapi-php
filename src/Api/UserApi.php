@@ -14,71 +14,72 @@ use Idiot\Zabbix\Requests\UserProvisionRequest;
 use Idiot\Zabbix\Requests\UserResettotpRequest;
 use Idiot\Zabbix\Requests\UserUnblockRequest;
 use Idiot\Zabbix\Requests\UserUpdateRequest;
+use Idiot\Zabbix\Requests\ZabbixRequest;
 
 final class UserApi extends AbstractApi
 {
     /** @param array<string, mixed> $request */
-    public function checkAuthentication(UserCheckAuthenticationRequest|array $request = []): UserCheckAuthenticationRequest
+    public function checkAuthentication(UserCheckAuthenticationRequest|array $request = []): ZabbixRequest
     {
         return $this->request(UserCheckAuthenticationRequest::class, $request);
     }
 
     /** @param array<string, mixed> $request */
-    public function create(UserCreateRequest|array $request): UserCreateRequest
+    public function create(UserCreateRequest|array $request): ZabbixRequest
     {
         return $this->request(UserCreateRequest::class, $request);
     }
 
     /** @param list<mixed> $request */
-    public function delete(UserDeleteRequest|array $request): UserDeleteRequest
+    public function delete(UserDeleteRequest|array $request): ZabbixRequest
     {
         return $this->request(UserDeleteRequest::class, $request);
     }
 
     /** @param array<string, mixed> $request */
-    public function get(UserGetRequest|array $request = []): UserGetRequest
+    public function get(UserGetRequest|array $request = []): ZabbixRequest
     {
         return $this->request(UserGetRequest::class, $request);
     }
 
     /** @param array<string, mixed> $filter */
-    public function filter(array $filter): UserGetRequest
+    public function filter(array $filter): ZabbixRequest
     {
         return $this->filterRequest(UserGetRequest::class, $filter);
     }
 
     /** @param array<string, mixed> $request */
-    public function login(UserLoginRequest|array $request): UserLoginRequest
+    public function login(UserLoginRequest|array $request): ZabbixRequest
     {
         return $this->request(UserLoginRequest::class, $request);
     }
 
     /** @param list<mixed> $request */
-    public function logout(UserLogoutRequest|array $request = []): UserLogoutRequest
+    public function logout(UserLogoutRequest|array $request = []): ZabbixRequest
     {
         return $this->request(UserLogoutRequest::class, $request);
     }
 
     /** @param list<mixed> $request */
-    public function provision(UserProvisionRequest|array $request): UserProvisionRequest
+    public function provision(UserProvisionRequest|array $request): ZabbixRequest
     {
         return $this->request(UserProvisionRequest::class, $request);
     }
 
     /** @param list<mixed> $request */
-    public function resetTotp(UserResettotpRequest|array $request): UserResettotpRequest
+    public function resetTotp(UserResettotpRequest|array $request): ZabbixRequest
     {
         return $this->request(UserResettotpRequest::class, $request);
     }
 
     /** @param list<mixed> $request */
-    public function unblock(UserUnblockRequest|array $request): UserUnblockRequest
+    public function unblock(UserUnblockRequest|array $request): ZabbixRequest
     {
         return $this->request(UserUnblockRequest::class, $request);
     }
 
     /** @param array<string, mixed> $request */
-    public function update(UserUpdateRequest|array $request): UserUpdateRequest
+    public function update(UserUpdateRequest|array $request): ZabbixRequest
     {
         return $this->request(UserUpdateRequest::class, $request);
     }

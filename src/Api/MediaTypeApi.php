@@ -8,35 +8,36 @@ use Idiot\Zabbix\Requests\MediatypeCreateRequest;
 use Idiot\Zabbix\Requests\MediatypeDeleteRequest;
 use Idiot\Zabbix\Requests\MediatypeGetRequest;
 use Idiot\Zabbix\Requests\MediatypeUpdateRequest;
+use Idiot\Zabbix\Requests\ZabbixRequest;
 
 final class MediaTypeApi extends AbstractApi
 {
     /** @param array<string, mixed> $request */
-    public function create(MediatypeCreateRequest|array $request): MediatypeCreateRequest
+    public function create(MediatypeCreateRequest|array $request): ZabbixRequest
     {
         return $this->request(MediatypeCreateRequest::class, $request);
     }
 
     /** @param list<mixed> $request */
-    public function delete(MediatypeDeleteRequest|array $request): MediatypeDeleteRequest
+    public function delete(MediatypeDeleteRequest|array $request): ZabbixRequest
     {
         return $this->request(MediatypeDeleteRequest::class, $request);
     }
 
     /** @param array<string, mixed> $request */
-    public function get(MediatypeGetRequest|array $request = []): MediatypeGetRequest
+    public function get(MediatypeGetRequest|array $request = []): ZabbixRequest
     {
         return $this->request(MediatypeGetRequest::class, $request);
     }
 
     /** @param array<string, mixed> $filter */
-    public function filter(array $filter): MediatypeGetRequest
+    public function filter(array $filter): ZabbixRequest
     {
         return $this->filterRequest(MediatypeGetRequest::class, $filter);
     }
 
     /** @param array<string, mixed> $request */
-    public function update(MediatypeUpdateRequest|array $request): MediatypeUpdateRequest
+    public function update(MediatypeUpdateRequest|array $request): ZabbixRequest
     {
         return $this->request(MediatypeUpdateRequest::class, $request);
     }

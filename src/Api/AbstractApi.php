@@ -6,7 +6,6 @@ namespace Idiot\Zabbix\Api;
 
 use Idiot\Zabbix\Requests\AbstractZabbixRequest;
 use Idiot\Zabbix\Requests\ZabbixRequest;
-use InvalidArgumentException;
 
 abstract class AbstractApi
 {
@@ -18,30 +17,11 @@ abstract class AbstractApi
      *
      * @return T
      */
-    protected function request(string $requestClass, ZabbixRequest|array $request): AbstractZabbixRequest
+    protected function request(string $requestClass, ZabbixRequest|array $request): ZabbixRequest
     {
-        if ($request instanceof ZabbixRequest) {
-            if (!$request instanceof $requestClass) {
-                throw new InvalidArgumentException(sprintf(
-                    'Expected request of type %s, got %s.',
-                    $requestClass,
-                    $request::class,
-                ));
-            }
-
-            /** @var T $request */
-            return $request;
-        }
-
-        if (is_a($requestClass, AbstractZabbixRequest::class, true)) {
-            return $requestClass::fromParams($request);
-        }
-
-        throw new InvalidArgumentException(sprintf(
-            'Request class %s must extend %s.',
-            $requestClass,
-            AbstractZabbixRequest::class,
-        ));
+        return $request instanceof ZabbixRequest
+            ? $request
+            : $requestClass::fromParams($request);
     }
 
     /**
@@ -52,7 +32,7 @@ abstract class AbstractApi
      *
      * @return T
      */
-    protected function filterRequest(string $requestClass, array $filter): AbstractZabbixRequest
+    protected function filterRequest(string $requestClass, array $filter): ZabbixRequest
     {
         return $this->request($requestClass, ['filter' => $filter]);
     }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Idiot\Zabbix\Requests;
+namespace Idiot\Zabbix;
 
 /**
  * A Zabbix method's draft 2020-12 JSON Schema loaded from the bundled

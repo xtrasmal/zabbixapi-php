@@ -46,21 +46,8 @@ $zabbix->batch(function (): void {
 
 ## Authentication
 
-Batches use one HTTP request and one bearer header. If the batch contains any authenticated method, the configured bearer token is sent.
-
-When username/password fallback is configured and no token is available yet, the client performs `user.login` first, stores the returned token, and sends the planned batch with the bearer header.
+Batches use one HTTP request and the bearer header configured by `ZabbixApiOptions`.
 
 ## Explicit Request Objects
 
-Most application code should use the callback form. Adapter code can pass request objects directly:
-
-```php
-use Idiot\Zabbix\Requests\RequestFactory;
-
-$factory = RequestFactory::plain();
-
-$results = $zabbix->batch(
-    $factory->make('host.get', ['output' => ['hostid', 'host']]),
-    $factory->make('item.get', ['output' => ['itemid', 'name']]),
-);
-```
+Most application code should use the callback form. `batch()` also accepts `ZabbixRequest` objects for internal flows that already hold request objects.

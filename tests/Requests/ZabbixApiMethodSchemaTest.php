@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Requests;
 
+use Idiot\Zabbix\InvalidZabbixRequest;
+use Idiot\Zabbix\JsonFileSchemaProvider;
+use Idiot\Zabbix\RequestRegistry;
 use Idiot\Zabbix\Requests\AbstractZabbixRequest;
 use Idiot\Zabbix\Requests\HistoryPushRequest;
 use Idiot\Zabbix\Requests\HostDeleteRequest;
 use Idiot\Zabbix\Requests\HostGetRequest;
-use Idiot\Zabbix\Requests\InvalidZabbixRequest;
-use Idiot\Zabbix\Requests\JsonFileSchemaProvider;
-use Idiot\Zabbix\Requests\StaticRequestRegistry;
-use Idiot\Zabbix\Requests\UnknownZabbixMethod;
 use Idiot\Zabbix\Requests\UserLogoutRequest;
 use Idiot\Zabbix\Requests\ZabbixRequest;
-use Idiot\Zabbix\Requests\ZabbixRequestValidator;
+use Idiot\Zabbix\UnknownZabbixMethod;
+use Idiot\Zabbix\ZabbixRequestValidator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\SchemaSampleFactory;
@@ -30,7 +30,8 @@ final class ZabbixApiMethodSchemaTest extends TestCase
         string $schemaFile,
         string $requestClass,
     ): void {
-        $schema = (new JsonFileSchemaProvider())->schemaFor($method);
+        $request = $requestClass::fromParams([]);
+        $schema = (new JsonFileSchemaProvider())->schemaFor($request);
         self::assertSame(self::schemaDefinition($schemaFile), $schema->definition());
 
         $preferList = self::paramsAreList($requestClass);
@@ -53,7 +54,8 @@ final class ZabbixApiMethodSchemaTest extends TestCase
         string $schemaFile,
         string $requestClass,
     ): void {
-        $schema = (new JsonFileSchemaProvider())->schemaFor($method);
+        $request = $requestClass::fromParams([]);
+        $schema = (new JsonFileSchemaProvider())->schemaFor($request);
         self::assertSame(self::schemaDefinition($schemaFile), $schema->definition());
 
         $preferList = self::paramsAreList($requestClass);
@@ -66,49 +68,35 @@ final class ZabbixApiMethodSchemaTest extends TestCase
         ZabbixRequestValidator::createDefault()->validate($request);
     }
 
-    public function testStaticRequestRegistryBuildsRequestsFromMethodAndParams(): void
+    public function testRequestRegistryPullsClassesFromRequests(): void
     {
-        $request = (new StaticRequestRegistry())->requestFor('host.get', [
+        $request = HostGetRequest::fromParams([
             'output' => ['hostid', 'host'],
             'filter' => ['host' => ['srv-01']],
         ]);
+        $registry = new RequestRegistry();
 
-        self::assertSame('host.get', $request->method());
-        self::assertSame([
-            'output' => ['hostid', 'host'],
-            'filter' => ['host' => ['srv-01']],
-        ], $request->params());
+        self::assertTrue($registry->has($request));
+        self::assertSame(HostGetRequest::class, $registry->requestClassFor($request));
     }
 
-    public function testStaticRequestRegistryBuildsListRootRequestsFromMethodAndParams(): void
+    public function testRequestRegistryCanBePopulatedWithRequestClasses(): void
     {
-        $request = (new StaticRequestRegistry())->requestFor('host.delete', ['10105', '10106']);
+        $registry = new RequestRegistry();
+        $registry->register(CustomRegistryRequest::class);
+        $request = CustomRegistryRequest::fromParams([]);
 
-        self::assertSame('host.delete', $request->method());
-        self::assertSame(['10105', '10106'], $request->params());
+        self::assertTrue($registry->has($request));
+        self::assertSame(CustomRegistryRequest::class, $registry->requestClassFor($request));
     }
 
-    public function testStaticRequestRegistrySupportsUserLoginAsOfficialZabbixMethod(): void
+    public function testRequestRegistrySupportsUserLogoutAsOfficialZabbixMethod(): void
     {
-        $request = (new StaticRequestRegistry())->requestFor('user.login', [
-            'username' => 'api-user',
-            'password' => 'secret',
-        ]);
+        $request = UserLogoutRequest::fromParams([]);
+        $registry = new RequestRegistry();
 
-        self::assertSame('user.login', $request->method());
-        self::assertSame([
-            'username' => 'api-user',
-            'password' => 'secret',
-        ], $request->params());
-    }
-
-    public function testStaticRequestRegistrySupportsUserLogoutAsOfficialZabbixMethod(): void
-    {
-        $request = (new StaticRequestRegistry())->requestFor('user.logout');
-
-        self::assertInstanceOf(UserLogoutRequest::class, $request);
-        self::assertSame('user.logout', $request->method());
-        self::assertSame([], $request->params());
+        self::assertTrue($registry->has($request));
+        self::assertSame(UserLogoutRequest::class, $registry->requestClassFor($request));
 
         ZabbixRequestValidator::createDefault()->validate($request);
     }
@@ -156,7 +144,7 @@ final class ZabbixApiMethodSchemaTest extends TestCase
 
     public function testJsonFileSchemaProviderLoadsBundledZabbixSevenSchemas(): void
     {
-        $schema = (new JsonFileSchemaProvider())->schemaFor('host.get');
+        $schema = (new JsonFileSchemaProvider())->schemaFor(HostGetRequest::fromParams([]));
 
         self::assertSame('host.get', $schema->method());
         self::assertSame('host.get', $schema->definition()['title'] ?? null);
@@ -164,23 +152,34 @@ final class ZabbixApiMethodSchemaTest extends TestCase
         self::assertFalse($schema->paramsAreList());
     }
 
-    public function testStaticRequestRegistryRejectsUnknownMethods(): void
+    public function testRequestRegistryRejectsUnknownRequests(): void
     {
         $this->expectException(UnknownZabbixMethod::class);
 
-        (new StaticRequestRegistry())->requestClassFor('unknown.method');
+        (new RequestRegistry())->requestClassFor(new class implements ZabbixRequest {
+            public function method(): string
+            {
+                return 'unknown.method';
+            }
+
+            public function params(): array
+            {
+                return [];
+            }
+        });
     }
 
     /**
      * @param class-string<ZabbixRequest> $requestClass
      */
     #[DataProvider('sourceSpecMethods')]
-    public function testStaticRequestRegistryCoversSourceSpecMethods(string $method, string $requestClass): void
+    public function testRequestRegistryCoversSourceSpecMethods(string $method, string $requestClass): void
     {
-        $registry = new StaticRequestRegistry();
+        $registry = new RequestRegistry();
+        $request = $requestClass::fromParams([]);
 
         self::assertContains($method, $registry->methods());
-        self::assertSame($requestClass, $registry->requestClassFor($method));
+        self::assertSame($requestClass, $registry->requestClassFor($request));
     }
 
     public function testGeneratedPhpSchemaClassesAreNotRuntimeApi(): void
@@ -193,11 +192,14 @@ final class ZabbixApiMethodSchemaTest extends TestCase
     /** @return iterable<string, array{string, string, class-string<ZabbixRequest>}> */
     public static function apiMethods(): iterable
     {
-        $requestRegistry = new StaticRequestRegistry();
+        $requestRegistry = new RequestRegistry();
+        $requestClasses = $requestRegistry->requestClasses();
+
         foreach (self::schemaFiles() as $schemaFile) {
             $method = self::schemaDefinition($schemaFile)['title'] ?? null;
             self::assertIsString($method);
-            $requestClass = $requestRegistry->requestClassFor($method);
+            self::assertArrayHasKey($method, $requestClasses);
+            $requestClass = $requestClasses[$method];
             self::assertTrue(class_exists($requestClass), sprintf('Request class %s does not exist.', $requestClass));
             self::assertTrue(is_subclass_of($requestClass, ZabbixRequest::class));
 
@@ -208,12 +210,15 @@ final class ZabbixApiMethodSchemaTest extends TestCase
     /** @return iterable<string, array{string, class-string<ZabbixRequest>}> */
     public static function sourceSpecMethods(): iterable
     {
-        $requestRegistry = new StaticRequestRegistry();
+        $requestRegistry = new RequestRegistry();
+        $requestClasses = $requestRegistry->requestClasses();
+
         foreach (self::schemaFiles() as $schemaFile) {
             $schema = self::schemaDefinition($schemaFile);
             $method = $schema['title'] ?? null;
             self::assertIsString($method);
-            $requestClass = $requestRegistry->requestClassFor($method);
+            self::assertArrayHasKey($method, $requestClasses);
+            $requestClass = $requestClasses[$method];
 
             yield $method => [$method, $requestClass];
         }
@@ -249,5 +254,13 @@ final class ZabbixApiMethodSchemaTest extends TestCase
 
         /** @var array<string, mixed> $schema */
         return $schema;
+    }
+}
+
+final class CustomRegistryRequest extends AbstractZabbixRequest
+{
+    public function method(): string
+    {
+        return 'custom.test';
     }
 }

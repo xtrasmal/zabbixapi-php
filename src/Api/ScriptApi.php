@@ -11,53 +11,54 @@ use Idiot\Zabbix\Requests\ScriptGetRequest;
 use Idiot\Zabbix\Requests\ScriptGetscriptsbyeventsRequest;
 use Idiot\Zabbix\Requests\ScriptGetscriptsbyhostsRequest;
 use Idiot\Zabbix\Requests\ScriptUpdateRequest;
+use Idiot\Zabbix\Requests\ZabbixRequest;
 
 final class ScriptApi extends AbstractApi
 {
     /** @param array<string, mixed> $request */
-    public function create(ScriptCreateRequest|array $request): ScriptCreateRequest
+    public function create(ScriptCreateRequest|array $request): ZabbixRequest
     {
         return $this->request(ScriptCreateRequest::class, $request);
     }
 
     /** @param list<mixed> $request */
-    public function delete(ScriptDeleteRequest|array $request): ScriptDeleteRequest
+    public function delete(ScriptDeleteRequest|array $request): ZabbixRequest
     {
         return $this->request(ScriptDeleteRequest::class, $request);
     }
 
     /** @param array<string, mixed> $request */
-    public function execute(ScriptExecuteRequest|array $request): ScriptExecuteRequest
+    public function execute(ScriptExecuteRequest|array $request): ZabbixRequest
     {
         return $this->request(ScriptExecuteRequest::class, $request);
     }
 
     /** @param array<string, mixed> $request */
-    public function get(ScriptGetRequest|array $request = []): ScriptGetRequest
+    public function get(ScriptGetRequest|array $request = []): ZabbixRequest
     {
         return $this->request(ScriptGetRequest::class, $request);
     }
 
     /** @param array<string, mixed> $filter */
-    public function filter(array $filter): ScriptGetRequest
+    public function filter(array $filter): ZabbixRequest
     {
         return $this->filterRequest(ScriptGetRequest::class, $filter);
     }
 
     /** @param list<mixed> $request */
-    public function getScriptsByEvents(ScriptGetscriptsbyeventsRequest|array $request): ScriptGetscriptsbyeventsRequest
+    public function getScriptsByEvents(ScriptGetscriptsbyeventsRequest|array $request): ZabbixRequest
     {
         return $this->request(ScriptGetscriptsbyeventsRequest::class, $request);
     }
 
     /** @param list<mixed> $request */
-    public function getScriptsByHosts(ScriptGetscriptsbyhostsRequest|array $request): ScriptGetscriptsbyhostsRequest
+    public function getScriptsByHosts(ScriptGetscriptsbyhostsRequest|array $request): ZabbixRequest
     {
         return $this->request(ScriptGetscriptsbyhostsRequest::class, $request);
     }
 
     /** @param array<string, mixed> $request */
-    public function update(ScriptUpdateRequest|array $request): ScriptUpdateRequest
+    public function update(ScriptUpdateRequest|array $request): ZabbixRequest
     {
         return $this->request(ScriptUpdateRequest::class, $request);
     }

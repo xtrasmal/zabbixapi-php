@@ -9,33 +9,36 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response as HttpResponse;
-use Idiot\Zabbix\Requests\InvalidZabbixRequest;
-use Idiot\Zabbix\Requests\RequestFactory;
+use Idiot\Zabbix\Clients\HttpClient;
+use Idiot\Zabbix\Clients\JsonRpcClient;
+use Idiot\Zabbix\InvalidZabbixRequest;
+use Idiot\Zabbix\Requests\HostGetRequest;
 use Idiot\Zabbix\ZabbixApi;
 use Idiot\Zabbix\ZabbixApiException;
+use Idiot\Zabbix\ZabbixApiOptions;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\AbstractLogger;
+use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 final class ZabbixApiTest extends TestCase
 {
-    public function testCanBeConstructedWithoutSupplyingHttpClient(): void
+    public function testCanBeConstructedWithConfiguredOptions(): void
     {
-        $api = new ZabbixApi();
+        $api = self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+        ]);
 
-        $this->expectException(ZabbixApiException::class);
-        $this->expectExceptionCode(ZabbixApi::EXCEPTION_CLASS_CODE_AUTH);
-        $this->expectExceptionMessage('Not connected to a Zabbix API endpoint');
-
-        $api->call('host.get');
+        self::assertInstanceOf(ZabbixApi::class, $api);
     }
 
     public function testConstructorRejectsEmptyUrl(): void
     {
-        $this->expectException(ZabbixApiException::class);
-        $this->expectExceptionCode(ZabbixApi::EXCEPTION_CLASS_CODE);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Missing Zabbix URL.');
 
-        new ZabbixApi(options: [
+        self::zabbixApi([
             'url' => '',
             'token' => 'secret',
         ]);
@@ -43,144 +46,96 @@ final class ZabbixApiTest extends TestCase
 
     public function testConstructorRejectsEmptyToken(): void
     {
-        $this->expectException(ZabbixApiException::class);
-        $this->expectExceptionCode(ZabbixApi::EXCEPTION_CLASS_CODE_AUTH);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Missing Zabbix API token.');
 
-        new ZabbixApi(options: [
-            'url' => 'https://zabbix.example',
+        self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
             'token' => '',
         ]);
     }
 
-    public function testConstructorCanConfigureEndpointTokenAndHttpOptions(): void
+    public function testConstructorCanConfigureEndpointTokenAndClientOptions(): void
     {
         $history = [];
-        $api = new ZabbixApi(
-            options: [
-                'url' => 'https://zabbix.example',
-                'token' => 'secret',
-                'verify' => false,
-            ],
-            httpClient: self::guzzle([
-                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":[{"hostid":"10105"}]}]'),
-            ], $history),
-        );
+        $api = self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+            'verify' => false,
+        ], [
+            new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":[{"hostid":"10105"}]}]'),
+        ], $history);
 
-        self::assertSame('secret', $api->getAuthToken());
         self::assertSame([], $history);
         self::assertSame([['hostid' => '10105']], $api->hosts->get(['output' => ['hostid']]));
 
         self::assertCount(1, $history);
+        self::assertSame('https://zabbix.example/api_jsonrpc.php', (string)$history[0]['request']->getUri());
+        self::assertSame('https://zabbix.example/api_jsonrpc.php', (string)$history[0]['options']['base_uri']);
+        self::assertFalse($history[0]['options']['http_errors']);
         self::assertFalse($history[0]['options']['verify']);
         self::assertSame('Bearer secret', $history[0]['request']->getHeaderLine('Authorization'));
         self::assertSame(['apiinfo.version', 'host.get'], self::requestMethods($history[0]));
     }
 
-    public function testConstructorRejectsTokenWithoutEndpoint(): void
+    public function testDebugEnablesGuzzleHttpErrors(): void
     {
-        $this->expectException(ZabbixApiException::class);
-        $this->expectExceptionCode(ZabbixApi::EXCEPTION_CLASS_CODE_AUTH);
-        $this->expectExceptionMessage('Zabbix API token cannot be configured without a Zabbix URL.');
+        $history = [];
+        $api = self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+            'debug' => true,
+        ], [
+            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
+        ], $history, ['http_errors' => true]);
 
-        new ZabbixApi(options: [
+        self::assertSame('7.2.0', $api->getApiVersion());
+        self::assertTrue($history[0]['options']['http_errors']);
+    }
+
+    public function testConstructorRejectsMissingUrl(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Missing Zabbix URL.');
+
+        self::zabbixApi([
             'token' => 'secret',
         ]);
     }
 
-    public function testConstructorCanConfigureUserLoginForFirstAuthenticatedCall(): void
+    public function testConstructorRejectsCredentialOptions(): void
     {
-        $history = [];
-        $api = new ZabbixApi(
-            options: [
-                'url' => 'https://zabbix.example',
-                'username' => 'Admin',
-                'password' => 'zabbix',
-            ],
-            httpClient: self::guzzle([
-                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":"session-token"}]'),
-                new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":[{"hostid":"10105"}]}'),
-            ], $history),
-        );
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unknown Zabbix API option: "username".');
 
-        self::assertSame([['hostid' => '10105']], $api->hosts->get(['output' => ['hostid']]));
-        self::assertSame('session-token', $api->getAuthToken());
-        self::assertCount(2, $history);
-
-        self::assertSame('', $history[0]['request']->getHeaderLine('Authorization'));
-        self::assertSame('Bearer session-token', $history[1]['request']->getHeaderLine('Authorization'));
-
-        self::assertSame(
-            'user.login',
-            self::requestMethods($history[0])[1],
-        );
-    }
-
-    public function testConstructorSkipsConfiguredUserLoginWhenTokenExists(): void
-    {
-        $history = [];
-        $api = new ZabbixApi(
-            options: [
-                'url' => 'https://zabbix.example',
-                'token' => 'secret',
-                'username' => 'Admin',
-                'password' => 'zabbix',
-            ],
-            httpClient: self::guzzle([
-                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":[{"hostid":"10105"}]}]'),
-            ], $history),
-        );
-
-        self::assertSame([['hostid' => '10105']], $api->hosts->get(['output' => ['hostid']]));
-        self::assertCount(1, $history);
-        self::assertSame(['apiinfo.version', 'host.get'], self::requestMethods($history[0]));
-        self::assertSame('Bearer secret', $history[0]['request']->getHeaderLine('Authorization'));
-    }
-
-    public function testConstructorRejectsPartialUserLoginOptions(): void
-    {
-        $this->expectException(ZabbixApiException::class);
-        $this->expectExceptionCode(ZabbixApi::EXCEPTION_CLASS_CODE_AUTH);
-        $this->expectExceptionMessage('Zabbix API username and password must be configured together.');
-
-        new ZabbixApi(options: [
-            'url' => 'https://zabbix.example',
+        self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
             'username' => 'Admin',
         ]);
     }
 
-    public function testAuthenticatedCallsRequireBearerTokenOrConfiguredLogin(): void
+    public function testConstructorRejectsMissingToken(): void
     {
-        $history = [];
-        $api = new ZabbixApi(
-            options: [
-                'url' => 'https://zabbix.example',
-            ],
-            httpClient: self::guzzle([
-            ], $history),
-        );
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Missing Zabbix API token.');
 
-        $this->expectException(ZabbixApiException::class);
-        $this->expectExceptionCode(ZabbixApi::EXCEPTION_CLASS_CODE_AUTH);
-        $this->expectExceptionMessage('No Zabbix API bearer token configured');
-
-        $api->call('host.get');
+        self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+        ]);
     }
 
-    public function testCallSendsJsonRpc20RequestWithoutBodyAuth(): void
+    public function testGroupedCallSendsJsonRpc20RequestWithoutBodyAuth(): void
     {
         $history = [];
-        $api = new ZabbixApi(
-            options: [
-                'url' => 'https://zabbix.example/',
-                'token' => 'secret',
-            ],
-            httpClient: self::guzzle([
-                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":[]}]'),
-            ], $history),
-        );
+        $api = self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+        ], [
+            new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":[]}]'),
+        ], $history);
 
-        $api->call('host.get', ['output' => 'extend']);
+        $api->hosts->get(['output' => 'extend']);
 
         $body = json_decode((string)$history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR);
 
@@ -202,38 +157,50 @@ final class ZabbixApiTest extends TestCase
         self::assertArrayNotHasKey('auth', $body[1]);
     }
 
-    public function testCallDecodesJsonRpcResult(): void
+    public function testRequestValidationStopsTransport(): void
     {
         $history = [];
-        $api = new ZabbixApi(
-            options: [
-                'url' => 'https://zabbix.example',
-                'token' => 'secret',
-            ],
-            httpClient: self::guzzle([
-                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":{"hostid":"10105"}}]'),
-            ], $history),
-        );
+        $api = self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+        ], [], $history);
 
-        self::assertSame(['hostid' => '10105'], $api->call('host.get'));
+        $this->expectException(InvalidZabbixRequest::class);
+        $this->expectExceptionMessage("Invalid params for 'host.get'");
+
+        try {
+            $api->hosts->get(['output' => 123]);
+        } finally {
+            self::assertSame([], $history);
+        }
+    }
+
+    public function testRequestDecodesJsonRpcResult(): void
+    {
+        $history = [];
+        $api = self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+        ], [
+            new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":{"hostid":"10105"}}]'),
+        ], $history);
+
+        self::assertSame(['hostid' => '10105'], $api->request(HostGetRequest::fromParams([])));
     }
 
     public function testRequestExecutesZabbixRequestObject(): void
     {
         $history = [];
-        $api = new ZabbixApi(
-            options: [
-                'url' => 'https://zabbix.example',
-                'token' => 'secret',
-            ],
-            httpClient: self::guzzle([
-                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":[{"hostid":"10105"}]}]'),
-            ], $history),
-        );
+        $api = self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+        ], [
+            new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":[{"hostid":"10105"}]}]'),
+        ], $history);
 
         self::assertSame(
             [['hostid' => '10105']],
-            $api->request(RequestFactory::plain()->make('host.get', ['output' => ['hostid']])),
+            $api->request(HostGetRequest::fromParams(['output' => ['hostid']])),
         );
 
         self::assertSame(['apiinfo.version', 'host.get'], self::requestMethods($history[0]));
@@ -242,15 +209,12 @@ final class ZabbixApiTest extends TestCase
     public function testDomainApiPropertiesBuildAndExecuteRequests(): void
     {
         $history = [];
-        $api = new ZabbixApi(
-            options: [
-                'url' => 'https://zabbix.example',
-                'token' => 'secret',
-            ],
-            httpClient: self::guzzle([
-                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":[{"hostid":"10105","host":"srv-01"}]}]'),
-            ], $history),
-        );
+        $api = self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+        ], [
+            new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":[{"hostid":"10105","host":"srv-01"}]}]'),
+        ], $history);
 
         self::assertSame(
             [['hostid' => '10105', 'host' => 'srv-01']],
@@ -274,13 +238,10 @@ final class ZabbixApiTest extends TestCase
     public function testDomainApiPropertiesValidateParamsBeforeTransport(): void
     {
         $history = [];
-        $api = new ZabbixApi(
-            options: [
-                'url' => 'https://zabbix.example',
-                'token' => 'secret',
-            ],
-            httpClient: self::guzzle([], $history),
-        );
+        $api = self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+        ], [], $history);
 
         $this->expectException(InvalidZabbixRequest::class);
         $this->expectExceptionMessage("Invalid params for 'host.get'");
@@ -295,17 +256,14 @@ final class ZabbixApiTest extends TestCase
     public function testPublicApiGroupsAcceptPlainArrayParams(): void
     {
         $history = [];
-        $api = new ZabbixApi(
-            options: [
-                'url' => 'https://zabbix.example',
-                'token' => 'secret',
-            ],
-            httpClient: self::guzzle([
-                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":{"groupids":["17"]}}]'),
-                new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":[{"templateid":"10001"}]}'),
-                new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":[{"itemid":"30001"}]}'),
-            ], $history),
-        );
+        $api = self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+        ], [
+            new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":{"groupids":["17"]}}]'),
+            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":[{"templateid":"10001"}]}'),
+            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":[{"itemid":"30001"}]}'),
+        ], $history);
 
         self::assertSame(['groupids' => ['17']], $api->hostGroups->create(['name' => 'Linux servers']));
         self::assertSame([['templateid' => '10001']], $api->templates->get([
@@ -338,15 +296,12 @@ final class ZabbixApiTest extends TestCase
     public function testUserLogoutCanBeCalledThroughPublicApiGroup(): void
     {
         $history = [];
-        $api = new ZabbixApi(
-            options: [
-                'url' => 'https://zabbix.example',
-                'token' => 'secret',
-            ],
-            httpClient: self::guzzle([
-                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":true}]'),
-            ], $history),
-        );
+        $api = self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+        ], [
+            new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":true}]'),
+        ], $history);
 
         self::assertTrue($api->users->logout());
 
@@ -357,40 +312,34 @@ final class ZabbixApiTest extends TestCase
         self::assertSame([], $body[1]['params']);
     }
 
-    public function testApiVersionLookupIsLazyUnauthenticatedAndCached(): void
+    public function testApiVersionLookupIsLazyAndCached(): void
     {
         $history = [];
-        $api = new ZabbixApi(
-            options: [
-                'url' => 'https://zabbix.example',
-                'token' => 'secret',
-            ],
-            httpClient: self::guzzle([
-                new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
-            ], $history),
-        );
+        $api = self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+        ], [
+            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
+        ], $history);
 
         self::assertSame([], $history);
         self::assertSame('7.2.0', $api->getApiVersion());
         self::assertSame('7.2.0', $api->getApiVersion());
 
         self::assertCount(1, $history);
-        self::assertSame('', $history[0]['request']->getHeaderLine('Authorization'));
+        self::assertSame('Bearer secret', $history[0]['request']->getHeaderLine('Authorization'));
         self::assertSame('apiinfo.version', json_decode((string)$history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR)['method']);
     }
 
     public function testBatchQueuesGroupedCallsAndReturnsResultsInOrder(): void
     {
         $history = [];
-        $api = new ZabbixApi(
-            options: [
-                'url' => 'https://zabbix.example',
-                'token' => 'secret',
-            ],
-            httpClient: self::guzzle([
-                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":[{"hostid":"10105"}]},{"jsonrpc":"2.0","id":3,"result":[{"itemid":"30001"}]}]'),
-            ], $history),
-        );
+        $api = self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+        ], [
+            new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":[{"hostid":"10105"}]},{"jsonrpc":"2.0","id":3,"result":[{"itemid":"30001"}]}]'),
+        ], $history);
 
         $results = $api->batch(function ($batch): void {
             $batch->hosts->get([
@@ -426,15 +375,12 @@ final class ZabbixApiTest extends TestCase
     public function testBatchArrowCallbackQueuesReturnedRequestOnce(): void
     {
         $history = [];
-        $api = new ZabbixApi(
-            options: [
-                'url' => 'https://zabbix.example',
-                'token' => 'secret',
-            ],
-            httpClient: self::guzzle([
-                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":[{"hostid":"10105"}]}]'),
-            ], $history),
-        );
+        $api = self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+        ], [
+            new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"result":[{"hostid":"10105"}]}]'),
+        ], $history);
 
         $results = $api->batch(fn ($batch) => $batch->hosts->get(['output' => ['hostid']]));
 
@@ -444,8 +390,8 @@ final class ZabbixApiTest extends TestCase
 
     public function testBatchRejectsEmptyPlans(): void
     {
-        $api = new ZabbixApi(options: [
-            'url' => 'https://zabbix.example',
+        $api = self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
             'token' => 'secret',
         ]);
 
@@ -458,13 +404,10 @@ final class ZabbixApiTest extends TestCase
     public function testBatchValidatesQueuedParamsBeforeTransport(): void
     {
         $history = [];
-        $api = new ZabbixApi(
-            options: [
-                'url' => 'https://zabbix.example',
-                'token' => 'secret',
-            ],
-            httpClient: self::guzzle([], $history),
-        );
+        $api = self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+        ], [], $history);
 
         $this->expectException(InvalidZabbixRequest::class);
         $this->expectExceptionMessage("Invalid params for 'host.get'");
@@ -478,61 +421,46 @@ final class ZabbixApiTest extends TestCase
         }
     }
 
-    public function testCallConvertsJsonRpcErrorsToExceptions(): void
+    public function testRequestConvertsJsonRpcErrorsToExceptions(): void
     {
         $history = [];
-        $api = new ZabbixApi(
-            options: [
-                'url' => 'https://zabbix.example',
-                'token' => 'secret',
-            ],
-            httpClient: self::guzzle([
-                new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"error":{"code":-32602,"message":"Invalid params","data":"bad input"}}]'),
-            ], $history),
-        );
+        $api = self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+        ], [
+            new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":1,"result":"7.2.0"},{"jsonrpc":"2.0","id":2,"error":{"code":-32602,"message":"Invalid params","data":"bad input"}}]'),
+        ], $history);
 
         $this->expectException(ZabbixApiException::class);
         $this->expectExceptionCode(-32602);
         $this->expectExceptionMessage('Invalid params [bad input]');
 
-        $api->call('host.get');
+        $api->hosts->get();
     }
 
-    public function testConstructorAcceptsPlainGuzzleRequestOptions(): void
+    public function testConstructorRejectsUnknownOptions(): void
     {
-        $history = [];
-        $api = new ZabbixApi(
-            options: [
-                'url' => 'https://zabbix.example',
-                'token' => 'secret',
-                'verify' => false,
-                'proxy' => 'http://proxy.example:8080',
-            ],
-            httpClient: self::guzzle([
-                new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
-            ], $history),
-        );
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unknown Zabbix API option: "proxy".');
 
-        self::assertSame('7.2.0', $api->getApiVersion());
-        self::assertFalse($history[0]['options']['verify']);
-        self::assertSame('http://proxy.example:8080', $history[0]['options']['proxy']);
-        self::assertArrayNotHasKey('curl', $history[0]['options']);
+        self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+            'proxy' => 'http://proxy.example:8080',
+        ]);
     }
 
     public function testLoggerReceivesDebugContext(): void
     {
         $history = [];
         $logger = new ArrayLogger();
-        $api = new ZabbixApi(
-            options: [
-                'url' => 'https://zabbix.example',
-                'token' => 'secret',
-            ],
-            httpClient: self::guzzle([
-                new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
-            ], $history),
-            logger: $logger,
-        );
+        $api = self::zabbixApi([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+            'logger' => $logger,
+        ], [
+            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":"7.2.0"}'),
+        ], $history, logger: $logger);
 
         self::assertSame('7.2.0', $api->getApiVersion());
         self::assertSame([
@@ -543,15 +471,109 @@ final class ZabbixApiTest extends TestCase
     }
 
     /**
+     * @param array<string, mixed>             $options
      * @param list<HttpResponse>               $responses
      * @param array<int, array<string, mixed>> $history
+     * @param array<string, mixed>             $clientOptions
      */
-    private static function guzzle(array $responses, array &$history): GuzzleClient
+    private static function zabbixApi(
+        array $options,
+        array $responses = [],
+        ?array &$history = null,
+        array $clientOptions = [],
+        ?LoggerInterface $logger = null,
+    ): ZabbixApi {
+        $api = new ZabbixApi($options);
+
+        if (null !== $history) {
+            self::replaceJsonRpcClient(
+                $api,
+                self::jsonRpcClient(
+                    $responses,
+                    $history,
+                    self::resolvedClientOptions($options, $clientOptions),
+                    $logger ?? (isset($options['logger']) && $options['logger'] instanceof LoggerInterface ? $options['logger'] : null),
+                ),
+            );
+        }
+
+        return $api;
+    }
+
+    private static function replaceJsonRpcClient(ZabbixApi $api, JsonRpcClient $client): void
+    {
+        $property = new \ReflectionProperty(ZabbixApi::class, 'options');
+        $options = $property->getValue($api);
+
+        if (!$options instanceof ZabbixApiOptions) {
+            throw new \LogicException('ZabbixApi options property must contain resolved options.');
+        }
+
+        $replaceClient = \Closure::bind(
+            static fn (ZabbixApiOptions $options, JsonRpcClient $client): ZabbixApiOptions => new ZabbixApiOptions(
+                url: $options->url,
+                token: $options->token,
+                debug: $options->debug,
+                verify: $options->verify,
+                timeout: $options->timeout,
+                connectTimeout: $options->connectTimeout,
+                logger: $options->logger,
+                client: $client,
+            ),
+            null,
+            ZabbixApiOptions::class,
+        );
+
+        $property->setValue($api, $replaceClient($options, $client));
+    }
+
+    /**
+     * @param list<HttpResponse>               $responses
+     * @param array<int, array<string, mixed>> $history
+     * @param array<string, mixed>             $options
+     */
+    private static function jsonRpcClient(
+        array $responses,
+        array &$history,
+        array $options = [],
+        ?LoggerInterface $logger = null,
+    ): JsonRpcClient {
+        return new JsonRpcClient(new HttpClient(self::guzzle($responses, $history, $options)), $logger);
+    }
+
+    /**
+     * @param list<HttpResponse>               $responses
+     * @param array<int, array<string, mixed>> $history
+     * @param array<string, mixed>             $options
+     */
+    private static function guzzle(array $responses, array &$history, array $options = []): GuzzleClient
     {
         $stack = HandlerStack::create(new MockHandler($responses));
         $stack->push(Middleware::history($history));
 
-        return new GuzzleClient(['handler' => $stack]);
+        return new GuzzleClient(array_replace_recursive($options, ['handler' => $stack]));
+    }
+
+    /**
+     * @param array<string, mixed> $apiOptions
+     * @param array<string, mixed> $overrides
+     *
+     * @return array<string, mixed>
+     */
+    private static function resolvedClientOptions(array $apiOptions, array $overrides): array
+    {
+        return array_replace_recursive([
+            'base_uri' => $apiOptions['url'],
+            'connect_timeout' => $apiOptions['connect_timeout'] ?? ZabbixApiOptions::DEFAULT_CONNECTION_TIMEOUT,
+            'headers' => [
+                'Authorization' => 'Bearer ' . $apiOptions['token'],
+                'Content-Type' => 'application/json-rpc',
+                'User-Agent' => 'Idiot/ZabbixApi;Version:' . ZabbixApi::VERSION,
+            ],
+            'http_errors' => $apiOptions['debug'] ?? false,
+            'timeout' => $apiOptions['timeout'] ?? ZabbixApiOptions::DEFAULT_TIMEOUT,
+            'verify' => $apiOptions['verify'] ?? true,
+        ], $overrides);
     }
 
     /**

@@ -4,7 +4,7 @@ The bundled schemas live under `schemas/7.0` and describe Zabbix 7.0 API params.
 
 Runtime validation uses `justinrainbow/json-schema` through `JsonSchemaValidator`.
 
-`JsonFileSchemaProvider` loads the JSON schema for a Zabbix method by method name:
+`JsonFileSchemaProvider` loads the JSON schema for a `ZabbixRequest` by reading the request object's method:
 
 ```text
 host.get -> schemas/7.0/host/host.get.json
@@ -31,16 +31,6 @@ $zabbix->batch(function ($batch): void {
     $batch->items->get(['hostids' => ['10105'], 'output' => ['itemid']]);
 });
 ```
-
-`RequestFactory::validated()` is still useful for adapters that want to validate method-name input before they hand request objects to `ZabbixApi`:
-
-```php
-$request = RequestFactory::validated()->make('host.get', [
-    'output' => ['hostid', 'host'],
-]);
-```
-
-`RequestFactory::plain()` only maps method names to request objects. Passing that request to `$zabbix->request($request)` still validates before transport.
 
 ## Request Classes
 

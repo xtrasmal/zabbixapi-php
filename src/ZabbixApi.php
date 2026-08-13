@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix;
 
-use GuzzleHttp\ClientInterface;
 use Idiot\Zabbix\Api\ActionApi;
 use Idiot\Zabbix\Api\AlertApi;
 use Idiot\Zabbix\Api\ApiInfoApi;
@@ -65,32 +64,15 @@ use Idiot\Zabbix\Api\UserMacroApi;
 use Idiot\Zabbix\Api\ValueMapApi;
 use Idiot\Zabbix\Api\ZabbixApiGroup;
 use Idiot\Zabbix\Api\ZabbixBatch;
-use Idiot\Zabbix\Clients\Credentials;
-use Idiot\Zabbix\Clients\HttpClient;
-use Idiot\Zabbix\Clients\JsonRpcClient;
 use Idiot\Zabbix\Clients\JsonRpcResponse;
 use Idiot\Zabbix\Requests\ApiinfoVersionRequest;
-use Idiot\Zabbix\Requests\UserLoginRequest;
 use Idiot\Zabbix\Requests\ZabbixRequest;
-use Idiot\Zabbix\Requests\ZabbixRequestValidator;
 use InvalidArgumentException;
 use LogicException;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 class ZabbixApi
 {
-    public const VERSION = '3.3.0';
-    public const EXCEPTION_CLASS_CODE = 1000;
-    public const EXCEPTION_CLASS_CODE_AUTH = 2000;
-    public const DEFAULT_TIMEOUT = 30;
-    public const DEFAULT_CONNECTION_TIMEOUT = 10;
-    private const JSON_RPC_REQUEST_ID = 1;
-    private const JSON_RPC_VERSION_REQUEST_ID = 1;
-    private const JSON_RPC_BATCH_REQUEST_ID = 2;
-
-    /** @var list<string> */
-    private const UNAUTHENTICATED_METHODS = ['apiinfo.version', 'user.login'];
+    public const VERSION = '1.0.0-IDIOT';
 
     /** @var ZabbixApiGroup<ActionApi> */
     public readonly ZabbixApiGroup $actions;
@@ -266,46 +248,28 @@ class ZabbixApi
     /** @var ZabbixApiGroup<ValueMapApi> */
     public readonly ZabbixApiGroup $valueMaps;
 
-    private ?Credentials $credentials = null;
+    private ZabbixApiOptions $options;
     private ?string $apiVersion = null;
-    private JsonRpcClient $jsonRpcClient;
-    private LoggerInterface $logger;
 
     /** @var array<string, object> */
     private array $requestBuilders;
 
     private ZabbixRequestValidator $requestValidator;
-    private ?UserLoginRequest $loginRequest;
 
     /**
-     * @param array<string, mixed> $options Zabbix options plus Guzzle request options.
+     * @param array<string, mixed> $options
      *
      * @throws ZabbixApiException
      */
-    public function __construct(
-        array $options = [],
-        ?ClientInterface $httpClient = null,
-        ?LoggerInterface $logger = null,
-    ) {
-        $config = ZabbixApiOptions::fromArray($options);
-        $this->jsonRpcClient = new JsonRpcClient(new HttpClient($httpClient, $config->http), $logger);
-        $this->logger = $logger ?? new NullLogger();
+    public function __construct(array $options = [])
+    {
+        $this->options = ZabbixApiOptions::fromArray($options);
+
         $this->requestBuilders = $this->createRequestBuilders();
         $this->requestValidator = ZabbixRequestValidator::createDefault();
+
         $this->bindApiGroups();
-        $this->loginRequest = $config->login;
-
-        if (null !== $config->url) {
-            $this->configure($config->url, $config->token);
-        }
-    }
-
-    public function setLogger(LoggerInterface $logger): self
-    {
-        $this->logger = $logger;
-        $this->jsonRpcClient->setLogger($logger);
-
-        return $this;
+        $this->logConfiguration();
     }
 
     /**
@@ -318,33 +282,6 @@ class ZabbixApi
         return $this->apiVersion;
     }
 
-    public function getVersion(): string
-    {
-        return self::VERSION;
-    }
-
-    /**
-     * @throws ZabbixApiException
-     */
-    public function getAuthToken(): string
-    {
-        return $this->requireBearerToken();
-    }
-
-    /**
-     * @throws ZabbixApiException
-     */
-    public function call(string $method, array $params = []): mixed
-    {
-        $response = $this->send($method, $params);
-
-        if (null !== $response->error) {
-            throw self::zabbixError($response->error);
-        }
-
-        return $response->result;
-    }
-
     /**
      * @throws ZabbixApiException
      */
@@ -352,15 +289,14 @@ class ZabbixApi
     {
         $this->requestValidator->validate($request);
 
-        if ($request instanceof UserLoginRequest) {
-            return $this->loginWhenNeeded($request);
-        }
-
-        return $this->call($request->method(), $request->params());
+        return $this->execute($request);
     }
 
     /**
      * Queue several Zabbix API calls and send them as one JSON-RPC batch.
+     *
+     *
+     * @param callable(): mixed|ZabbixRequest $requests
      *
      * @throws ZabbixApiException
      *
@@ -371,7 +307,7 @@ class ZabbixApi
         $requests = $this->collectBatchRequests($requests);
 
         if ([] === $requests) {
-            throw new ZabbixApiException('Cannot send an empty Zabbix API batch.', self::EXCEPTION_CLASS_CODE);
+            throw new ZabbixApiException('Cannot send an empty Zabbix API batch.', ZabbixApiException::CLIENT_ERROR);
         }
 
         foreach ($requests as $request) {
@@ -393,23 +329,10 @@ class ZabbixApi
                 $this->apiVersion = (string)$result;
             }
 
-            if ($request instanceof UserLoginRequest) {
-                $this->storeBearerTokenFromLoginResult($result);
-            }
-
             $results[] = $result;
         }
 
         return $results;
-    }
-
-    /**
-     * @throws ZabbixApiException
-     */
-    private function configure(string $zabUrl, ?string $zabToken = null): void
-    {
-        $this->credentials = Credentials::fromEndpoint($zabUrl, $zabToken);
-        $this->logConfiguration();
     }
 
     private function bindApiGroups(): void
@@ -566,8 +489,8 @@ class ZabbixApi
      */
     private function logConfiguration(): void
     {
-        $this->logger->debug('Configured Zabbix HTTP client.', [
-            'endpoint' => $this->requireCredentials()->endpoint(),
+        $this->options->logger->debug('Configured Zabbix HTTP client.', [
+            'endpoint' => $this->options->url,
             'library_version' => self::VERSION,
         ]);
     }
@@ -575,46 +498,41 @@ class ZabbixApi
     /**
      * @throws ZabbixApiException
      */
-    private function send(string $method, array $params = []): Clients\JsonRpcResponse
+    private function call(ZabbixRequest $request): JsonRpcResponse
     {
-        $bearerToken = $this->bearerTokenFor($method);
-
-        if (null === $this->apiVersion && 'apiinfo.version' !== $method) {
-            return $this->sendWithApiVersion($method, $params, $bearerToken);
+        if (null === $this->apiVersion && 'apiinfo.version' !== $request->method()) {
+            return $this->sendWithApiVersion($request);
         }
 
-        return $this->jsonRpcClient->call(
-            url: $this->endpoint(),
-            method: $method,
-            id: self::JSON_RPC_REQUEST_ID,
-            params: $params,
-            bearerToken: $bearerToken,
+        return $this->options->client->call(
+            request: $request,
         );
     }
 
     /**
      * @throws ZabbixApiException
      */
-    private function sendWithApiVersion(
-        string $method,
-        array $params,
-        ?string $bearerToken,
-    ): Clients\JsonRpcResponse {
-        [$versionResponse, $response] = $this->jsonRpcClient->batch(
-            url: $this->endpoint(),
-            calls: [
-                [
-                    'method' => 'apiinfo.version',
-                    'id' => self::JSON_RPC_VERSION_REQUEST_ID,
-                    'params' => [],
-                ],
-                [
-                    'method' => $method,
-                    'id' => self::JSON_RPC_BATCH_REQUEST_ID,
-                    'params' => $params,
-                ],
+    private function execute(ZabbixRequest $request): mixed
+    {
+        $response = $this->call($request);
+
+        if (null !== $response->error) {
+            throw self::zabbixError($response->error);
+        }
+
+        return $response->result;
+    }
+
+    /**
+     * @throws ZabbixApiException
+     */
+    private function sendWithApiVersion(ZabbixRequest $request): JsonRpcResponse
+    {
+        [$versionResponse, $response] = $this->options->client->batch(
+            requests: [
+                ApiinfoVersionRequest::fromParams([]),
+                $request,
             ],
-            bearerToken: $bearerToken,
         );
 
         if (null !== $versionResponse->error) {
@@ -658,30 +576,19 @@ class ZabbixApi
      */
     private function sendBatch(array $requests): array
     {
-        $calls = [];
-        $nextId = 1;
+        $batchRequests = [];
         $includeVersion = null === $this->apiVersion && !$this->batchContainsMethod($requests);
 
         if ($includeVersion) {
-            $calls[] = [
-                'method' => 'apiinfo.version',
-                'id' => $nextId++,
-                'params' => [],
-            ];
+            $batchRequests[] = ApiinfoVersionRequest::fromParams([]);
         }
 
         foreach ($requests as $request) {
-            $calls[] = [
-                'method' => $request->method(),
-                'id' => $nextId++,
-                'params' => $request->params(),
-            ];
+            $batchRequests[] = $request;
         }
 
-        $responses = $this->jsonRpcClient->batch(
-            url: $this->endpoint(),
-            calls: $calls,
-            bearerToken: $this->bearerTokenForBatch($requests),
+        $responses = $this->options->client->batch(
+            requests: $batchRequests,
         );
 
         if (!$includeVersion) {
@@ -708,105 +615,6 @@ class ZabbixApi
         }
 
         return false;
-    }
-
-    /**
-     * @param list<ZabbixRequest> $requests
-     *
-     * @throws ZabbixApiException
-     */
-    private function bearerTokenForBatch(array $requests): ?string
-    {
-        foreach ($requests as $request) {
-            if (!in_array($request->method(), self::UNAUTHENTICATED_METHODS, true)) {
-                return $this->requireBearerToken();
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @throws ZabbixApiException
-     */
-    private function bearerTokenFor(string $method): ?string
-    {
-        return in_array($method, self::UNAUTHENTICATED_METHODS, true) ? null : $this->requireBearerToken();
-    }
-
-    /**
-     * @throws ZabbixApiException
-     */
-    private function endpoint(): string
-    {
-        return $this->requireCredentials()->endpoint();
-    }
-
-    /**
-     * @throws ZabbixApiException
-     */
-    private function requireCredentials(): Credentials
-    {
-        if (null === $this->credentials) {
-            throw new ZabbixApiException('Not connected to a Zabbix API endpoint', self::EXCEPTION_CLASS_CODE_AUTH);
-        }
-
-        return $this->credentials;
-    }
-
-    /**
-     * @throws ZabbixApiException
-     */
-    private function requireBearerToken(): string
-    {
-        $bearerToken = $this->requireCredentials()->bearerToken;
-
-        if (null === $bearerToken && null !== $this->loginRequest) {
-            $this->loginWhenNeeded($this->loginRequest);
-            $bearerToken = $this->requireCredentials()->bearerToken;
-        }
-
-        if (null === $bearerToken) {
-            throw new ZabbixApiException('No Zabbix API bearer token configured', self::EXCEPTION_CLASS_CODE_AUTH);
-        }
-
-        return $bearerToken;
-    }
-
-    /**
-     * @throws ZabbixApiException
-     */
-    private function loginWhenNeeded(UserLoginRequest $request): mixed
-    {
-        $credentials = $this->requireCredentials();
-
-        if (null !== $credentials->bearerToken) {
-            return $credentials->bearerToken;
-        }
-
-        $result = $this->call($request->method(), $request->params());
-        $this->storeBearerTokenFromLoginResult($result);
-
-        return $result;
-    }
-
-    /**
-     * @throws ZabbixApiException
-     */
-    private function storeBearerTokenFromLoginResult(mixed $result): void
-    {
-        $credentials = $this->requireCredentials();
-        $bearerToken = is_string($result) ? $result : null;
-
-        if (null === $bearerToken && is_array($result)) {
-            $bearerToken = $result['sessionid'] ?? null;
-        }
-
-        if (!is_string($bearerToken) || '' === trim($bearerToken)) {
-            throw new ZabbixApiException('user.login did not return an authentication token.', self::EXCEPTION_CLASS_CODE_AUTH);
-        }
-
-        $this->credentials = $credentials->withBearerToken($bearerToken);
     }
 
     /**

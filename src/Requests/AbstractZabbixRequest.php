@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Idiot\Zabbix\Requests;
 
 use BackedEnum;
+use Idiot\Zabbix\JsonFileSchemaProvider;
 
 /**
  * Base for generated Zabbix requests. Requests are method-specific envelopes
@@ -19,25 +20,15 @@ abstract class AbstractZabbixRequest implements ZabbixRequest
     /**
      * @param array<string, mixed>|list<mixed> $payload
      */
-    final protected function __construct(array $payload = [])
+    final private function __construct(array $payload = [])
     {
         $this->params = $this->shape($payload);
-    }
-
-    final public function with(string $name, mixed $value): static
-    {
-        return $this->withParam($name, $value);
     }
 
     /** @param array<string, mixed> $filter */
     final public function filter(array $filter): static
     {
-        return $this->withParam('filter', $filter);
-    }
-
-    final public function output(array|string|BackedEnum|null $output): static
-    {
-        return $this->withParam('output', $output);
+        return static::fromParams(array_replace($this->params(), ['filter' => $filter]));
     }
 
     final public function params(): array
@@ -51,7 +42,7 @@ abstract class AbstractZabbixRequest implements ZabbixRequest
         static $listParamsByMethod = [];
 
         return $listParamsByMethod[$this->method()] ??= (new JsonFileSchemaProvider())
-            ->schemaFor($this->method())
+            ->schemaFor($this)
             ->paramsAreList();
     }
 
@@ -63,11 +54,6 @@ abstract class AbstractZabbixRequest implements ZabbixRequest
     final public static function fromParams(array $params): static
     {
         return new static($params);
-    }
-
-    final protected function withParam(string $name, mixed $value): static
-    {
-        return static::fromParams(array_replace($this->params(), [$name => $value]));
     }
 
     /**
@@ -84,10 +70,6 @@ abstract class AbstractZabbixRequest implements ZabbixRequest
     {
         if ($value instanceof BackedEnum) {
             return $value->value;
-        }
-
-        if ($value instanceof ZabbixParameter) {
-            return $value->toZabbixValue();
         }
 
         return is_array($value) ? array_map(function ($item) {

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Api;
 
+use Idiot\Zabbix\RequestRegistry;
+use Idiot\Zabbix\Requests\ZabbixRequest;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionException;
@@ -19,16 +21,7 @@ final class ApiMethodShapeTest extends TestCase
      */
     public function testGeneratedApiMethodsAcceptPlainArrayParams(): void
     {
-        $apiFiles = glob(__DIR__ . '/../../src/Api/*Api.php');
-        self::assertIsArray($apiFiles);
-
-        foreach ($apiFiles as $apiFile) {
-            $shortName = basename($apiFile, '.php');
-            if (in_array($shortName, ['AbstractApi', 'ZabbixApiGroup', 'ZabbixBatch', 'ZabbixBatchGroup'], true)) {
-                continue;
-            }
-
-            $class = 'Idiot\\Zabbix\\Api\\' . $shortName;
+        foreach (self::generatedApiClasses() as $class) {
             self::assertTrue(class_exists($class), sprintf('API class %s does not exist.', $class));
 
             $reflection = new ReflectionClass($class);
@@ -45,6 +38,50 @@ final class ApiMethodShapeTest extends TestCase
                 );
             }
         }
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function testGeneratedApiMethodsBuildRegisteredRequests(): void
+    {
+        $registry = new RequestRegistry();
+
+        foreach (self::generatedApiClasses() as $class) {
+            $api = new $class();
+            $reflection = new ReflectionClass($class);
+
+            foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+                if ($method->getDeclaringClass()->getName() !== $class) {
+                    continue;
+                }
+
+                $request = $method->invoke($api, []);
+                self::assertInstanceOf(ZabbixRequest::class, $request);
+                self::assertSame($registry->requestClassFor($request), $request::class);
+            }
+        }
+    }
+
+    /**
+     * @return list<class-string>
+     */
+    private static function generatedApiClasses(): array
+    {
+        $apiFiles = glob(__DIR__ . '/../../src/Api/*Api.php');
+        self::assertIsArray($apiFiles);
+
+        $classes = [];
+        foreach ($apiFiles as $apiFile) {
+            $shortName = basename($apiFile, '.php');
+            if (in_array($shortName, ['AbstractApi', 'ZabbixApiGroup', 'ZabbixBatch', 'ZabbixBatchGroup'], true)) {
+                continue;
+            }
+
+            $classes[] = 'Idiot\\Zabbix\\Api\\' . $shortName;
+        }
+
+        return $classes;
     }
 
     private static function parameterAcceptsArray(ReflectionParameter $parameter): bool

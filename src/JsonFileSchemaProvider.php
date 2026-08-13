@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Idiot\Zabbix\Requests;
+namespace Idiot\Zabbix;
 
+use Idiot\Zabbix\Requests\ZabbixRequest;
 use RuntimeException;
 
 /**
@@ -14,29 +15,25 @@ final class JsonFileSchemaProvider implements ZabbixSchemaProvider
     private const METHOD_PATTERN = '/\A[a-z][a-z0-9]*\.[A-Za-z0-9.]+\z/';
 
     private string $schemaDirectory;
-    private ZabbixRequestRegistry $requestRegistry;
+    private RequestRegistry $requestRegistry;
 
     /** @var array<string, RequestSchema> */
     private array $schemas = [];
 
     public function __construct(
         ?string $schemaDirectory = null,
-        ?ZabbixRequestRegistry $requestRegistry = null,
+        ?RequestRegistry $requestRegistry = null,
     ) {
-        $this->schemaDirectory = rtrim($schemaDirectory ?? dirname(__DIR__, 2) . '/schemas/7.0', '/');
-        $this->requestRegistry = $requestRegistry ?? new StaticRequestRegistry();
+        $this->schemaDirectory = rtrim($schemaDirectory ?? dirname(__DIR__) . '/schemas/7.0', '/');
+        $this->requestRegistry = $requestRegistry ?? new RequestRegistry();
     }
 
-    public function schemaFor(string $method): RequestSchema
+    public function schemaFor(ZabbixRequest $request): RequestSchema
     {
-        $this->assertRuntimeMethod($method);
+        $this->requestRegistry->requestClassFor($request);
+        $method = $request->method();
 
         return $this->schemas[$method] ??= $this->loadSchema($method);
-    }
-
-    private function assertRuntimeMethod(string $method): void
-    {
-        $this->requestRegistry->requestClassFor($method);
     }
 
     private function loadSchema(string $method): RequestSchema

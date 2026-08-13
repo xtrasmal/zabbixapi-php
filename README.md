@@ -17,7 +17,7 @@ $zabbix->batch(function ($batch): void {
 });
 ```
 
-Generated request classes, bundled schemas, and `RequestFactory` exist for internals and adapter code. Normal controller/service code should use the grouped API with plain arrays.
+Generated request classes, bundled schemas, and the request registry exist for internals. Normal controller/service code should use the grouped API with plain arrays.
 
 ## Installation
 
@@ -37,7 +37,7 @@ Requirements:
 use Idiot\Zabbix\ZabbixApi;
 
 $zabbix = new ZabbixApi([
-    'url' => 'https://zabbix.example',
+    'url' => 'https://zabbix.example/api_jsonrpc.php',
     'token' => 'your-zabbix-api-token',
 ]);
 
@@ -122,7 +122,6 @@ Outside `batch()`, grouped calls execute immediately.
 - [Batching](docs/batching.md)
 - [Configuration](docs/configuration.md)
 - [Error handling](docs/error-handling.md)
-- [RequestFactory and adapters](docs/request-factory.md)
 - [JSON-RPC client](docs/json-rpc.md)
 - [Schemas and validation](docs/schemas-and-validation.md)
 - [API reference](docs/api-reference.md)

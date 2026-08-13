@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Idiot\Zabbix\Requests;
+namespace Idiot\Zabbix;
 
 use JsonSchema\Validator;
 use stdClass;

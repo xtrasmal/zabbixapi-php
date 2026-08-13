@@ -8,31 +8,32 @@ $hosts = $zabbix->hosts->get([
 ]);
 ```
 
-The lower-level `JsonRpcClient` is available when you need raw JSON-RPC 2.0 envelopes.
+The lower-level `JsonRpcClient` accepts `ZabbixRequest` objects and returns JSON-RPC 2.0 response envelopes.
 
 ```php
+use GuzzleHttp\Client;
 use Idiot\Zabbix\Clients\HttpClient;
 use Idiot\Zabbix\Clients\JsonRpcClient;
+use Idiot\Zabbix\Requests\HostGetRequest;
+use Idiot\Zabbix\Requests\UserLogoutRequest;
+use Idiot\Zabbix\ZabbixApi;
 
-$client = new JsonRpcClient(new HttpClient());
+$client = new JsonRpcClient(new HttpClient(new Client([
+    'base_uri' => 'https://zabbix.example/api_jsonrpc.php',
+    'headers' => [
+        'Authorization' => 'Bearer your-zabbix-api-token',
+        'Content-Type' => 'application/json-rpc',
+        'User-Agent' => 'Idiot/ZabbixApi;Version:' . ZabbixApi::VERSION,
+    ],
+])));
 
 $responses = $client->batch(
-    url: 'https://zabbix.example/api_jsonrpc.php',
-    calls: [
-        [
-            'method' => 'host.get',
-            'id' => 1,
-            'params' => [
-                'output' => ['hostid', 'host'],
-            ],
-        ],
-        [
-            'method' => 'user.logout',
-            'id' => 2,
-            'params' => [],
-        ],
+    requests: [
+        HostGetRequest::fromParams([
+            'output' => ['hostid', 'host'],
+        ]),
+        UserLogoutRequest::fromParams([]),
     ],
-    bearerToken: 'your-zabbix-api-token',
 );
 
 $hosts = $responses[0]->result;
@@ -41,11 +42,11 @@ $loggedOut = $responses[1]->result;
 
 ## Boundaries
 
-`HttpClient` owns HTTP transport and JSON encode/decode boundaries.
+`HttpClient` owns HTTP transport and JSON encode/decode boundaries. It accepts JSON-ready payload arrays and expects its Guzzle client to be fully configured before injection.
 
-`JsonRpcClient` owns JSON-RPC envelopes, request ids, single-response validation, batch response validation, and response reordering.
+`JsonRpcClient` owns JSON-RPC request body creation, response-envelope normalization, and response reordering. JSON-RPC errors stay in `JsonRpcResponse`; they are not thrown by this layer.
 
-`ZabbixApi` owns Zabbix endpoint/token state and delegates transport work.
+`ZabbixApiOptions` owns Zabbix endpoint/token configuration and resolves the configured JSON-RPC client. `ZabbixApi` validates request params and delegates transport work.
 
 ## Batch Ordering
 

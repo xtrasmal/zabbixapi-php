@@ -4,90 +4,103 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix;
 
-use Idiot\Zabbix\Requests\UserLoginRequest;
+use GuzzleHttp\Client as GuzzleClient;
+use Idiot\Zabbix\Clients\HttpClient;
+use Idiot\Zabbix\Clients\JsonRpcClient;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+use RuntimeException;
 
 final class ZabbixApiOptions
 {
-    /**
-     * @param array<string, mixed> $http
-     */
+    public const DEFAULT_TIMEOUT = 30;
+    public const DEFAULT_CONNECTION_TIMEOUT = 10;
+    private const OPTION_NAMES = [
+        'url',
+        'token',
+        'debug',
+        'verify',
+        'timeout',
+        'connect_timeout',
+        'logger',
+    ];
+
     private function __construct(
-        public readonly ?string $url,
-        public readonly ?string $token,
-        public readonly ?UserLoginRequest $login,
-        public readonly array $http,
+        public readonly string $url,
+        public readonly string $token,
+        public readonly bool $debug,
+        public readonly bool|string $verify,
+        public readonly int|float $timeout,
+        public readonly int|float $connectTimeout,
+        public readonly LoggerInterface $logger,
+        public readonly JsonRpcClient $client,
     ) {}
 
     /**
      * @param array<string, mixed> $options
-     *
-     * @throws ZabbixApiException
      */
     public static function fromArray(array $options): self
     {
-        $url = self::optionalString($options, 'url');
-        $token = self::optionalString($options, 'token');
-        $username = self::optionalString($options, 'username');
-        $password = self::optionalString($options, 'password');
-        $http = self::httpOptions($options);
+        self::rejectUnknownOptions($options);
 
-        if (null === $url && null !== $token) {
-            throw new ZabbixApiException(
-                'Zabbix API token cannot be configured without a Zabbix URL.',
-                ZabbixApi::EXCEPTION_CLASS_CODE_AUTH,
-            );
-        }
+        $url = self::requiredString($options, 'url', 'Missing Zabbix URL.');
+        $token = self::requiredString($options, 'token', 'Missing Zabbix API token.');
 
-        if ((null === $username) !== (null === $password)) {
-            throw new ZabbixApiException(
-                'Zabbix API username and password must be configured together.',
-                ZabbixApi::EXCEPTION_CLASS_CODE_AUTH,
-            );
-        }
-
-        if (null === $url && null !== $username) {
-            throw new ZabbixApiException(
-                'Zabbix API login cannot be configured without a Zabbix URL.',
-                ZabbixApi::EXCEPTION_CLASS_CODE_AUTH,
-            );
-        }
+        $debug = self::bool($options, 'debug', false);
+        $verify = self::verify($options);
+        $timeout = self::number($options, 'timeout', self::DEFAULT_TIMEOUT);
+        $connectTimeout = self::number($options, 'connect_timeout', self::DEFAULT_CONNECTION_TIMEOUT);
+        $logger = self::logger($options);
 
         return new self(
             url: $url,
             token: $token,
-            login: null === $username ? null : UserLoginRequest::fromParams([
-                'username' => $username,
-                'password' => $password,
-            ]),
-            http: $http,
+            debug: $debug,
+            verify: $verify,
+            timeout: $timeout,
+            connectTimeout: $connectTimeout,
+            logger: $logger,
+            client: self::client($url, $token, $connectTimeout, $debug, $timeout, $verify, $logger),
         );
     }
 
     /**
      * @param array<string, mixed> $options
-     * @param string               $key
-     *
-     * @throws ZabbixApiException
-     *
-     * @return string|null
      */
-    private static function optionalString(array $options, string $key): ?string
+    private static function rejectUnknownOptions(array $options): void
     {
-        if (!array_key_exists($key, $options)) {
-            return null;
+        $unknown = array_diff(array_keys($options), self::OPTION_NAMES);
+
+        if ([] === $unknown) {
+            return;
+        }
+
+        sort($unknown);
+
+        throw new RuntimeException(sprintf(
+            'Unknown Zabbix API option%s: %s.',
+            1 === count($unknown) ? '' : 's',
+            implode(', ', array_map(static fn (string $option): string => "\"$option\"", $unknown)),
+        ));
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    private static function requiredString(array $options, string $key, string $missingMessage): string
+    {
+        if (!array_key_exists($key, $options) || null === $options[$key]) {
+            throw new RuntimeException($missingMessage);
         }
 
         $value = $options[$key];
 
-        if (null === $value) {
-            return null;
+        if (!is_string($value)) {
+            throw new RuntimeException(sprintf('Zabbix API option "%s" must be a string.', $key));
         }
 
-        if (!is_string($value)) {
-            throw new ZabbixApiException(
-                sprintf('Zabbix API option "%s" must be a string.', $key),
-                ZabbixApi::EXCEPTION_CLASS_CODE,
-            );
+        if ('' === trim($value)) {
+            throw new RuntimeException($missingMessage);
         }
 
         return $value;
@@ -95,24 +108,101 @@ final class ZabbixApiOptions
 
     /**
      * @param array<string, mixed> $options
-     *
-     * @throws ZabbixApiException
-     *
-     * @return array<string, mixed>
      */
-    private static function httpOptions(array $options): array
+    private static function bool(array $options, string $key, bool $default): bool
     {
-        $http = $options['http'] ?? [];
-
-        if (!is_array($http)) {
-            throw new ZabbixApiException(
-                'Zabbix API option "http" must be an array of Guzzle request options.',
-                ZabbixApi::EXCEPTION_CLASS_CODE,
-            );
+        if (!array_key_exists($key, $options)) {
+            return $default;
         }
 
-        unset($options['url'], $options['token'], $options['username'], $options['password'], $options['http']);
+        if (!is_bool($options[$key])) {
+            throw new RuntimeException(sprintf('Zabbix API option "%s" must be a boolean.', $key));
+        }
 
-        return array_replace($options, $http);
+        return $options[$key];
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    private static function verify(array $options): bool|string
+    {
+        if (!array_key_exists('verify', $options)) {
+            return true;
+        }
+
+        $verify = $options['verify'];
+
+        if (!is_bool($verify) && !is_string($verify)) {
+            throw new RuntimeException('Zabbix API option "verify" must be a boolean or CA bundle path string.');
+        }
+
+        return $verify;
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    private static function number(array $options, string $key, int|float $default): int|float
+    {
+        if (!array_key_exists($key, $options)) {
+            return $default;
+        }
+
+        $value = $options[$key];
+
+        if (!is_int($value) && !is_float($value)) {
+            throw new RuntimeException(sprintf('Zabbix API option "%s" must be an integer or float.', $key));
+        }
+
+        if ($value < 0) {
+            throw new RuntimeException(sprintf('Zabbix API option "%s" cannot be negative.', $key));
+        }
+
+        return $value;
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    private static function logger(array $options): LoggerInterface
+    {
+        if (!array_key_exists('logger', $options) || null === $options['logger']) {
+            return new NullLogger();
+        }
+
+        if (!$options['logger'] instanceof LoggerInterface) {
+            throw new RuntimeException(sprintf(
+                'Zabbix API option "logger" must implement %s.',
+                LoggerInterface::class,
+            ));
+        }
+
+        return $options['logger'];
+    }
+
+    private static function client(
+        string $url,
+        string $token,
+        int|float $connectTimeout,
+        bool $debug,
+        int|float $timeout,
+        bool|string $verify,
+        LoggerInterface $logger,
+    ): JsonRpcClient {
+        $guzzle = new GuzzleClient([
+            'base_uri' => $url,
+            'connect_timeout' => $connectTimeout,
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+                'Content-Type' => 'application/json-rpc',
+                'User-Agent' => 'Idiot/ZabbixApi;Version:' . ZabbixApi::VERSION,
+            ],
+            'http_errors' => $debug,
+            'timeout' => $timeout,
+            'verify' => $verify,
+        ]);
+
+        return new JsonRpcClient(new HttpClient($guzzle), $logger);
     }
 }

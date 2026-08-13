@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Idiot\Zabbix\Requests;
+namespace Idiot\Zabbix;
+
+use Idiot\Zabbix\Requests\ZabbixRequest;
 
 /**
  * Validates a request's params against its Zabbix schema before it leaves the
@@ -18,7 +20,7 @@ final class ZabbixRequestValidator
 
     public function validate(ZabbixRequest $request): void
     {
-        $schema = $this->schemaProvider->schemaFor($request->method());
+        $schema = $this->schemaProvider->schemaFor($request);
         $violations = $this->validator->validate($request->params(), $schema);
 
         if ([] !== $violations) {
