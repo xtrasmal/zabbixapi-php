@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * hostinterface.massremove - Remove host interfaces from the given hosts.
  */
-final class HostinterfaceMassremoveRequest extends AbstractZabbixRequest
+final class HostinterfaceMassremoveRequest extends AbstractRequest
 {
     public function method(): string
     {

@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * maintenance.update - Update existing maintenances.
  */
-final class MaintenanceUpdateRequest extends AbstractZabbixRequest
+final class MaintenanceUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

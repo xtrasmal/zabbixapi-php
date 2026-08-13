@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * discoveryrule.update - Update existing LLD rules. The itemid property must be defined for each LLD rule; all other properties are optional and only passed properties will be updated.
  */
-final class DiscoveryruleUpdateRequest extends AbstractZabbixRequest
+final class DiscoveryruleUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

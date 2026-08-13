@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * discoveryrule.copy - Copy LLD rules with all of the prototypes to the given hosts. Deprecated: configure LLD rules on templates and link the templates to other templates/hosts instead.
  */
-final class DiscoveryruleCopyRequest extends AbstractZabbixRequest
+final class DiscoveryruleCopyRequest extends AbstractRequest
 {
     public function method(): string
     {

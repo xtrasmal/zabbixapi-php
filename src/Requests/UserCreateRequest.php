@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * user.create - Create new users.
  */
-final class UserCreateRequest extends AbstractZabbixRequest
+final class UserCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

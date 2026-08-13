@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * hostgroup.massupdate - Replace hosts and templates with the specified ones in multiple host groups.
  */
-final class HostgroupMassupdateRequest extends AbstractZabbixRequest
+final class HostgroupMassupdateRequest extends AbstractRequest
 {
     public function method(): string
     {

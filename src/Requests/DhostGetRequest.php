@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * dhost.get - Retrieve discovered hosts according to the given parameters.
  */
-final class DhostGetRequest extends AbstractZabbixRequest
+final class DhostGetRequest extends AbstractRequest
 {
     public function method(): string
     {

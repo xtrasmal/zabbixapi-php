@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * script.get - Retrieve scripts according to the given parameters.
  */
-final class ScriptGetRequest extends AbstractZabbixRequest
+final class ScriptGetRequest extends AbstractRequest
 {
     public function method(): string
     {

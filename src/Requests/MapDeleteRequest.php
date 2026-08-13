@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Requests;
 
-final class MapDeleteRequest extends AbstractZabbixRequest
+final class MapDeleteRequest extends AbstractRequest
 {
     public function method(): string
     {

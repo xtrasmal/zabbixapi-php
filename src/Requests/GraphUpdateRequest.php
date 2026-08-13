@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * graph.update - Update existing graphs. Only the graphid property is required; only passed properties are updated, the rest remain unchanged.
  */
-final class GraphUpdateRequest extends AbstractZabbixRequest
+final class GraphUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

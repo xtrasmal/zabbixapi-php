@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * host.massupdate - Simultaneously replace or remove related objects and update properties on multiple hosts.
  */
-final class HostMassupdateRequest extends AbstractZabbixRequest
+final class HostMassupdateRequest extends AbstractRequest
 {
     public function method(): string
     {

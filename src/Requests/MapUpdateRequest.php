@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * map.update - Update existing maps.
  */
-final class MapUpdateRequest extends AbstractZabbixRequest
+final class MapUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

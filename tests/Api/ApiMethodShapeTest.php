@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Api;
 
-use Idiot\Zabbix\RequestRegistry;
-use Idiot\Zabbix\Requests\ZabbixRequest;
+use Idiot\Zabbix\Registry;
+use Idiot\Zabbix\Request;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionException;
@@ -45,7 +45,7 @@ final class ApiMethodShapeTest extends TestCase
      */
     public function testGeneratedApiMethodsBuildRegisteredRequests(): void
     {
-        $registry = new RequestRegistry();
+        $registry = new Registry();
 
         foreach (self::generatedApiClasses() as $class) {
             $api = new $class();
@@ -57,7 +57,7 @@ final class ApiMethodShapeTest extends TestCase
                 }
 
                 $request = $method->invoke($api, []);
-                self::assertInstanceOf(ZabbixRequest::class, $request);
+                self::assertInstanceOf(Request::class, $request);
                 self::assertSame($registry->requestClassFor($request), $request::class);
             }
         }

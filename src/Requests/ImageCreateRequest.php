@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * image.create - Create new images.
  */
-final class ImageCreateRequest extends AbstractZabbixRequest
+final class ImageCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

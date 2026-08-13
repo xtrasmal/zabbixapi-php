@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * mediatype.get - Retrieve media types according to the given parameters.
  */
-final class MediatypeGetRequest extends AbstractZabbixRequest
+final class MediatypeGetRequest extends AbstractRequest
 {
     public function method(): string
     {

@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * template.update - Update existing templates.
  */
-final class TemplateUpdateRequest extends AbstractZabbixRequest
+final class TemplateUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

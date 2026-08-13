@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * template.create - Create new templates.
  */
-final class TemplateCreateRequest extends AbstractZabbixRequest
+final class TemplateCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

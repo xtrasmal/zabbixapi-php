@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * autoregistration.get - Retrieve autoregistration settings. Restricted to users with Super admin status.
  */
-final class AutoregistrationGetRequest extends AbstractZabbixRequest
+final class AutoregistrationGetRequest extends AbstractRequest
 {
     public function method(): string
     {

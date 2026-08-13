@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * mfa.create - Create new MFA methods.
  */
-final class MfaCreateRequest extends AbstractZabbixRequest
+final class MfaCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

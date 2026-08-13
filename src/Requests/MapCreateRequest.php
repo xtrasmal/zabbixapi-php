@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * map.create - Create new maps.
  */
-final class MapCreateRequest extends AbstractZabbixRequest
+final class MapCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

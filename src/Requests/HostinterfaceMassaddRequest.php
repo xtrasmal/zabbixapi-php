@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * hostinterface.massadd - Simultaneously add host interfaces to multiple hosts.
  */
-final class HostinterfaceMassaddRequest extends AbstractZabbixRequest
+final class HostinterfaceMassaddRequest extends AbstractRequest
 {
     public function method(): string
     {

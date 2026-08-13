@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * report.update - Update existing scheduled reports.
  */
-final class ReportUpdateRequest extends AbstractZabbixRequest
+final class ReportUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

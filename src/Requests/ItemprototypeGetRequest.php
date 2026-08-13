@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * itemprototype.get - Retrieve item prototypes according to the given parameters.
  */
-final class ItemprototypeGetRequest extends AbstractZabbixRequest
+final class ItemprototypeGetRequest extends AbstractRequest
 {
     public function method(): string
     {

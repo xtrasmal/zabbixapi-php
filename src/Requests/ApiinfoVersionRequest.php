@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Requests;
 
-final class ApiinfoVersionRequest extends AbstractZabbixRequest
+final class ApiinfoVersionRequest extends AbstractRequest
 {
     public function method(): string
     {

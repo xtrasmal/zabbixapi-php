@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Requests;
 
-final class ScriptGetscriptsbyeventsRequest extends AbstractZabbixRequest
+final class ScriptGetscriptsbyeventsRequest extends AbstractRequest
 {
     public function method(): string
     {

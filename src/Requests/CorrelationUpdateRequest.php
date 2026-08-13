@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * correlation.update - Update existing correlations.
  */
-final class CorrelationUpdateRequest extends AbstractZabbixRequest
+final class CorrelationUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Tests\Requests;
 
 use Idiot\Zabbix\InvalidZabbixRequest;
-use Idiot\Zabbix\JsonFileSchemaProvider;
-use Idiot\Zabbix\RequestRegistry;
-use Idiot\Zabbix\Requests\AbstractZabbixRequest;
+use Idiot\Zabbix\JSONSchemaProvider;
+use Idiot\Zabbix\Registry;
+use Idiot\Zabbix\Requests\AbstractRequest;
 use Idiot\Zabbix\Requests\HistoryPushRequest;
 use Idiot\Zabbix\Requests\HostDeleteRequest;
 use Idiot\Zabbix\Requests\HostGetRequest;
 use Idiot\Zabbix\Requests\UserLogoutRequest;
-use Idiot\Zabbix\Requests\ZabbixRequest;
+use Idiot\Zabbix\Request;
 use Idiot\Zabbix\UnknownZabbixMethod;
 use Idiot\Zabbix\ZabbixRequestValidator;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -22,7 +22,7 @@ use Tests\Support\SchemaSampleFactory;
 final class ZabbixApiMethodSchemaTest extends TestCase
 {
     /**
-     * @param class-string<ZabbixRequest> $requestClass
+     * @param class-string<Request> $requestClass
      */
     #[DataProvider('apiMethods')]
     public function testRequestParamsValidateAgainstBundledSchema(
@@ -31,7 +31,7 @@ final class ZabbixApiMethodSchemaTest extends TestCase
         string $requestClass,
     ): void {
         $request = $requestClass::fromParams([]);
-        $schema = (new JsonFileSchemaProvider())->schemaFor($request);
+        $schema = (new JSONSchemaProvider())->schemaFor($request);
         self::assertSame(self::schemaDefinition($schemaFile), $schema->definition());
 
         $preferList = self::paramsAreList($requestClass);
@@ -46,7 +46,7 @@ final class ZabbixApiMethodSchemaTest extends TestCase
     }
 
     /**
-     * @param class-string<ZabbixRequest> $requestClass
+     * @param class-string<Request> $requestClass
      */
     #[DataProvider('apiMethods')]
     public function testMalformedRequestParamsAreRejectedByBundledSchema(
@@ -55,7 +55,7 @@ final class ZabbixApiMethodSchemaTest extends TestCase
         string $requestClass,
     ): void {
         $request = $requestClass::fromParams([]);
-        $schema = (new JsonFileSchemaProvider())->schemaFor($request);
+        $schema = (new JSONSchemaProvider())->schemaFor($request);
         self::assertSame(self::schemaDefinition($schemaFile), $schema->definition());
 
         $preferList = self::paramsAreList($requestClass);
@@ -74,7 +74,7 @@ final class ZabbixApiMethodSchemaTest extends TestCase
             'output' => ['hostid', 'host'],
             'filter' => ['host' => ['srv-01']],
         ]);
-        $registry = new RequestRegistry();
+        $registry = new Registry();
 
         self::assertTrue($registry->has($request));
         self::assertSame(HostGetRequest::class, $registry->requestClassFor($request));
@@ -82,7 +82,7 @@ final class ZabbixApiMethodSchemaTest extends TestCase
 
     public function testRequestRegistryCanBePopulatedWithRequestClasses(): void
     {
-        $registry = new RequestRegistry();
+        $registry = new Registry();
         $registry->register(CustomRegistryRequest::class);
         $request = CustomRegistryRequest::fromParams([]);
 
@@ -93,7 +93,7 @@ final class ZabbixApiMethodSchemaTest extends TestCase
     public function testRequestRegistrySupportsUserLogoutAsOfficialZabbixMethod(): void
     {
         $request = UserLogoutRequest::fromParams([]);
-        $registry = new RequestRegistry();
+        $registry = new Registry();
 
         self::assertTrue($registry->has($request));
         self::assertSame(UserLogoutRequest::class, $registry->requestClassFor($request));
@@ -115,7 +115,7 @@ final class ZabbixApiMethodSchemaTest extends TestCase
             $class = 'Idiot\\Zabbix\\Requests\\' . $shortName;
 
             self::assertTrue(class_exists($class), sprintf('Request class %s does not exist.', $class));
-            if (!is_subclass_of($class, AbstractZabbixRequest::class)) {
+            if (!is_subclass_of($class, AbstractRequest::class)) {
                 continue;
             }
 
@@ -123,7 +123,7 @@ final class ZabbixApiMethodSchemaTest extends TestCase
 
             self::assertNotNull($constructor, sprintf('%s must inherit the base params constructor.', $class));
             self::assertSame(
-                AbstractZabbixRequest::class,
+                AbstractRequest::class,
                 $constructor->getDeclaringClass()->getName(),
                 sprintf('%s must not declare its own constructor.', $class),
             );
@@ -144,7 +144,7 @@ final class ZabbixApiMethodSchemaTest extends TestCase
 
     public function testJsonFileSchemaProviderLoadsBundledZabbixSevenSchemas(): void
     {
-        $schema = (new JsonFileSchemaProvider())->schemaFor(HostGetRequest::fromParams([]));
+        $schema = (new JSONSchemaProvider())->schemaFor(HostGetRequest::fromParams([]));
 
         self::assertSame('host.get', $schema->method());
         self::assertSame('host.get', $schema->definition()['title'] ?? null);
@@ -156,7 +156,7 @@ final class ZabbixApiMethodSchemaTest extends TestCase
     {
         $this->expectException(UnknownZabbixMethod::class);
 
-        (new RequestRegistry())->requestClassFor(new class implements ZabbixRequest {
+        (new Registry())->requestClassFor(new class implements Request {
             public function method(): string
             {
                 return 'unknown.method';
@@ -170,12 +170,12 @@ final class ZabbixApiMethodSchemaTest extends TestCase
     }
 
     /**
-     * @param class-string<ZabbixRequest> $requestClass
+     * @param class-string<Request> $requestClass
      */
     #[DataProvider('sourceSpecMethods')]
     public function testRequestRegistryCoversSourceSpecMethods(string $method, string $requestClass): void
     {
-        $registry = new RequestRegistry();
+        $registry = new Registry();
         $request = $requestClass::fromParams([]);
 
         self::assertContains($method, $registry->methods());
@@ -189,10 +189,10 @@ final class ZabbixApiMethodSchemaTest extends TestCase
         self::assertSame([], false === $schemaFiles ? [] : $schemaFiles);
     }
 
-    /** @return iterable<string, array{string, string, class-string<ZabbixRequest>}> */
+    /** @return iterable<string, array{string, string, class-string<Request>}> */
     public static function apiMethods(): iterable
     {
-        $requestRegistry = new RequestRegistry();
+        $requestRegistry = new Registry();
         $requestClasses = $requestRegistry->requestClasses();
 
         foreach (self::schemaFiles() as $schemaFile) {
@@ -201,16 +201,16 @@ final class ZabbixApiMethodSchemaTest extends TestCase
             self::assertArrayHasKey($method, $requestClasses);
             $requestClass = $requestClasses[$method];
             self::assertTrue(class_exists($requestClass), sprintf('Request class %s does not exist.', $requestClass));
-            self::assertTrue(is_subclass_of($requestClass, ZabbixRequest::class));
+            self::assertTrue(is_subclass_of($requestClass, Request::class));
 
             yield $method => [$method, $schemaFile, $requestClass];
         }
     }
 
-    /** @return iterable<string, array{string, class-string<ZabbixRequest>}> */
+    /** @return iterable<string, array{string, class-string<Request>}> */
     public static function sourceSpecMethods(): iterable
     {
-        $requestRegistry = new RequestRegistry();
+        $requestRegistry = new Registry();
         $requestClasses = $requestRegistry->requestClasses();
 
         foreach (self::schemaFiles() as $schemaFile) {
@@ -224,10 +224,10 @@ final class ZabbixApiMethodSchemaTest extends TestCase
         }
     }
 
-    /** @param class-string<ZabbixRequest> $requestClass */
+    /** @param class-string<Request> $requestClass */
     private static function paramsAreList(string $requestClass): bool
     {
-        if (!is_a($requestClass, AbstractZabbixRequest::class, true)) {
+        if (!is_a($requestClass, AbstractRequest::class, true)) {
             return false;
         }
 
@@ -257,7 +257,7 @@ final class ZabbixApiMethodSchemaTest extends TestCase
     }
 }
 
-final class CustomRegistryRequest extends AbstractZabbixRequest
+final class CustomRegistryRequest extends AbstractRequest
 {
     public function method(): string
     {

@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * image.get - Retrieve images according to the given parameters.
  */
-final class ImageGetRequest extends AbstractZabbixRequest
+final class ImageGetRequest extends AbstractRequest
 {
     public function method(): string
     {

@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * mediatype.update - Update existing media types.
  */
-final class MediatypeUpdateRequest extends AbstractZabbixRequest
+final class MediatypeUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

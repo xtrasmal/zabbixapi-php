@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * connector.get - Retrieve connectors according to the given parameters.
  */
-final class ConnectorGetRequest extends AbstractZabbixRequest
+final class ConnectorGetRequest extends AbstractRequest
 {
     public function method(): string
     {

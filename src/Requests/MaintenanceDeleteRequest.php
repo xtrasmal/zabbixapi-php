@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Requests;
 
-final class MaintenanceDeleteRequest extends AbstractZabbixRequest
+final class MaintenanceDeleteRequest extends AbstractRequest
 {
     public function method(): string
     {

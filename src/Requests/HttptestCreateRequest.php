@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * httptest.create - Create new web scenarios.
  */
-final class HttptestCreateRequest extends AbstractZabbixRequest
+final class HttptestCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

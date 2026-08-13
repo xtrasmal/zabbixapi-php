@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * module.get - Retrieve modules according to the given parameters.
  */
-final class ModuleGetRequest extends AbstractZabbixRequest
+final class ModuleGetRequest extends AbstractRequest
 {
     public function method(): string
     {

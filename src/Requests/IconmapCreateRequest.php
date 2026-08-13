@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * iconmap.create - Create new icon maps.
  */
-final class IconmapCreateRequest extends AbstractZabbixRequest
+final class IconmapCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * sla.update - Update existing SLA entries.
  */
-final class SlaUpdateRequest extends AbstractZabbixRequest
+final class SlaUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

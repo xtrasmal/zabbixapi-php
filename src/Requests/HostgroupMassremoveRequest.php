@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * hostgroup.massremove - Remove related objects from multiple host groups.
  */
-final class HostgroupMassremoveRequest extends AbstractZabbixRequest
+final class HostgroupMassremoveRequest extends AbstractRequest
 {
     public function method(): string
     {

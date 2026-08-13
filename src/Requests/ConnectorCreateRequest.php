@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * connector.create - Create new connectors.
  */
-final class ConnectorCreateRequest extends AbstractZabbixRequest
+final class ConnectorCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

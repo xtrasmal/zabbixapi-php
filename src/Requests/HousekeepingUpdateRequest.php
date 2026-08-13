@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * housekeeping.update - Update existing housekeeping settings.
  */
-final class HousekeepingUpdateRequest extends AbstractZabbixRequest
+final class HousekeepingUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

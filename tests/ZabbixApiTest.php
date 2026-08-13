@@ -15,7 +15,7 @@ use Idiot\Zabbix\InvalidZabbixRequest;
 use Idiot\Zabbix\Requests\HostGetRequest;
 use Idiot\Zabbix\ZabbixApi;
 use Idiot\Zabbix\ZabbixApiException;
-use Idiot\Zabbix\ZabbixApiOptions;
+use Idiot\Zabbix\Options;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;
@@ -505,12 +505,12 @@ final class ZabbixApiTest extends TestCase
         $property = new \ReflectionProperty(ZabbixApi::class, 'options');
         $options = $property->getValue($api);
 
-        if (!$options instanceof ZabbixApiOptions) {
+        if (!$options instanceof Options) {
             throw new \LogicException('ZabbixApi options property must contain resolved options.');
         }
 
         $replaceClient = \Closure::bind(
-            static fn (ZabbixApiOptions $options, JsonRpcClient $client): ZabbixApiOptions => new ZabbixApiOptions(
+            static fn (Options $options, JsonRpcClient $client): Options => new Options(
                 url: $options->url,
                 token: $options->token,
                 debug: $options->debug,
@@ -521,7 +521,7 @@ final class ZabbixApiTest extends TestCase
                 client: $client,
             ),
             null,
-            ZabbixApiOptions::class,
+            Options::class,
         );
 
         $property->setValue($api, $replaceClient($options, $client));
@@ -564,14 +564,14 @@ final class ZabbixApiTest extends TestCase
     {
         return array_replace_recursive([
             'base_uri' => $apiOptions['url'],
-            'connect_timeout' => $apiOptions['connect_timeout'] ?? ZabbixApiOptions::DEFAULT_CONNECTION_TIMEOUT,
+            'connect_timeout' => $apiOptions['connect_timeout'] ?? Options::DEFAULT_CONNECTION_TIMEOUT,
             'headers' => [
                 'Authorization' => 'Bearer ' . $apiOptions['token'],
                 'Content-Type' => 'application/json-rpc',
                 'User-Agent' => 'Idiot/ZabbixApi;Version:' . ZabbixApi::VERSION,
             ],
             'http_errors' => $apiOptions['debug'] ?? false,
-            'timeout' => $apiOptions['timeout'] ?? ZabbixApiOptions::DEFAULT_TIMEOUT,
+            'timeout' => $apiOptions['timeout'] ?? Options::DEFAULT_TIMEOUT,
             'verify' => $apiOptions['verify'] ?? true,
         ], $overrides);
     }

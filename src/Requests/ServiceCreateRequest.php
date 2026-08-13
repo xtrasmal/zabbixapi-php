@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * service.create - Create new services.
  */
-final class ServiceCreateRequest extends AbstractZabbixRequest
+final class ServiceCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

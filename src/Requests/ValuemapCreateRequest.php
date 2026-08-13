@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * valuemap.create - Create new value maps.
  */
-final class ValuemapCreateRequest extends AbstractZabbixRequest
+final class ValuemapCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

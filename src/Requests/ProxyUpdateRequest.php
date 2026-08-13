@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * proxy.update - Update existing proxies.
  */
-final class ProxyUpdateRequest extends AbstractZabbixRequest
+final class ProxyUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

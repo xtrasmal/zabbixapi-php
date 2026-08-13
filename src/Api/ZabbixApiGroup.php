@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Idiot\Zabbix\Api;
 
 use BadMethodCallException;
-use Idiot\Zabbix\Requests\ZabbixRequest;
+use Idiot\Zabbix\Request;
 use Idiot\Zabbix\ZabbixApi;
 use Idiot\Zabbix\ZabbixApiException;
 use LogicException;
@@ -26,41 +26,41 @@ final class ZabbixApiGroup
     ) {}
 
     /**
-     * @param array<string, mixed>|ZabbixRequest $request
+     * @param array<string, mixed>|Request $request
      *
      * @throws ZabbixApiException
      */
-    public function get(array|ZabbixRequest $request = []): mixed
+    public function get(array|Request $request = []): mixed
     {
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
 
     /**
-     * @param array<string, mixed>|ZabbixRequest $request
+     * @param array<string, mixed>|Request $request
      *
      * @throws ZabbixApiException
      */
-    public function create(array|ZabbixRequest $request): mixed
+    public function create(array|Request $request): mixed
     {
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
 
     /**
-     * @param array<string, mixed>|list<mixed>|ZabbixRequest $request
+     * @param array<string, mixed>|list<mixed>|Request $request
      *
      * @throws ZabbixApiException
      */
-    public function delete(array|ZabbixRequest $request): mixed
+    public function delete(array|Request $request): mixed
     {
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
 
     /**
-     * @param array<string, mixed>|ZabbixRequest $request
+     * @param array<string, mixed>|Request $request
      *
      * @throws ZabbixApiException
      */
-    public function update(array|ZabbixRequest $request): mixed
+    public function update(array|Request $request): mixed
     {
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
@@ -76,21 +76,21 @@ final class ZabbixApiGroup
     }
 
     /**
-     * @param array<string, mixed>|ZabbixRequest $request
+     * @param array<string, mixed>|Request $request
      *
      * @throws ZabbixApiException
      */
-    public function login(array|ZabbixRequest $request): mixed
+    public function login(array|Request $request): mixed
     {
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
 
     /**
-     * @param list<mixed>|ZabbixRequest $request
+     * @param list<mixed>|Request $request
      *
      * @throws ZabbixApiException
      */
-    public function logout(array|ZabbixRequest $request = []): mixed
+    public function logout(array|Request $request = []): mixed
     {
         return $this->dispatch(__FUNCTION__, func_get_args());
     }
@@ -110,12 +110,12 @@ final class ZabbixApiGroup
 
         $request = $this->builder->{$name}(...$arguments);
 
-        if (!$request instanceof ZabbixRequest) {
+        if (!$request instanceof Request) {
             throw new LogicException(sprintf(
                 'Zabbix API helper %s::%s() must return a %s.',
                 $this->builder::class,
                 $name,
-                ZabbixRequest::class,
+                Request::class,
             ));
         }
 

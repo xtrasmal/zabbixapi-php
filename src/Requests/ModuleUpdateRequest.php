@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * module.update - Update existing modules.
  */
-final class ModuleUpdateRequest extends AbstractZabbixRequest
+final class ModuleUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

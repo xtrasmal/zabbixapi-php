@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * dcheck.get - Retrieve discovery checks according to the given parameters.
  */
-final class DcheckGetRequest extends AbstractZabbixRequest
+final class DcheckGetRequest extends AbstractRequest
 {
     public function method(): string
     {

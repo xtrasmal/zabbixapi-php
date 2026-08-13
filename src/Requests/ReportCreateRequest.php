@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * report.create - Create new scheduled reports.
  */
-final class ReportCreateRequest extends AbstractZabbixRequest
+final class ReportCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

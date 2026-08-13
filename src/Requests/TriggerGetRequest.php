@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * trigger.get - Retrieve triggers according to the given parameters.
  */
-final class TriggerGetRequest extends AbstractZabbixRequest
+final class TriggerGetRequest extends AbstractRequest
 {
     public function method(): string
     {

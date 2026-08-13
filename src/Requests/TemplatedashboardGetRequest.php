@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * templatedashboard.get - Retrieve template dashboards according to the given parameters.
  */
-final class TemplatedashboardGetRequest extends AbstractZabbixRequest
+final class TemplatedashboardGetRequest extends AbstractRequest
 {
     public function method(): string
     {

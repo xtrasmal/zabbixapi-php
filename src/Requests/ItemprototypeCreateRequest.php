@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * itemprototype.create - Create new item prototypes.
  */
-final class ItemprototypeCreateRequest extends AbstractZabbixRequest
+final class ItemprototypeCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

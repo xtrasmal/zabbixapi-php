@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * hostgroup.create - Create new host groups.
  */
-final class HostgroupCreateRequest extends AbstractZabbixRequest
+final class HostgroupCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

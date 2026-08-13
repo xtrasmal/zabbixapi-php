@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * drule.update - Update existing network discovery rules.
  */
-final class DruleUpdateRequest extends AbstractZabbixRequest
+final class DruleUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

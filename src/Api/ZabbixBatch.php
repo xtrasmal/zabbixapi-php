@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api;
 
-use Idiot\Zabbix\Requests\ZabbixRequest;
+use Idiot\Zabbix\Request;
 use LogicException;
 use OutOfBoundsException;
 
@@ -19,7 +19,7 @@ final class ZabbixBatch
     /** @var array<string, ZabbixBatchGroup> */
     private array $groups = [];
 
-    /** @var list<ZabbixRequest> */
+    /** @var list<Request> */
     private array $queued = [];
 
     /**
@@ -30,14 +30,14 @@ final class ZabbixBatch
         $this->requestBuilders = $requestBuilders;
     }
 
-    public function add(ZabbixRequest $request): ZabbixRequest
+    public function add(Request $request): Request
     {
         $this->queued[] = $request;
 
         return $request;
     }
 
-    /** @return list<ZabbixRequest> */
+    /** @return list<Request> */
     public function queuedRequests(): array
     {
         return $this->queued;

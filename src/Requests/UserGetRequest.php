@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * user.get - Retrieve users according to the given parameters.
  */
-final class UserGetRequest extends AbstractZabbixRequest
+final class UserGetRequest extends AbstractRequest
 {
     public function method(): string
     {

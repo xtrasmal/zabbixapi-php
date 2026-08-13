@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * regexp.update - Update existing global regular expressions.
  */
-final class RegexpUpdateRequest extends AbstractZabbixRequest
+final class RegexpUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

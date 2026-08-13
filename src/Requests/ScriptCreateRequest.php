@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * script.create - Create new scripts.
  */
-final class ScriptCreateRequest extends AbstractZabbixRequest
+final class ScriptCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

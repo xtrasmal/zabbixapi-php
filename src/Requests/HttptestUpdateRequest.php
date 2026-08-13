@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * httptest.update - Update existing web scenarios.
  */
-final class HttptestUpdateRequest extends AbstractZabbixRequest
+final class HttptestUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

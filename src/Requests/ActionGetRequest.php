@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * action.get - Retrieve actions according to the given parameters.
  */
-final class ActionGetRequest extends AbstractZabbixRequest
+final class ActionGetRequest extends AbstractRequest
 {
     public function method(): string
     {

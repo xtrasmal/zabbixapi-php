@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * role.create - Create new user roles.
  */
-final class RoleCreateRequest extends AbstractZabbixRequest
+final class RoleCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

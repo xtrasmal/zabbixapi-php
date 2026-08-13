@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * correlation.create - Create new correlations.
  */
-final class CorrelationCreateRequest extends AbstractZabbixRequest
+final class CorrelationCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

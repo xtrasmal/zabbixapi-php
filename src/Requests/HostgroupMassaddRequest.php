@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * hostgroup.massadd - Simultaneously add multiple related objects to all the given host groups.
  */
-final class HostgroupMassaddRequest extends AbstractZabbixRequest
+final class HostgroupMassaddRequest extends AbstractRequest
 {
     public function method(): string
     {

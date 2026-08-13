@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * template.massremove - Remove related objects from multiple templates.
  */
-final class TemplateMassremoveRequest extends AbstractZabbixRequest
+final class TemplateMassremoveRequest extends AbstractRequest
 {
     public function method(): string
     {

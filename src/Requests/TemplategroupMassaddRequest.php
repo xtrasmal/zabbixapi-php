@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * templategroup.massadd - Simultaneously add multiple related objects to all the given template groups.
  */
-final class TemplategroupMassaddRequest extends AbstractZabbixRequest
+final class TemplategroupMassaddRequest extends AbstractRequest
 {
     public function method(): string
     {

@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * module.create - Install new frontend modules.
  */
-final class ModuleCreateRequest extends AbstractZabbixRequest
+final class ModuleCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

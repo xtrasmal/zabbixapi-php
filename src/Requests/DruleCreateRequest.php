@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * drule.create - Create new network discovery rules.
  */
-final class DruleCreateRequest extends AbstractZabbixRequest
+final class DruleCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

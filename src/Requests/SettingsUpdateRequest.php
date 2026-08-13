@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * settings.update - Update existing common (system) settings.
  */
-final class SettingsUpdateRequest extends AbstractZabbixRequest
+final class SettingsUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

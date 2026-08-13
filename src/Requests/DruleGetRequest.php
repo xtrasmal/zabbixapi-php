@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * drule.get - Retrieve network discovery rules according to the given parameters.
  */
-final class DruleGetRequest extends AbstractZabbixRequest
+final class DruleGetRequest extends AbstractRequest
 {
     public function method(): string
     {

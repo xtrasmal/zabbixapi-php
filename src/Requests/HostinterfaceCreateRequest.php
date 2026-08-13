@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * hostinterface.create - Create new host interfaces.
  */
-final class HostinterfaceCreateRequest extends AbstractZabbixRequest
+final class HostinterfaceCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

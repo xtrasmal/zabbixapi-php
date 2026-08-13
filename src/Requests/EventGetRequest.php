@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * event.get - Retrieve events according to the given parameters.
  */
-final class EventGetRequest extends AbstractZabbixRequest
+final class EventGetRequest extends AbstractRequest
 {
     public function method(): string
     {

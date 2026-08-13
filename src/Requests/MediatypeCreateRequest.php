@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * mediatype.create - Create new media types.
  */
-final class MediatypeCreateRequest extends AbstractZabbixRequest
+final class MediatypeCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

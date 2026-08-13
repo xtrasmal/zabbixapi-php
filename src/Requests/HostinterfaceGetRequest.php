@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * hostinterface.get - Retrieve host interfaces according to the given parameters.
  */
-final class HostinterfaceGetRequest extends AbstractZabbixRequest
+final class HostinterfaceGetRequest extends AbstractRequest
 {
     public function method(): string
     {

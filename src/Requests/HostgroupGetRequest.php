@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * hostgroup.get - Retrieve host groups according to the given parameters.
  */
-final class HostgroupGetRequest extends AbstractZabbixRequest
+final class HostgroupGetRequest extends AbstractRequest
 {
     public function method(): string
     {

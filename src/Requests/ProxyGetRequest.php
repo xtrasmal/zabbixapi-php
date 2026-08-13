@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * proxy.get - Retrieve proxies according to the given parameters.
  */
-final class ProxyGetRequest extends AbstractZabbixRequest
+final class ProxyGetRequest extends AbstractRequest
 {
     public function method(): string
     {

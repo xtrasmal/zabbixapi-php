@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * regexp.create - Create new global regular expressions.
  */
-final class RegexpCreateRequest extends AbstractZabbixRequest
+final class RegexpCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

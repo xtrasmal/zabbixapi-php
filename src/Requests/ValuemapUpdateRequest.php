@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * valuemap.update - Update existing value maps.
  */
-final class ValuemapUpdateRequest extends AbstractZabbixRequest
+final class ValuemapUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * sla.get - Retrieve SLA objects according to the given parameters.
  */
-final class SlaGetRequest extends AbstractZabbixRequest
+final class SlaGetRequest extends AbstractRequest
 {
     public function method(): string
     {

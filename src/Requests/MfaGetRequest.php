@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * mfa.get - Retrieve MFA methods according to the given parameters.
  */
-final class MfaGetRequest extends AbstractZabbixRequest
+final class MfaGetRequest extends AbstractRequest
 {
     public function method(): string
     {

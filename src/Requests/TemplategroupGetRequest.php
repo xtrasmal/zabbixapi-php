@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * templategroup.get - Retrieve template groups according to the given parameters.
  */
-final class TemplategroupGetRequest extends AbstractZabbixRequest
+final class TemplategroupGetRequest extends AbstractRequest
 {
     public function method(): string
     {

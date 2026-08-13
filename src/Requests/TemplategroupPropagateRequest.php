@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * templategroup.propagate - Apply permissions to all of the given template groups' subgroups.
  */
-final class TemplategroupPropagateRequest extends AbstractZabbixRequest
+final class TemplategroupPropagateRequest extends AbstractRequest
 {
     public function method(): string
     {

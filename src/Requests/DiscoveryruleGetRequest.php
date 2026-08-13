@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * discoveryrule.get - Retrieve LLD rules according to the given parameters.
  */
-final class DiscoveryruleGetRequest extends AbstractZabbixRequest
+final class DiscoveryruleGetRequest extends AbstractRequest
 {
     public function method(): string
     {

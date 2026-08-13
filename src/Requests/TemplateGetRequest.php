@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * template.get - Retrieve templates according to the given parameters.
  */
-final class TemplateGetRequest extends AbstractZabbixRequest
+final class TemplateGetRequest extends AbstractRequest
 {
     public function method(): string
     {

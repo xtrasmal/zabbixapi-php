@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * hostinterface.replacehostinterfaces - Replace all host interfaces on a given host.
  */
-final class HostinterfaceReplacehostinterfacesRequest extends AbstractZabbixRequest
+final class HostinterfaceReplacehostinterfacesRequest extends AbstractRequest
 {
     public function method(): string
     {

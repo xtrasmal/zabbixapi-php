@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * userdirectory.get - Retrieve user directories according to the given parameters.
  */
-final class UserdirectoryGetRequest extends AbstractZabbixRequest
+final class UserdirectoryGetRequest extends AbstractRequest
 {
     public function method(): string
     {

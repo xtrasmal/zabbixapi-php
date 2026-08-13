@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * image.update - Update existing images.
  */
-final class ImageUpdateRequest extends AbstractZabbixRequest
+final class ImageUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

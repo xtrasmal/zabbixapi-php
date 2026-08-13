@@ -4,69 +4,68 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix;
 
-use Idiot\Zabbix\Api\ActionApi;
-use Idiot\Zabbix\Api\AlertApi;
-use Idiot\Zabbix\Api\ApiInfoApi;
-use Idiot\Zabbix\Api\AuditLogApi;
-use Idiot\Zabbix\Api\AuthenticationApi;
-use Idiot\Zabbix\Api\AutoregistrationApi;
-use Idiot\Zabbix\Api\ConnectorApi;
-use Idiot\Zabbix\Api\CorrelationApi;
-use Idiot\Zabbix\Api\DashboardApi;
-use Idiot\Zabbix\Api\DCheckApi;
-use Idiot\Zabbix\Api\DHostApi;
-use Idiot\Zabbix\Api\DiscoveryRuleApi;
-use Idiot\Zabbix\Api\DRuleApi;
-use Idiot\Zabbix\Api\DServiceApi;
-use Idiot\Zabbix\Api\EventApi;
-use Idiot\Zabbix\Api\GraphApi;
-use Idiot\Zabbix\Api\GraphItemApi;
-use Idiot\Zabbix\Api\GraphPrototypeApi;
-use Idiot\Zabbix\Api\HaNodeApi;
-use Idiot\Zabbix\Api\HistoryApi;
-use Idiot\Zabbix\Api\HostApi;
-use Idiot\Zabbix\Api\HostGroupApi;
-use Idiot\Zabbix\Api\HostInterfaceApi;
-use Idiot\Zabbix\Api\HostPrototypeApi;
-use Idiot\Zabbix\Api\HousekeepingApi;
-use Idiot\Zabbix\Api\HttpTestApi;
-use Idiot\Zabbix\Api\IconMapApi;
-use Idiot\Zabbix\Api\ImageApi;
-use Idiot\Zabbix\Api\ItemApi;
-use Idiot\Zabbix\Api\ItemPrototypeApi;
-use Idiot\Zabbix\Api\MaintenanceApi;
-use Idiot\Zabbix\Api\MapApi;
-use Idiot\Zabbix\Api\MediaTypeApi;
-use Idiot\Zabbix\Api\MfaApi;
-use Idiot\Zabbix\Api\ModuleApi;
-use Idiot\Zabbix\Api\ProblemApi;
-use Idiot\Zabbix\Api\ProxyApi;
-use Idiot\Zabbix\Api\ProxyGroupApi;
-use Idiot\Zabbix\Api\RegexpApi;
-use Idiot\Zabbix\Api\ReportApi;
-use Idiot\Zabbix\Api\RoleApi;
-use Idiot\Zabbix\Api\ScriptApi;
-use Idiot\Zabbix\Api\ServiceApi;
-use Idiot\Zabbix\Api\SettingsApi;
-use Idiot\Zabbix\Api\SlaApi;
-use Idiot\Zabbix\Api\TaskApi;
-use Idiot\Zabbix\Api\TemplateApi;
-use Idiot\Zabbix\Api\TemplateDashboardApi;
-use Idiot\Zabbix\Api\TemplateGroupApi;
-use Idiot\Zabbix\Api\TokenApi;
-use Idiot\Zabbix\Api\TrendApi;
-use Idiot\Zabbix\Api\TriggerApi;
-use Idiot\Zabbix\Api\TriggerPrototypeApi;
-use Idiot\Zabbix\Api\UserApi;
-use Idiot\Zabbix\Api\UserDirectoryApi;
-use Idiot\Zabbix\Api\UserGroupApi;
-use Idiot\Zabbix\Api\UserMacroApi;
-use Idiot\Zabbix\Api\ValueMapApi;
+use Idiot\Zabbix\Api\Groups\ActionApi;
+use Idiot\Zabbix\Api\Groups\AlertApi;
+use Idiot\Zabbix\Api\Groups\ApiInfoApi;
+use Idiot\Zabbix\Api\Groups\AuditLogApi;
+use Idiot\Zabbix\Api\Groups\AuthenticationApi;
+use Idiot\Zabbix\Api\Groups\AutoregistrationApi;
+use Idiot\Zabbix\Api\Groups\ConnectorApi;
+use Idiot\Zabbix\Api\Groups\CorrelationApi;
+use Idiot\Zabbix\Api\Groups\DashboardApi;
+use Idiot\Zabbix\Api\Groups\DCheckApi;
+use Idiot\Zabbix\Api\Groups\DHostApi;
+use Idiot\Zabbix\Api\Groups\DiscoveryRuleApi;
+use Idiot\Zabbix\Api\Groups\DRuleApi;
+use Idiot\Zabbix\Api\Groups\DServiceApi;
+use Idiot\Zabbix\Api\Groups\EventApi;
+use Idiot\Zabbix\Api\Groups\GraphApi;
+use Idiot\Zabbix\Api\Groups\GraphItemApi;
+use Idiot\Zabbix\Api\Groups\GraphPrototypeApi;
+use Idiot\Zabbix\Api\Groups\HaNodeApi;
+use Idiot\Zabbix\Api\Groups\HistoryApi;
+use Idiot\Zabbix\Api\Groups\HostApi;
+use Idiot\Zabbix\Api\Groups\HostGroupApi;
+use Idiot\Zabbix\Api\Groups\HostInterfaceApi;
+use Idiot\Zabbix\Api\Groups\HostPrototypeApi;
+use Idiot\Zabbix\Api\Groups\HousekeepingApi;
+use Idiot\Zabbix\Api\Groups\HttpTestApi;
+use Idiot\Zabbix\Api\Groups\IconMapApi;
+use Idiot\Zabbix\Api\Groups\ImageApi;
+use Idiot\Zabbix\Api\Groups\ItemApi;
+use Idiot\Zabbix\Api\Groups\ItemPrototypeApi;
+use Idiot\Zabbix\Api\Groups\MaintenanceApi;
+use Idiot\Zabbix\Api\Groups\MapApi;
+use Idiot\Zabbix\Api\Groups\MediaTypeApi;
+use Idiot\Zabbix\Api\Groups\MfaApi;
+use Idiot\Zabbix\Api\Groups\ModuleApi;
+use Idiot\Zabbix\Api\Groups\ProblemApi;
+use Idiot\Zabbix\Api\Groups\ProxyApi;
+use Idiot\Zabbix\Api\Groups\ProxyGroupApi;
+use Idiot\Zabbix\Api\Groups\RegexpApi;
+use Idiot\Zabbix\Api\Groups\ReportApi;
+use Idiot\Zabbix\Api\Groups\RoleApi;
+use Idiot\Zabbix\Api\Groups\ScriptApi;
+use Idiot\Zabbix\Api\Groups\ServiceApi;
+use Idiot\Zabbix\Api\Groups\SettingsApi;
+use Idiot\Zabbix\Api\Groups\SlaApi;
+use Idiot\Zabbix\Api\Groups\TaskApi;
+use Idiot\Zabbix\Api\Groups\TemplateApi;
+use Idiot\Zabbix\Api\Groups\TemplateDashboardApi;
+use Idiot\Zabbix\Api\Groups\TemplateGroupApi;
+use Idiot\Zabbix\Api\Groups\TokenApi;
+use Idiot\Zabbix\Api\Groups\TrendApi;
+use Idiot\Zabbix\Api\Groups\TriggerApi;
+use Idiot\Zabbix\Api\Groups\TriggerPrototypeApi;
+use Idiot\Zabbix\Api\Groups\UserApi;
+use Idiot\Zabbix\Api\Groups\UserDirectoryApi;
+use Idiot\Zabbix\Api\Groups\UserGroupApi;
+use Idiot\Zabbix\Api\Groups\UserMacroApi;
+use Idiot\Zabbix\Api\Groups\ValueMapApi;
 use Idiot\Zabbix\Api\ZabbixApiGroup;
 use Idiot\Zabbix\Api\ZabbixBatch;
 use Idiot\Zabbix\Clients\JsonRpcResponse;
 use Idiot\Zabbix\Requests\ApiinfoVersionRequest;
-use Idiot\Zabbix\Requests\ZabbixRequest;
 use InvalidArgumentException;
 use LogicException;
 
@@ -248,7 +247,7 @@ class ZabbixApi
     /** @var ZabbixApiGroup<ValueMapApi> */
     public readonly ZabbixApiGroup $valueMaps;
 
-    private ZabbixApiOptions $options;
+    private Options $options;
     private ?string $apiVersion = null;
 
     /** @var array<string, object> */
@@ -263,7 +262,7 @@ class ZabbixApi
      */
     public function __construct(array $options = [])
     {
-        $this->options = ZabbixApiOptions::fromArray($options);
+        $this->options = Options::fromArray($options);
 
         $this->requestBuilders = $this->createRequestBuilders();
         $this->requestValidator = ZabbixRequestValidator::createDefault();
@@ -277,7 +276,7 @@ class ZabbixApi
      */
     public function getApiVersion(): string
     {
-        $this->apiVersion ??= (string)$this->request(ApiinfoVersionRequest::fromParams([]));
+        $this->apiVersion ??= (string)$this->fetchApiVersion();
 
         return $this->apiVersion;
     }
@@ -285,54 +284,23 @@ class ZabbixApi
     /**
      * @throws ZabbixApiException
      */
-    public function request(ZabbixRequest $request): mixed
+    public function request(Request $request): mixed
     {
-        $this->requestValidator->validate($request);
-
-        return $this->execute($request);
+        return $this->executeRequests([$request])[0];
     }
 
     /**
      * Queue several Zabbix API calls and send them as one JSON-RPC batch.
      *
-     *
-     * @param callable(): mixed|ZabbixRequest $requests
-     *
-     * @throws ZabbixApiException
+     * @param callable(): mixed|Request $requests
      *
      * @return list<mixed>
+     *@throws ZabbixApiException
+     *
      */
-    public function batch(callable|ZabbixRequest ...$requests): array
+    public function batch(callable|Request ...$requests): array
     {
-        $requests = $this->collectBatchRequests($requests);
-
-        if ([] === $requests) {
-            throw new ZabbixApiException('Cannot send an empty Zabbix API batch.', ZabbixApiException::CLIENT_ERROR);
-        }
-
-        foreach ($requests as $request) {
-            $this->requestValidator->validate($request);
-        }
-
-        $responses = $this->sendBatch($requests);
-        $results = [];
-
-        foreach ($responses as $index => $response) {
-            if (null !== $response->error) {
-                throw self::zabbixError($response->error);
-            }
-
-            $result = $response->result;
-            $request = $requests[$index];
-
-            if ($request instanceof ApiinfoVersionRequest) {
-                $this->apiVersion = (string)$result;
-            }
-
-            $results[] = $result;
-        }
-
-        return $results;
+        return $this->executeRequests($this->collectBatchRequests($requests));
     }
 
     private function bindApiGroups(): void
@@ -496,62 +464,13 @@ class ZabbixApi
     }
 
     /**
-     * @throws ZabbixApiException
-     */
-    private function call(ZabbixRequest $request): JsonRpcResponse
-    {
-        if (null === $this->apiVersion && 'apiinfo.version' !== $request->method()) {
-            return $this->sendWithApiVersion($request);
-        }
-
-        return $this->options->client->call(
-            request: $request,
-        );
-    }
-
-    /**
-     * @throws ZabbixApiException
-     */
-    private function execute(ZabbixRequest $request): mixed
-    {
-        $response = $this->call($request);
-
-        if (null !== $response->error) {
-            throw self::zabbixError($response->error);
-        }
-
-        return $response->result;
-    }
-
-    /**
-     * @throws ZabbixApiException
-     */
-    private function sendWithApiVersion(ZabbixRequest $request): JsonRpcResponse
-    {
-        [$versionResponse, $response] = $this->options->client->batch(
-            requests: [
-                ApiinfoVersionRequest::fromParams([]),
-                $request,
-            ],
-        );
-
-        if (null !== $versionResponse->error) {
-            throw self::zabbixError($versionResponse->error);
-        }
-
-        $this->apiVersion = (string)$versionResponse->result;
-
-        return $response;
-    }
-
-    /**
-     * @param list<callable|ZabbixRequest> $requests
+     * @param list<callable|Request> $requests
      *
-     * @return list<ZabbixRequest>
+     * @return list<Request>
      */
     private function collectBatchRequests(array $requests): array
     {
-        if (1 === count($requests) && is_callable($requests[0]) && !$requests[0] instanceof ZabbixRequest) {
+        if (1 === count($requests) && is_callable($requests[0]) && !$requests[0] instanceof Request) {
             $batch = new ZabbixBatch($this->requestBuilders);
             $requests[0]($batch);
 
@@ -559,7 +478,7 @@ class ZabbixApi
         }
 
         foreach ($requests as $request) {
-            if (!$request instanceof ZabbixRequest) {
+            if (!$request instanceof Request) {
                 throw new InvalidArgumentException('Zabbix API batches only accept request objects or one batch callback.');
             }
         }
@@ -568,53 +487,102 @@ class ZabbixApi
     }
 
     /**
-     * @param list<ZabbixRequest> $requests
+     * @param list<Request> $requests
      *
+     * @return list<mixed>
+     *@throws ZabbixApiException
+     *
+     */
+    private function executeRequests(array $requests): array
+    {
+        if ([] === $requests) {
+            throw new ZabbixApiException('Cannot send an empty Zabbix API batch.', ZabbixApiException::CLIENT_ERROR);
+        }
+
+        foreach ($requests as $request) {
+            $this->requestValidator->validate($request);
+        }
+
+        $includeVersion = $this->shouldPrefetchApiVersion();
+        $sentRequests = $includeVersion
+            ? [ApiinfoVersionRequest::fromParams([]), ...$requests]
+            : $requests;
+
+        return $this->resultsFromResponses(
+            requests: $sentRequests,
+            responses: $this->sendRequests($sentRequests),
+            skipFirstResult: $includeVersion,
+        );
+    }
+
+    /**
      * @throws ZabbixApiException
+     */
+    private function fetchApiVersion(): mixed
+    {
+        $request = ApiinfoVersionRequest::fromParams([]);
+
+        return $this->resultsFromResponses(
+            requests: [$request],
+            responses: $this->sendRequests([$request]),
+            skipFirstResult: false,
+        )[0];
+    }
+
+    /**
+     * @param list<Request> $requests
      *
      * @return list<JsonRpcResponse>
      */
-    private function sendBatch(array $requests): array
+    private function sendRequests(array $requests): array
     {
-        $batchRequests = [];
-        $includeVersion = null === $this->apiVersion && !$this->batchContainsMethod($requests);
-
-        if ($includeVersion) {
-            $batchRequests[] = ApiinfoVersionRequest::fromParams([]);
+        if (1 === count($requests)) {
+            return [
+                $this->options->client->call(
+                    request: $requests[0],
+                ),
+            ];
         }
 
-        foreach ($requests as $request) {
-            $batchRequests[] = $request;
-        }
-
-        $responses = $this->options->client->batch(
-            requests: $batchRequests,
+        return $this->options->client->batch(
+            requests: $requests,
         );
-
-        if (!$includeVersion) {
-            return $responses;
-        }
-
-        $versionResponse = array_shift($responses);
-        if (null !== $versionResponse->error) {
-            throw self::zabbixError($versionResponse->error);
-        }
-
-        $this->apiVersion = (string)$versionResponse->result;
-
-        return $responses;
     }
 
-    /** @param list<ZabbixRequest> $requests */
-    private function batchContainsMethod(array $requests): bool
+    /**
+     * @param list<Request>   $requests
+     * @param list<JsonRpcResponse> $responses
+     *
+     * @return list<mixed>
+     *@throws ZabbixApiException
+     *
+     */
+    private function resultsFromResponses(array $requests, array $responses, bool $skipFirstResult): array
     {
-        foreach ($requests as $request) {
-            if ('apiinfo.version' === $request->method()) {
-                return true;
+        $results = [];
+
+        foreach ($responses as $index => $response) {
+            if (null !== $response->error) {
+                throw self::zabbixError($response->error);
+            }
+
+            $result = $response->result;
+
+            if (($requests[$index] ?? null) instanceof ApiinfoVersionRequest) {
+                $this->apiVersion = (string)$result;
+            }
+
+            if (!$skipFirstResult || 0 !== $index) {
+                $results[] = $result;
             }
         }
 
-        return false;
+        return $results;
+    }
+
+    private function shouldPrefetchApiVersion(): bool
+    {
+        return null === $this->apiVersion;
     }
 
     /**

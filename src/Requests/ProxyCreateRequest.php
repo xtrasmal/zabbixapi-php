@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * proxy.create - Create new proxies.
  */
-final class ProxyCreateRequest extends AbstractZabbixRequest
+final class ProxyCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

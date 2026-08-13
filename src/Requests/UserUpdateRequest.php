@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * user.update - Update existing users.
  */
-final class UserUpdateRequest extends AbstractZabbixRequest
+final class UserUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

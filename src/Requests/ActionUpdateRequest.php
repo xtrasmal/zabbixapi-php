@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * action.update - Update existing actions.
  */
-final class ActionUpdateRequest extends AbstractZabbixRequest
+final class ActionUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

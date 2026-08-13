@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * template.massupdate - Simultaneously replace or remove related objects and update properties on multiple templates.
  */
-final class TemplateMassupdateRequest extends AbstractZabbixRequest
+final class TemplateMassupdateRequest extends AbstractRequest
 {
     public function method(): string
     {

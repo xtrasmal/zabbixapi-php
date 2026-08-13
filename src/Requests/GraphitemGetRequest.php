@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * graphitem.get - Retrieve graph items according to the given parameters.
  */
-final class GraphitemGetRequest extends AbstractZabbixRequest
+final class GraphitemGetRequest extends AbstractRequest
 {
     public function method(): string
     {

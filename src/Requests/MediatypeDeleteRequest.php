@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Requests;
 
-final class MediatypeDeleteRequest extends AbstractZabbixRequest
+final class MediatypeDeleteRequest extends AbstractRequest
 {
     public function method(): string
     {

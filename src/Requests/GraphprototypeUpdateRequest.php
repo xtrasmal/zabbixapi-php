@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * graphprototype.update - Update existing graph prototypes.
  */
-final class GraphprototypeUpdateRequest extends AbstractZabbixRequest
+final class GraphprototypeUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

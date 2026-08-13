@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * usergroup.update - Update existing user groups.
  */
-final class UsergroupUpdateRequest extends AbstractZabbixRequest
+final class UsergroupUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

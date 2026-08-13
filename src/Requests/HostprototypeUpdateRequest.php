@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * hostprototype.update - Update existing host prototypes.
  */
-final class HostprototypeUpdateRequest extends AbstractZabbixRequest
+final class HostprototypeUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

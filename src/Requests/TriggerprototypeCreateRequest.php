@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * triggerprototype.create - Create new trigger prototypes.
  */
-final class TriggerprototypeCreateRequest extends AbstractZabbixRequest
+final class TriggerprototypeCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

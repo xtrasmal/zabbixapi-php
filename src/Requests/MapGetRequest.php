@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * map.get - Retrieve maps according to the given parameters.
  */
-final class MapGetRequest extends AbstractZabbixRequest
+final class MapGetRequest extends AbstractRequest
 {
     public function method(): string
     {

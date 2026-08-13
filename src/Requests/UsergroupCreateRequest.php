@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * usergroup.create - Create new user groups.
  */
-final class UsergroupCreateRequest extends AbstractZabbixRequest
+final class UsergroupCreateRequest extends AbstractRequest
 {
     public function method(): string
     {

@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * proxygroup.update - Update existing proxy groups.
  */
-final class ProxygroupUpdateRequest extends AbstractZabbixRequest
+final class ProxygroupUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

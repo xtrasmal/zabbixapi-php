@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * trend.get - Retrieve trend data according to the given parameters.
  */
-final class TrendGetRequest extends AbstractZabbixRequest
+final class TrendGetRequest extends AbstractRequest
 {
     public function method(): string
     {

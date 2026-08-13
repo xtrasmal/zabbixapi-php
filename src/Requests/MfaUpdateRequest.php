@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * mfa.update - Update existing MFA methods.
  */
-final class MfaUpdateRequest extends AbstractZabbixRequest
+final class MfaUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

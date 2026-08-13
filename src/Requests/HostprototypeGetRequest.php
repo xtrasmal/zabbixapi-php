@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * hostprototype.get - Retrieve host prototypes according to the given parameters.
  */
-final class HostprototypeGetRequest extends AbstractZabbixRequest
+final class HostprototypeGetRequest extends AbstractRequest
 {
     public function method(): string
     {

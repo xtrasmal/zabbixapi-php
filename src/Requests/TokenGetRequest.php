@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * token.get - Retrieve tokens according to the given parameters.
  */
-final class TokenGetRequest extends AbstractZabbixRequest
+final class TokenGetRequest extends AbstractRequest
 {
     public function method(): string
     {

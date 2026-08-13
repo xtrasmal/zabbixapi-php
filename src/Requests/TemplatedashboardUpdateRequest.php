@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * templatedashboard.update - Update existing template dashboards.
  */
-final class TemplatedashboardUpdateRequest extends AbstractZabbixRequest
+final class TemplatedashboardUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {

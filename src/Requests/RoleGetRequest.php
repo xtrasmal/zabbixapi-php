@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * role.get - Retrieve user roles according to the given parameters.
  */
-final class RoleGetRequest extends AbstractZabbixRequest
+final class RoleGetRequest extends AbstractRequest
 {
     public function method(): string
     {

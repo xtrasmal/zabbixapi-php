@@ -7,7 +7,7 @@ namespace Idiot\Zabbix\Requests;
 /**
  * trigger.update - Update existing triggers.
  */
-final class TriggerUpdateRequest extends AbstractZabbixRequest
+final class TriggerUpdateRequest extends AbstractRequest
 {
     public function method(): string
     {
