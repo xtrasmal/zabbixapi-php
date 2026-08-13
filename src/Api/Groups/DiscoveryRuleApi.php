@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\DiscoveryruleCopyRequest;
+use Idiot\Zabbix\Api\Requests\DiscoveryruleCreateRequest;
+use Idiot\Zabbix\Api\Requests\DiscoveryruleDeleteRequest;
+use Idiot\Zabbix\Api\Requests\DiscoveryruleGetRequest;
+use Idiot\Zabbix\Api\Requests\DiscoveryruleUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\DiscoveryruleCopyRequest;
-use Idiot\Zabbix\Requests\DiscoveryruleCreateRequest;
-use Idiot\Zabbix\Requests\DiscoveryruleDeleteRequest;
-use Idiot\Zabbix\Requests\DiscoveryruleGetRequest;
-use Idiot\Zabbix\Requests\DiscoveryruleUpdateRequest;
 
 final class DiscoveryRuleApi extends AbstractApi
 {

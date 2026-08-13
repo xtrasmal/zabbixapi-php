@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\AutoregistrationGetRequest;
+use Idiot\Zabbix\Api\Requests\AutoregistrationUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\AutoregistrationGetRequest;
-use Idiot\Zabbix\Requests\AutoregistrationUpdateRequest;
 
 final class AutoregistrationApi extends AbstractApi
 {

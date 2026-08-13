@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\TriggerprototypeCreateRequest;
+use Idiot\Zabbix\Api\Requests\TriggerprototypeDeleteRequest;
+use Idiot\Zabbix\Api\Requests\TriggerprototypeGetRequest;
+use Idiot\Zabbix\Api\Requests\TriggerprototypeUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\TriggerprototypeCreateRequest;
-use Idiot\Zabbix\Requests\TriggerprototypeDeleteRequest;
-use Idiot\Zabbix\Requests\TriggerprototypeGetRequest;
-use Idiot\Zabbix\Requests\TriggerprototypeUpdateRequest;
 
 final class TriggerPrototypeApi extends AbstractApi
 {

@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Api\Requests;
+
+/**
+ * map.get - Retrieve maps according to the given parameters.
+ */
+final class MapGetRequest extends AbstractRequest
+{
+    public function method(): string
+    {
+        return 'map.get';
+    }
+}

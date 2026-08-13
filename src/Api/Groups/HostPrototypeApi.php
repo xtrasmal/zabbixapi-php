@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\HostprototypeCreateRequest;
+use Idiot\Zabbix\Api\Requests\HostprototypeDeleteRequest;
+use Idiot\Zabbix\Api\Requests\HostprototypeGetRequest;
+use Idiot\Zabbix\Api\Requests\HostprototypeUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\HostprototypeCreateRequest;
-use Idiot\Zabbix\Requests\HostprototypeDeleteRequest;
-use Idiot\Zabbix\Requests\HostprototypeGetRequest;
-use Idiot\Zabbix\Requests\HostprototypeUpdateRequest;
 
 final class HostPrototypeApi extends AbstractApi
 {

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\UsermacroCreateglobalRequest;
+use Idiot\Zabbix\Api\Requests\UsermacroCreateRequest;
+use Idiot\Zabbix\Api\Requests\UsermacroDeleteglobalRequest;
+use Idiot\Zabbix\Api\Requests\UsermacroDeleteRequest;
+use Idiot\Zabbix\Api\Requests\UsermacroGetRequest;
+use Idiot\Zabbix\Api\Requests\UsermacroUpdateglobalRequest;
+use Idiot\Zabbix\Api\Requests\UsermacroUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\UsermacroCreateglobalRequest;
-use Idiot\Zabbix\Requests\UsermacroCreateRequest;
-use Idiot\Zabbix\Requests\UsermacroDeleteglobalRequest;
-use Idiot\Zabbix\Requests\UsermacroDeleteRequest;
-use Idiot\Zabbix\Requests\UsermacroGetRequest;
-use Idiot\Zabbix\Requests\UsermacroUpdateglobalRequest;
-use Idiot\Zabbix\Requests\UsermacroUpdateRequest;
 
 final class UserMacroApi extends AbstractApi
 {

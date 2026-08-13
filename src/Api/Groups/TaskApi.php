@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\TaskCreateRequest;
+use Idiot\Zabbix\Api\Requests\TaskGetRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\TaskCreateRequest;
-use Idiot\Zabbix\Requests\TaskGetRequest;
 
 final class TaskApi extends AbstractApi
 {

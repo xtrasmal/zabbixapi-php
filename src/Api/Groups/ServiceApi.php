@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\ServiceCreateRequest;
+use Idiot\Zabbix\Api\Requests\ServiceDeleteRequest;
+use Idiot\Zabbix\Api\Requests\ServiceGetRequest;
+use Idiot\Zabbix\Api\Requests\ServiceUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\ServiceCreateRequest;
-use Idiot\Zabbix\Requests\ServiceDeleteRequest;
-use Idiot\Zabbix\Requests\ServiceGetRequest;
-use Idiot\Zabbix\Requests\ServiceUpdateRequest;
 
 final class ServiceApi extends AbstractApi
 {

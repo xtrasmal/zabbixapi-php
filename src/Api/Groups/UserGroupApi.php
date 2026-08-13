@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\UsergroupCreateRequest;
+use Idiot\Zabbix\Api\Requests\UsergroupDeleteRequest;
+use Idiot\Zabbix\Api\Requests\UsergroupGetRequest;
+use Idiot\Zabbix\Api\Requests\UsergroupUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\UsergroupCreateRequest;
-use Idiot\Zabbix\Requests\UsergroupDeleteRequest;
-use Idiot\Zabbix\Requests\UsergroupGetRequest;
-use Idiot\Zabbix\Requests\UsergroupUpdateRequest;
 
 final class UserGroupApi extends AbstractApi
 {

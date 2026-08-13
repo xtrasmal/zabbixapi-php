@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\TokenCreateRequest;
+use Idiot\Zabbix\Api\Requests\TokenDeleteRequest;
+use Idiot\Zabbix\Api\Requests\TokenGenerateRequest;
+use Idiot\Zabbix\Api\Requests\TokenGetRequest;
+use Idiot\Zabbix\Api\Requests\TokenUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\TokenCreateRequest;
-use Idiot\Zabbix\Requests\TokenDeleteRequest;
-use Idiot\Zabbix\Requests\TokenGenerateRequest;
-use Idiot\Zabbix\Requests\TokenGetRequest;
-use Idiot\Zabbix\Requests\TokenUpdateRequest;
 
 final class TokenApi extends AbstractApi
 {

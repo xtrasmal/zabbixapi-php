@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\ProxygroupCreateRequest;
+use Idiot\Zabbix\Api\Requests\ProxygroupDeleteRequest;
+use Idiot\Zabbix\Api\Requests\ProxygroupGetRequest;
+use Idiot\Zabbix\Api\Requests\ProxygroupUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\ProxygroupCreateRequest;
-use Idiot\Zabbix\Requests\ProxygroupDeleteRequest;
-use Idiot\Zabbix\Requests\ProxygroupGetRequest;
-use Idiot\Zabbix\Requests\ProxygroupUpdateRequest;
 
 final class ProxyGroupApi extends AbstractApi
 {

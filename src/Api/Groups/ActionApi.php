@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\ActionCreateRequest;
+use Idiot\Zabbix\Api\Requests\ActionDeleteRequest;
+use Idiot\Zabbix\Api\Requests\ActionGetRequest;
+use Idiot\Zabbix\Api\Requests\ActionUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\ActionCreateRequest;
-use Idiot\Zabbix\Requests\ActionDeleteRequest;
-use Idiot\Zabbix\Requests\ActionGetRequest;
-use Idiot\Zabbix\Requests\ActionUpdateRequest;
 
 final class ActionApi extends AbstractApi
 {

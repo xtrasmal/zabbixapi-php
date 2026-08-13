@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\ItemprototypeCreateRequest;
+use Idiot\Zabbix\Api\Requests\ItemprototypeDeleteRequest;
+use Idiot\Zabbix\Api\Requests\ItemprototypeGetRequest;
+use Idiot\Zabbix\Api\Requests\ItemprototypeUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\ItemprototypeCreateRequest;
-use Idiot\Zabbix\Requests\ItemprototypeDeleteRequest;
-use Idiot\Zabbix\Requests\ItemprototypeGetRequest;
-use Idiot\Zabbix\Requests\ItemprototypeUpdateRequest;
 
 final class ItemPrototypeApi extends AbstractApi
 {

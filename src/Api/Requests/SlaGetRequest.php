@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Api\Requests;
+
+/**
+ * sla.get - Retrieve SLA objects according to the given parameters.
+ */
+final class SlaGetRequest extends AbstractRequest
+{
+    public function method(): string
+    {
+        return 'sla.get';
+    }
+}

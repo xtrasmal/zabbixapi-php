@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\SettingsGetRequest;
+use Idiot\Zabbix\Api\Requests\SettingsUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\SettingsGetRequest;
-use Idiot\Zabbix\Requests\SettingsUpdateRequest;
 
 final class SettingsApi extends AbstractApi
 {

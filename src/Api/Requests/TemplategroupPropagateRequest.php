@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Api\Requests;
+
+/**
+ * templategroup.propagate - Apply permissions to all of the given template groups' subgroups.
+ */
+final class TemplategroupPropagateRequest extends AbstractRequest
+{
+    public function method(): string
+    {
+        return 'templategroup.propagate';
+    }
+}

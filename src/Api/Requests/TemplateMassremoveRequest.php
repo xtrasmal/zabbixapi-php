@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Api\Requests;
+
+/**
+ * template.massremove - Remove related objects from multiple templates.
+ */
+final class TemplateMassremoveRequest extends AbstractRequest
+{
+    public function method(): string
+    {
+        return 'template.massremove';
+    }
+}

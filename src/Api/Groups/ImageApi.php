@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\ImageCreateRequest;
+use Idiot\Zabbix\Api\Requests\ImageDeleteRequest;
+use Idiot\Zabbix\Api\Requests\ImageGetRequest;
+use Idiot\Zabbix\Api\Requests\ImageUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\ImageCreateRequest;
-use Idiot\Zabbix\Requests\ImageDeleteRequest;
-use Idiot\Zabbix\Requests\ImageGetRequest;
-use Idiot\Zabbix\Requests\ImageUpdateRequest;
 
 final class ImageApi extends AbstractApi
 {

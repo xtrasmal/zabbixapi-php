@@ -9,10 +9,10 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response as HttpResponse;
+use Idiot\Zabbix\Api\Requests\ApiinfoVersionRequest;
+use Idiot\Zabbix\Api\Requests\HostGetRequest;
 use Idiot\Zabbix\Clients\HttpClient;
 use Idiot\Zabbix\Clients\JsonRpcClient;
-use Idiot\Zabbix\Requests\ApiinfoVersionRequest;
-use Idiot\Zabbix\Requests\HostGetRequest;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 

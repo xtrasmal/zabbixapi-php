@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\ConnectorCreateRequest;
+use Idiot\Zabbix\Api\Requests\ConnectorDeleteRequest;
+use Idiot\Zabbix\Api\Requests\ConnectorGetRequest;
+use Idiot\Zabbix\Api\Requests\ConnectorUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\ConnectorCreateRequest;
-use Idiot\Zabbix\Requests\ConnectorDeleteRequest;
-use Idiot\Zabbix\Requests\ConnectorGetRequest;
-use Idiot\Zabbix\Requests\ConnectorUpdateRequest;
 
 final class ConnectorApi extends AbstractApi
 {

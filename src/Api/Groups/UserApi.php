@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\UserCheckAuthenticationRequest;
+use Idiot\Zabbix\Api\Requests\UserCreateRequest;
+use Idiot\Zabbix\Api\Requests\UserDeleteRequest;
+use Idiot\Zabbix\Api\Requests\UserGetRequest;
+use Idiot\Zabbix\Api\Requests\UserLoginRequest;
+use Idiot\Zabbix\Api\Requests\UserLogoutRequest;
+use Idiot\Zabbix\Api\Requests\UserProvisionRequest;
+use Idiot\Zabbix\Api\Requests\UserResettotpRequest;
+use Idiot\Zabbix\Api\Requests\UserUnblockRequest;
+use Idiot\Zabbix\Api\Requests\UserUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\UserCheckAuthenticationRequest;
-use Idiot\Zabbix\Requests\UserCreateRequest;
-use Idiot\Zabbix\Requests\UserDeleteRequest;
-use Idiot\Zabbix\Requests\UserGetRequest;
-use Idiot\Zabbix\Requests\UserLoginRequest;
-use Idiot\Zabbix\Requests\UserLogoutRequest;
-use Idiot\Zabbix\Requests\UserProvisionRequest;
-use Idiot\Zabbix\Requests\UserResettotpRequest;
-use Idiot\Zabbix\Requests\UserUnblockRequest;
-use Idiot\Zabbix\Requests\UserUpdateRequest;
 
 final class UserApi extends AbstractApi
 {

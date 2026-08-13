@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Api\Requests;
+
+/**
+ * discoveryrule.get - Retrieve LLD rules according to the given parameters.
+ */
+final class DiscoveryruleGetRequest extends AbstractRequest
+{
+    public function method(): string
+    {
+        return 'discoveryrule.get';
+    }
+}

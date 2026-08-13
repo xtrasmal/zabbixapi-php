@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\ValuemapCreateRequest;
+use Idiot\Zabbix\Api\Requests\ValuemapDeleteRequest;
+use Idiot\Zabbix\Api\Requests\ValuemapGetRequest;
+use Idiot\Zabbix\Api\Requests\ValuemapUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\ValuemapCreateRequest;
-use Idiot\Zabbix\Requests\ValuemapDeleteRequest;
-use Idiot\Zabbix\Requests\ValuemapGetRequest;
-use Idiot\Zabbix\Requests\ValuemapUpdateRequest;
 
 final class ValueMapApi extends AbstractApi
 {

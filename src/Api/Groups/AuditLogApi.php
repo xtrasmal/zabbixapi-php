@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\AuditlogGetRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\AuditlogGetRequest;
 
 final class AuditLogApi extends AbstractApi
 {

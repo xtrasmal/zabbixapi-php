@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Api\Requests;
+
+/**
+ * hostinterface.massremove - Remove host interfaces from the given hosts.
+ */
+final class HostinterfaceMassremoveRequest extends AbstractRequest
+{
+    public function method(): string
+    {
+        return 'hostinterface.massremove';
+    }
+}

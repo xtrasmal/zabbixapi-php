@@ -1,0 +1,13 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Api\Requests;
+
+final class RegexpDeleteRequest extends AbstractRequest
+{
+    public function method(): string
+    {
+        return 'regexp.delete';
+    }
+}

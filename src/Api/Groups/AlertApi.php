@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\AlertGetRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\AlertGetRequest;
 
 final class AlertApi extends AbstractApi
 {

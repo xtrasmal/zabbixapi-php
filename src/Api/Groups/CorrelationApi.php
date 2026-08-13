@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\CorrelationCreateRequest;
+use Idiot\Zabbix\Api\Requests\CorrelationDeleteRequest;
+use Idiot\Zabbix\Api\Requests\CorrelationGetRequest;
+use Idiot\Zabbix\Api\Requests\CorrelationUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\CorrelationCreateRequest;
-use Idiot\Zabbix\Requests\CorrelationDeleteRequest;
-use Idiot\Zabbix\Requests\CorrelationGetRequest;
-use Idiot\Zabbix\Requests\CorrelationUpdateRequest;
 
 final class CorrelationApi extends AbstractApi
 {

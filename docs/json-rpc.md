@@ -11,12 +11,7 @@ $hosts = $zabbix->hosts->get([
 The lower-level `JsonRpcClient` accepts `Request` objects and returns JSON-RPC 2.0 response envelopes.
 
 ```php
-use GuzzleHttp\Client;
-use Idiot\Zabbix\Clients\HttpClient;
-use Idiot\Zabbix\Clients\JsonRpcClient;
-use Idiot\Zabbix\Requests\HostGetRequest;
-use Idiot\Zabbix\Requests\UserLogoutRequest;
-use Idiot\Zabbix\ZabbixApi;
+use GuzzleHttp\Client;use Idiot\Zabbix\Api\Requests\HostGetRequest;use Idiot\Zabbix\Api\Requests\UserLogoutRequest;use Idiot\Zabbix\Clients\HttpClient;use Idiot\Zabbix\Clients\JsonRpcClient;use Idiot\Zabbix\ZabbixApi;
 
 $client = new JsonRpcClient(new HttpClient(new Client([
     'base_uri' => 'https://zabbix.example/api_jsonrpc.php',

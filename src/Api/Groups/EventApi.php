@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\EventAcknowledgeRequest;
+use Idiot\Zabbix\Api\Requests\EventGetRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\EventAcknowledgeRequest;
-use Idiot\Zabbix\Requests\EventGetRequest;
 
 final class EventApi extends AbstractApi
 {

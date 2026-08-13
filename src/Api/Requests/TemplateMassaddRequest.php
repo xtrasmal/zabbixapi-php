@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Api\Requests;
+
+/**
+ * template.massadd - Simultaneously add multiple related objects to the given templates.
+ */
+final class TemplateMassaddRequest extends AbstractRequest
+{
+    public function method(): string
+    {
+        return 'template.massadd';
+    }
+}

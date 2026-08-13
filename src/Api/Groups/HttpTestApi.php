@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\HttptestCreateRequest;
+use Idiot\Zabbix\Api\Requests\HttptestDeleteRequest;
+use Idiot\Zabbix\Api\Requests\HttptestGetRequest;
+use Idiot\Zabbix\Api\Requests\HttptestUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\HttptestCreateRequest;
-use Idiot\Zabbix\Requests\HttptestDeleteRequest;
-use Idiot\Zabbix\Requests\HttptestGetRequest;
-use Idiot\Zabbix\Requests\HttptestUpdateRequest;
 
 final class HttpTestApi extends AbstractApi
 {

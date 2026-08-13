@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\RegexpCreateRequest;
+use Idiot\Zabbix\Api\Requests\RegexpDeleteRequest;
+use Idiot\Zabbix\Api\Requests\RegexpGetRequest;
+use Idiot\Zabbix\Api\Requests\RegexpUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\RegexpCreateRequest;
-use Idiot\Zabbix\Requests\RegexpDeleteRequest;
-use Idiot\Zabbix\Requests\RegexpGetRequest;
-use Idiot\Zabbix\Requests\RegexpUpdateRequest;
 
 final class RegexpApi extends AbstractApi
 {

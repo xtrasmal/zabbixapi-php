@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\DruleCreateRequest;
+use Idiot\Zabbix\Api\Requests\DruleDeleteRequest;
+use Idiot\Zabbix\Api\Requests\DruleGetRequest;
+use Idiot\Zabbix\Api\Requests\DruleUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\DruleCreateRequest;
-use Idiot\Zabbix\Requests\DruleDeleteRequest;
-use Idiot\Zabbix\Requests\DruleGetRequest;
-use Idiot\Zabbix\Requests\DruleUpdateRequest;
 
 final class DRuleApi extends AbstractApi
 {

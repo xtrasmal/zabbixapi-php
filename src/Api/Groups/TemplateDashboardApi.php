@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\TemplatedashboardCreateRequest;
+use Idiot\Zabbix\Api\Requests\TemplatedashboardDeleteRequest;
+use Idiot\Zabbix\Api\Requests\TemplatedashboardGetRequest;
+use Idiot\Zabbix\Api\Requests\TemplatedashboardUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\TemplatedashboardCreateRequest;
-use Idiot\Zabbix\Requests\TemplatedashboardDeleteRequest;
-use Idiot\Zabbix\Requests\TemplatedashboardGetRequest;
-use Idiot\Zabbix\Requests\TemplatedashboardUpdateRequest;
 
 final class TemplateDashboardApi extends AbstractApi
 {

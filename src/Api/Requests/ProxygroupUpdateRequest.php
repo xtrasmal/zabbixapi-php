@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Api\Requests;
+
+/**
+ * proxygroup.update - Update existing proxy groups.
+ */
+final class ProxygroupUpdateRequest extends AbstractRequest
+{
+    public function method(): string
+    {
+        return 'proxygroup.update';
+    }
+}

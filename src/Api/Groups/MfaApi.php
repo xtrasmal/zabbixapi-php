@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\MfaCreateRequest;
+use Idiot\Zabbix\Api\Requests\MfaDeleteRequest;
+use Idiot\Zabbix\Api\Requests\MfaGetRequest;
+use Idiot\Zabbix\Api\Requests\MfaUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\MfaCreateRequest;
-use Idiot\Zabbix\Requests\MfaDeleteRequest;
-use Idiot\Zabbix\Requests\MfaGetRequest;
-use Idiot\Zabbix\Requests\MfaUpdateRequest;
 
 final class MfaApi extends AbstractApi
 {

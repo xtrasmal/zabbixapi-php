@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\MediatypeCreateRequest;
+use Idiot\Zabbix\Api\Requests\MediatypeDeleteRequest;
+use Idiot\Zabbix\Api\Requests\MediatypeGetRequest;
+use Idiot\Zabbix\Api\Requests\MediatypeUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\MediatypeCreateRequest;
-use Idiot\Zabbix\Requests\MediatypeDeleteRequest;
-use Idiot\Zabbix\Requests\MediatypeGetRequest;
-use Idiot\Zabbix\Requests\MediatypeUpdateRequest;
 
 final class MediaTypeApi extends AbstractApi
 {

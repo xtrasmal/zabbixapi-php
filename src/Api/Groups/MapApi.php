@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\MapCreateRequest;
+use Idiot\Zabbix\Api\Requests\MapDeleteRequest;
+use Idiot\Zabbix\Api\Requests\MapGetRequest;
+use Idiot\Zabbix\Api\Requests\MapUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\MapCreateRequest;
-use Idiot\Zabbix\Requests\MapDeleteRequest;
-use Idiot\Zabbix\Requests\MapGetRequest;
-use Idiot\Zabbix\Requests\MapUpdateRequest;
 
 final class MapApi extends AbstractApi
 {

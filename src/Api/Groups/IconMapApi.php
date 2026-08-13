@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\IconmapCreateRequest;
+use Idiot\Zabbix\Api\Requests\IconmapDeleteRequest;
+use Idiot\Zabbix\Api\Requests\IconmapGetRequest;
+use Idiot\Zabbix\Api\Requests\IconmapUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\IconmapCreateRequest;
-use Idiot\Zabbix\Requests\IconmapDeleteRequest;
-use Idiot\Zabbix\Requests\IconmapGetRequest;
-use Idiot\Zabbix\Requests\IconmapUpdateRequest;
 
 final class IconMapApi extends AbstractApi
 {

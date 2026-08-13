@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\TemplategroupCreateRequest;
+use Idiot\Zabbix\Api\Requests\TemplategroupDeleteRequest;
+use Idiot\Zabbix\Api\Requests\TemplategroupGetRequest;
+use Idiot\Zabbix\Api\Requests\TemplategroupMassaddRequest;
+use Idiot\Zabbix\Api\Requests\TemplategroupMassremoveRequest;
+use Idiot\Zabbix\Api\Requests\TemplategroupMassupdateRequest;
+use Idiot\Zabbix\Api\Requests\TemplategroupPropagateRequest;
+use Idiot\Zabbix\Api\Requests\TemplategroupUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\TemplategroupCreateRequest;
-use Idiot\Zabbix\Requests\TemplategroupDeleteRequest;
-use Idiot\Zabbix\Requests\TemplategroupGetRequest;
-use Idiot\Zabbix\Requests\TemplategroupMassaddRequest;
-use Idiot\Zabbix\Requests\TemplategroupMassremoveRequest;
-use Idiot\Zabbix\Requests\TemplategroupMassupdateRequest;
-use Idiot\Zabbix\Requests\TemplategroupPropagateRequest;
-use Idiot\Zabbix\Requests\TemplategroupUpdateRequest;
 
 final class TemplateGroupApi extends AbstractApi
 {

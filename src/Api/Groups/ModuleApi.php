@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\ModuleCreateRequest;
+use Idiot\Zabbix\Api\Requests\ModuleDeleteRequest;
+use Idiot\Zabbix\Api\Requests\ModuleGetRequest;
+use Idiot\Zabbix\Api\Requests\ModuleUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\ModuleCreateRequest;
-use Idiot\Zabbix\Requests\ModuleDeleteRequest;
-use Idiot\Zabbix\Requests\ModuleGetRequest;
-use Idiot\Zabbix\Requests\ModuleUpdateRequest;
 
 final class ModuleApi extends AbstractApi
 {

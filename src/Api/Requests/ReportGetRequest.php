@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Api\Requests;
+
+/**
+ * report.get - Retrieve scheduled reports according to the given parameters.
+ */
+final class ReportGetRequest extends AbstractRequest
+{
+    public function method(): string
+    {
+        return 'report.get';
+    }
+}

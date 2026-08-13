@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\UserdirectoryCreateRequest;
+use Idiot\Zabbix\Api\Requests\UserdirectoryDeleteRequest;
+use Idiot\Zabbix\Api\Requests\UserdirectoryGetRequest;
+use Idiot\Zabbix\Api\Requests\UserdirectoryTestRequest;
+use Idiot\Zabbix\Api\Requests\UserdirectoryUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\UserdirectoryCreateRequest;
-use Idiot\Zabbix\Requests\UserdirectoryDeleteRequest;
-use Idiot\Zabbix\Requests\UserdirectoryGetRequest;
-use Idiot\Zabbix\Requests\UserdirectoryTestRequest;
-use Idiot\Zabbix\Requests\UserdirectoryUpdateRequest;
 
 final class UserDirectoryApi extends AbstractApi
 {

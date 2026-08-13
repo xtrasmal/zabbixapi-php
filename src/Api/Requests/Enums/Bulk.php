@@ -1,0 +1,14 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Api\Requests\Enums;
+
+/**
+ * Whether to use bulk SNMP requests. Possible values: 0 - don't use bulk requests; 1 - (default) use bulk requests.
+ */
+enum Bulk: int
+{
+    case DonTUseBulkRequests = 0;
+    case UseBulkRequests = 1;
+}

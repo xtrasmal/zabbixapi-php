@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\SlaCreateRequest;
+use Idiot\Zabbix\Api\Requests\SlaDeleteRequest;
+use Idiot\Zabbix\Api\Requests\SlaGetRequest;
+use Idiot\Zabbix\Api\Requests\SlaGetsliRequest;
+use Idiot\Zabbix\Api\Requests\SlaUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\SlaCreateRequest;
-use Idiot\Zabbix\Requests\SlaDeleteRequest;
-use Idiot\Zabbix\Requests\SlaGetRequest;
-use Idiot\Zabbix\Requests\SlaGetsliRequest;
-use Idiot\Zabbix\Requests\SlaUpdateRequest;
 
 final class SlaApi extends AbstractApi
 {

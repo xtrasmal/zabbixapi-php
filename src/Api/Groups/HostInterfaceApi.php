@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\HostinterfaceCreateRequest;
+use Idiot\Zabbix\Api\Requests\HostinterfaceDeleteRequest;
+use Idiot\Zabbix\Api\Requests\HostinterfaceGetRequest;
+use Idiot\Zabbix\Api\Requests\HostinterfaceMassaddRequest;
+use Idiot\Zabbix\Api\Requests\HostinterfaceMassremoveRequest;
+use Idiot\Zabbix\Api\Requests\HostinterfaceReplacehostinterfacesRequest;
+use Idiot\Zabbix\Api\Requests\HostinterfaceUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\HostinterfaceCreateRequest;
-use Idiot\Zabbix\Requests\HostinterfaceDeleteRequest;
-use Idiot\Zabbix\Requests\HostinterfaceGetRequest;
-use Idiot\Zabbix\Requests\HostinterfaceMassaddRequest;
-use Idiot\Zabbix\Requests\HostinterfaceMassremoveRequest;
-use Idiot\Zabbix\Requests\HostinterfaceReplacehostinterfacesRequest;
-use Idiot\Zabbix\Requests\HostinterfaceUpdateRequest;
 
 final class HostInterfaceApi extends AbstractApi
 {

@@ -62,10 +62,10 @@ use Idiot\Zabbix\Api\Groups\UserDirectoryApi;
 use Idiot\Zabbix\Api\Groups\UserGroupApi;
 use Idiot\Zabbix\Api\Groups\UserMacroApi;
 use Idiot\Zabbix\Api\Groups\ValueMapApi;
+use Idiot\Zabbix\Api\Requests\ApiinfoVersionRequest;
 use Idiot\Zabbix\Api\ZabbixApiGroup;
 use Idiot\Zabbix\Api\ZabbixBatch;
 use Idiot\Zabbix\Clients\JsonRpcResponse;
-use Idiot\Zabbix\Requests\ApiinfoVersionRequest;
 use InvalidArgumentException;
 use LogicException;
 

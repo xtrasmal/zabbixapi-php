@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\HistoryClearRequest;
+use Idiot\Zabbix\Api\Requests\HistoryGetRequest;
+use Idiot\Zabbix\Api\Requests\HistoryPushRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\HistoryClearRequest;
-use Idiot\Zabbix\Requests\HistoryGetRequest;
-use Idiot\Zabbix\Requests\HistoryPushRequest;
 
 final class HistoryApi extends AbstractApi
 {

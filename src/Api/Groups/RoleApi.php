@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\RoleCreateRequest;
+use Idiot\Zabbix\Api\Requests\RoleDeleteRequest;
+use Idiot\Zabbix\Api\Requests\RoleGetRequest;
+use Idiot\Zabbix\Api\Requests\RoleUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\RoleCreateRequest;
-use Idiot\Zabbix\Requests\RoleDeleteRequest;
-use Idiot\Zabbix\Requests\RoleGetRequest;
-use Idiot\Zabbix\Requests\RoleUpdateRequest;
 
 final class RoleApi extends AbstractApi
 {

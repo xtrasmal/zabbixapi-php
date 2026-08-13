@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\GraphitemGetRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\GraphitemGetRequest;
 
 final class GraphItemApi extends AbstractApi
 {

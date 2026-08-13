@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\AuthenticationGetRequest;
+use Idiot\Zabbix\Api\Requests\AuthenticationUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\AuthenticationGetRequest;
-use Idiot\Zabbix\Requests\AuthenticationUpdateRequest;
 
 final class AuthenticationApi extends AbstractApi
 {

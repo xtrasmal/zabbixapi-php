@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\MaintenanceCreateRequest;
+use Idiot\Zabbix\Api\Requests\MaintenanceDeleteRequest;
+use Idiot\Zabbix\Api\Requests\MaintenanceGetRequest;
+use Idiot\Zabbix\Api\Requests\MaintenanceUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\MaintenanceCreateRequest;
-use Idiot\Zabbix\Requests\MaintenanceDeleteRequest;
-use Idiot\Zabbix\Requests\MaintenanceGetRequest;
-use Idiot\Zabbix\Requests\MaintenanceUpdateRequest;
 
 final class MaintenanceApi extends AbstractApi
 {

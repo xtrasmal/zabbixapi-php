@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\ReportCreateRequest;
+use Idiot\Zabbix\Api\Requests\ReportDeleteRequest;
+use Idiot\Zabbix\Api\Requests\ReportGetRequest;
+use Idiot\Zabbix\Api\Requests\ReportUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\ReportCreateRequest;
-use Idiot\Zabbix\Requests\ReportDeleteRequest;
-use Idiot\Zabbix\Requests\ReportGetRequest;
-use Idiot\Zabbix\Requests\ReportUpdateRequest;
 
 final class ReportApi extends AbstractApi
 {

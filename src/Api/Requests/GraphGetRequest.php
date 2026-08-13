@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Api\Requests;
+
+/**
+ * graph.get - Retrieve graphs according to the given parameters.
+ */
+final class GraphGetRequest extends AbstractRequest
+{
+    public function method(): string
+    {
+        return 'graph.get';
+    }
+}

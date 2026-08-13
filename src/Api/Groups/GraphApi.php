@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\GraphCreateRequest;
+use Idiot\Zabbix\Api\Requests\GraphDeleteRequest;
+use Idiot\Zabbix\Api\Requests\GraphGetRequest;
+use Idiot\Zabbix\Api\Requests\GraphUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\GraphCreateRequest;
-use Idiot\Zabbix\Requests\GraphDeleteRequest;
-use Idiot\Zabbix\Requests\GraphGetRequest;
-use Idiot\Zabbix\Requests\GraphUpdateRequest;
 
 final class GraphApi extends AbstractApi
 {

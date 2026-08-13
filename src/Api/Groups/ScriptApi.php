@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Api\Groups;
 
+use Idiot\Zabbix\Api\Requests\ScriptCreateRequest;
+use Idiot\Zabbix\Api\Requests\ScriptDeleteRequest;
+use Idiot\Zabbix\Api\Requests\ScriptExecuteRequest;
+use Idiot\Zabbix\Api\Requests\ScriptGetRequest;
+use Idiot\Zabbix\Api\Requests\ScriptGetscriptsbyeventsRequest;
+use Idiot\Zabbix\Api\Requests\ScriptGetscriptsbyhostsRequest;
+use Idiot\Zabbix\Api\Requests\ScriptUpdateRequest;
 use Idiot\Zabbix\Request;
-use Idiot\Zabbix\Requests\ScriptCreateRequest;
-use Idiot\Zabbix\Requests\ScriptDeleteRequest;
-use Idiot\Zabbix\Requests\ScriptExecuteRequest;
-use Idiot\Zabbix\Requests\ScriptGetRequest;
-use Idiot\Zabbix\Requests\ScriptGetscriptsbyeventsRequest;
-use Idiot\Zabbix\Requests\ScriptGetscriptsbyhostsRequest;
-use Idiot\Zabbix\Requests\ScriptUpdateRequest;
 
 final class ScriptApi extends AbstractApi
 {

@@ -1,0 +1,14 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Idiot\Zabbix\Api\Requests\Enums;
+
+/**
+ * selectUsrgrps enum.
+ */
+enum SelectUsrgrps: string
+{
+    case Extend = 'extend';
+    case Count = 'count';
+}
