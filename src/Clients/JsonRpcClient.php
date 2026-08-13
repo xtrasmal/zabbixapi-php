@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Clients;
 
-use Idiot\Zabbix\Requests\ZabbixRequest;
+use GuzzleHttp\ClientInterface;
+use Idiot\Zabbix\Request;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -22,17 +23,20 @@ final class JsonRpcClient
     private const ERROR_INTERNAL = -32603;
 
     public function __construct(
-        private readonly HttpClient $transport,
+        private readonly ClientInterface $transport,
         private readonly ?LoggerInterface $logger = null,
     ) {}
 
-    public function call(ZabbixRequest $request): JsonRpcResponse
+    public function call(Request $request): JsonRpcResponse
     {
         $this->log()->debug('Sending Zabbix JSON-RPC request.', [
             'method' => $request->method(),
             'params' => $request->params(),
         ]);
 
+        $response = $this->transport->post('POST', '', [
+            'json' => $payload,
+        ]);
         $response = $this->transport->postJson($this->requestPayload($request, self::JSON_RPC_REQUEST_ID));
 
         $this->log()->debug('Received Zabbix JSON-RPC response.', [
@@ -44,7 +48,7 @@ final class JsonRpcClient
     }
 
     /**
-     * @param list<ZabbixRequest> $requests
+     * @param list<Request> $requests
      *
      * @return list<JsonRpcResponse>
      */
@@ -57,13 +61,13 @@ final class JsonRpcClient
         }
 
         $this->log()->debug('Sending Zabbix JSON-RPC batch request.', [
-            'methods' => array_map(static fn (ZabbixRequest $request): string => $request->method(), $requests),
+            'methods' => array_map(static fn (Request $request): string => $request->method(), $requests),
         ]);
 
         $response = $this->transport->postJson($this->batchPayload($requests));
 
         $this->log()->debug('Received Zabbix JSON-RPC batch response.', [
-            'methods' => array_map(static fn (ZabbixRequest $request): string => $request->method(), $requests),
+            'methods' => array_map(static fn (Request $request): string => $request->method(), $requests),
             'response' => $response,
         ]);
 
@@ -207,7 +211,7 @@ final class JsonRpcClient
     }
 
     /**
-     * @param list<ZabbixRequest> $requests
+     * @param list<Request> $requests
      *
      * @return list<array{jsonrpc: string, method: string, id: int, params: array}>
      */
@@ -226,7 +230,7 @@ final class JsonRpcClient
     /**
      * @return array{jsonrpc: string, method: string, id: int, params: array}
      */
-    private function requestPayload(ZabbixRequest $request, int $id): array
+    private function requestPayload(Request $request, int $id): array
     {
         return [
             'jsonrpc' => self::JSON_RPC_VERSION,
