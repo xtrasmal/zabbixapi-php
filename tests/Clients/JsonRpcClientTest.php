@@ -4,51 +4,44 @@ declare(strict_types=1);
 
 namespace Tests\Clients;
 
-use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Middleware;
-use GuzzleHttp\Psr7\Response as HttpResponse;
 use Idiot\Zabbix\Api\Requests\ApiinfoVersionRequest;
 use Idiot\Zabbix\Api\Requests\HostGetRequest;
-use Idiot\Zabbix\Clients\HttpClient;
 use Idiot\Zabbix\Clients\JsonRpcClient;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Tests\Support\RecordingClient;
 
 final class JsonRpcClientTest extends TestCase
 {
     public function testCallUsesInjectedHttpTransport(): void
     {
-        $history = [];
-        $client = new JsonRpcClient(new HttpClient(self::guzzle([
-            new HttpResponse(200, [], '{"jsonrpc":"2.0","id":1,"result":{"hostid":"10105"}}'),
-        ], $history, [
-            'headers' => ['Authorization' => 'Bearer secret'],
-        ])));
+        $transport = new RecordingClient([
+            '{"jsonrpc":"2.0","id":1,"result":{"hostid":"10105"}}',
+        ]);
+        $client = self::client($transport);
 
         $response = $client->call(
             request: HostGetRequest::fromParams(['output' => ['hostid']]),
         );
 
         self::assertSame(['hostid' => '10105'], $response->result);
-        self::assertSame('Bearer secret', $history[0]['request']->getHeaderLine('Authorization'));
+        self::assertSame('https://zabbix.example/api_jsonrpc.php', (string)$transport->requests[0]->getUri());
+        self::assertSame('Bearer secret', $transport->requests[0]->getHeaderLine('Authorization'));
+        self::assertSame('application/json-rpc', $transport->requests[0]->getHeaderLine('Content-Type'));
         self::assertSame([
             'jsonrpc' => '2.0',
             'method' => 'host.get',
             'id' => 1,
             'params' => ['output' => ['hostid']],
-        ], json_decode((string)$history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR));
+        ], self::requestBody($transport, 0));
     }
 
     public function testBatchUsesInjectedHttpTransportAndOrdersResponsesByRequestId(): void
     {
-        $history = [];
-        $client = new JsonRpcClient(new HttpClient(self::guzzle([
-            new HttpResponse(200, [], '[{"jsonrpc":"2.0","id":2,"result":[{"hostid":"10105"}]},{"jsonrpc":"2.0","id":1,"result":"7.2.0"}]'),
-        ], $history, [
-            'headers' => ['Authorization' => 'Bearer secret'],
-        ])));
+        $transport = new RecordingClient([
+            '[{"jsonrpc":"2.0","id":2,"result":[{"hostid":"10105"}]},{"jsonrpc":"2.0","id":1,"result":"7.2.0"}]',
+        ]);
+        $client = self::client($transport);
 
         $responses = $client->batch(
             requests: [
@@ -59,7 +52,7 @@ final class JsonRpcClientTest extends TestCase
 
         self::assertSame('7.2.0', $responses[0]->result);
         self::assertSame([['hostid' => '10105']], $responses[1]->result);
-        self::assertSame('Bearer secret', $history[0]['request']->getHeaderLine('Authorization'));
+        self::assertSame('Bearer secret', $transport->requests[0]->getHeaderLine('Authorization'));
         self::assertSame([
             [
                 'jsonrpc' => '2.0',
@@ -73,7 +66,18 @@ final class JsonRpcClientTest extends TestCase
                 'id' => 2,
                 'params' => ['output' => ['hostid']],
             ],
-        ], json_decode((string)$history[0]['request']->getBody(), true, flags: JSON_THROW_ON_ERROR));
+        ], self::requestBody($transport, 0));
+    }
+
+    public function testBatchReturnsErrorForEmptyRequestList(): void
+    {
+        $response = self::client(new RecordingClient())->batch([])[0];
+
+        self::assertNull($response->id);
+        self::assertSame([
+            'code' => -32600,
+            'message' => 'Cannot send an empty JSON-RPC batch.',
+        ], $response->error);
     }
 
     public function testDecodeReturnsErrorForEmptyBatchResponseArray(): void
@@ -235,7 +239,7 @@ final class JsonRpcClientTest extends TestCase
      */
     private static function decode(array $payload): array
     {
-        return (self::client())->decode($payload);
+        return self::client(new RecordingClient())->decode($payload);
     }
 
     /**
@@ -256,20 +260,20 @@ final class JsonRpcClientTest extends TestCase
         ], $response->error);
     }
 
-    private static function client(): JsonRpcClient
+    private static function client(RecordingClient $transport): JsonRpcClient
     {
-        return new JsonRpcClient(new HttpClient(new GuzzleClient()));
+        return new JsonRpcClient([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+            'client' => $transport,
+        ]);
     }
 
     /**
-     * @param list<HttpResponse>               $responses
-     * @param array<int, array<string, mixed>> $history
+     * @return array<string, mixed>|list<mixed>
      */
-    private static function guzzle(array $responses, array &$history, array $options = []): GuzzleClient
+    private static function requestBody(RecordingClient $transport, int $index): array
     {
-        $stack = HandlerStack::create(new MockHandler($responses));
-        $stack->push(Middleware::history($history));
-
-        return new GuzzleClient($options + ['handler' => $stack]);
+        return json_decode((string)$transport->requests[$index]->getBody(), true, flags: JSON_THROW_ON_ERROR);
     }
 }

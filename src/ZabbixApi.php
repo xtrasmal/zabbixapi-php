@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix;
 
+use Idiot\Zabbix\Api\ApiGroup;
 use Idiot\Zabbix\Api\Groups\ActionApi;
 use Idiot\Zabbix\Api\Groups\AlertApi;
 use Idiot\Zabbix\Api\Groups\ApiInfoApi;
@@ -63,68 +64,66 @@ use Idiot\Zabbix\Api\Groups\UserGroupApi;
 use Idiot\Zabbix\Api\Groups\UserMacroApi;
 use Idiot\Zabbix\Api\Groups\ValueMapApi;
 use Idiot\Zabbix\Api\Requests\ApiinfoVersionRequest;
-use Idiot\Zabbix\Api\ApiGroup;
 use Idiot\Zabbix\Api\ZabbixBatch;
 use Idiot\Zabbix\Clients\JsonRpcResponse;
 use InvalidArgumentException;
-use LogicException;
 
 /**
- * @param ApiGroup<ActionApi> $actions
- * @param ApiGroup<AlertApi> $alerts
- * @param ApiGroup<AutoregistrationApi> $autoregistration
- * @param ApiGroup<ConnectorApi> $connectors
- * @param ApiGroup<CorrelationApi> $correlations
- * @param ApiGroup<DashboardApi> $dashboards
- * @param ApiGroup<DCheckApi> $dChecks
- * @param ApiGroup<DHostApi> $dHosts
- * @param ApiGroup<DiscoveryRuleApi> $discoveryRules
- * @param ApiGroup<DRuleApi> $dRules
- * @param ApiGroup<DServiceApi> $dServices
- * @param ApiGroup<EventApi> $events
- * @param ApiGroup<GraphItemApi> $graphItems
- * @param ApiGroup<GraphPrototypeApi> $graphPrototypes
- * @param ApiGroup<GraphApi> $graphs
- * @param ApiGroup<HaNodeApi> $haNodes
- * @param ApiGroup<HistoryApi> $histories
- * @param ApiGroup<HostGroupApi> $hostGroups
- * @param ApiGroup<HostInterfaceApi> $hostInterfaces
- * @param ApiGroup<HostPrototypeApi> $hostPrototypes
- * @param ApiGroup<HostApi> $hosts
- * @param ApiGroup<HousekeepingApi> $housekeeping
- * @param ApiGroup<HttpTestApi> $httpTests
- * @param ApiGroup<IconMapApi> $iconMaps
- * @param ApiGroup<ImageApi> $images
- * @param ApiGroup<ItemPrototypeApi> $itemPrototypes
- * @param ApiGroup<ItemApi> $items
- * @param ApiGroup<MaintenanceApi> $maintenances
- * @param ApiGroup<MapApi> $maps
- * @param ApiGroup<MediaTypeApi> $mediaTypes
- * @param ApiGroup<MfaApi> $mfas
- * @param ApiGroup<ModuleApi> $modules
- * @param ApiGroup<ProblemApi> $problems
- * @param ApiGroup<ProxyApi> $proxies
- * @param ApiGroup<ProxyGroupApi> $proxyGroups
- * @param ApiGroup<RegexpApi> $regexps
- * @param ApiGroup<ReportApi> $reports
- * @param ApiGroup<RoleApi> $roles
- * @param ApiGroup<ScriptApi> $scripts
- * @param ApiGroup<ServiceApi> $services
- * @param ApiGroup<SettingsApi> $settings
- * @param ApiGroup<SlaApi> $slas
- * @param ApiGroup<TaskApi> $tasks
+ * @param ApiGroup<ActionApi>            $actions
+ * @param ApiGroup<AlertApi>             $alerts
+ * @param ApiGroup<AutoregistrationApi>  $autoregistration
+ * @param ApiGroup<ConnectorApi>         $connectors
+ * @param ApiGroup<CorrelationApi>       $correlations
+ * @param ApiGroup<DashboardApi>         $dashboards
+ * @param ApiGroup<DCheckApi>            $dChecks
+ * @param ApiGroup<DHostApi>             $dHosts
+ * @param ApiGroup<DiscoveryRuleApi>     $discoveryRules
+ * @param ApiGroup<DRuleApi>             $dRules
+ * @param ApiGroup<DServiceApi>          $dServices
+ * @param ApiGroup<EventApi>             $events
+ * @param ApiGroup<GraphItemApi>         $graphItems
+ * @param ApiGroup<GraphPrototypeApi>    $graphPrototypes
+ * @param ApiGroup<GraphApi>             $graphs
+ * @param ApiGroup<HaNodeApi>            $haNodes
+ * @param ApiGroup<HistoryApi>           $histories
+ * @param ApiGroup<HostGroupApi>         $hostGroups
+ * @param ApiGroup<HostInterfaceApi>     $hostInterfaces
+ * @param ApiGroup<HostPrototypeApi>     $hostPrototypes
+ * @param ApiGroup<HostApi>              $hosts
+ * @param ApiGroup<HousekeepingApi>      $housekeeping
+ * @param ApiGroup<HttpTestApi>          $httpTests
+ * @param ApiGroup<IconMapApi>           $iconMaps
+ * @param ApiGroup<ImageApi>             $images
+ * @param ApiGroup<ItemPrototypeApi>     $itemPrototypes
+ * @param ApiGroup<ItemApi>              $items
+ * @param ApiGroup<MaintenanceApi>       $maintenances
+ * @param ApiGroup<MapApi>               $maps
+ * @param ApiGroup<MediaTypeApi>         $mediaTypes
+ * @param ApiGroup<MfaApi>               $mfas
+ * @param ApiGroup<ModuleApi>            $modules
+ * @param ApiGroup<ProblemApi>           $problems
+ * @param ApiGroup<ProxyApi>             $proxies
+ * @param ApiGroup<ProxyGroupApi>        $proxyGroups
+ * @param ApiGroup<RegexpApi>            $regexps
+ * @param ApiGroup<ReportApi>            $reports
+ * @param ApiGroup<RoleApi>              $roles
+ * @param ApiGroup<ScriptApi>            $scripts
+ * @param ApiGroup<ServiceApi>           $services
+ * @param ApiGroup<SettingsApi>          $settings
+ * @param ApiGroup<SlaApi>               $slas
+ * @param ApiGroup<TaskApi>              $tasks
  * @param ApiGroup<TemplateDashboardApi> $templateDashboards
- * @param ApiGroup<TemplateGroupApi> $templateGroups
- * @param ApiGroup<TemplateApi> $templates
- * @param ApiGroup<TokenApi> $tokens
- * @param ApiGroup<TrendApi> $trends
- * @param ApiGroup<TriggerPrototypeApi> $triggerPrototypes
- * @param ApiGroup<TriggerApi> $triggers
- * @param ApiGroup<UserDirectoryApi> $userDirectories
- * @param ApiGroup<UserGroupApi> $userGroups
- * @param ApiGroup<UserMacroApi> $userMacros
- * @param ApiGroup<UserApi> $users
- * @param ApiGroup<ValueMapApi> $valueMaps
+ * @param ApiGroup<TemplateGroupApi>     $templateGroups
+ * @param ApiGroup<TemplateApi>          $templates
+ * @param ApiGroup<TokenApi>             $tokens
+ * @param ApiGroup<TrendApi>             $trends
+ * @param ApiGroup<TriggerPrototypeApi>  $triggerPrototypes
+ * @param ApiGroup<TriggerApi>           $triggers
+ * @param ApiGroup<UserDirectoryApi>     $userDirectories
+ * @param ApiGroup<UserGroupApi>         $userGroups
+ * @param ApiGroup<UserMacroApi>         $userMacros
+ * @param ApiGroup<UserApi>              $users
+ * @param ApiGroup<ValueMapApi>          $valueMaps
  */
 class ZabbixApi
 {
@@ -151,7 +150,6 @@ class ZabbixApi
         $this->requestValidator = ZabbixRequestValidator::createDefault();
 
         $this->bindApiGroups();
-        $this->logConfiguration();
     }
 
     /**
@@ -189,7 +187,6 @@ class ZabbixApi
     private function bindApiGroups(): void
     {
         foreach ($this->createRequestBuilders() as $name => $builder) {
-
             $this->{$name} = $this->apiGroup($builder);
         }
     }
@@ -334,5 +331,92 @@ class ZabbixApi
         return $this->options->client->batch(
             requests: $requests,
         );
+    }
+
+    /**
+     * @param list<callable|Request> $requests
+     *
+     * @return list<Request>
+     */
+    private function collectBatchRequests(array $requests): array
+    {
+        if (1 === count($requests) && is_callable($requests[0]) && !$requests[0] instanceof Request) {
+            $batch = new ZabbixBatch($this->requestBuilders);
+            $requests[0]($batch);
+
+            return $batch->queuedRequests();
+        }
+
+        foreach ($requests as $request) {
+            if (!$request instanceof Request) {
+                throw new InvalidArgumentException('Zabbix API batches only accept request objects or one batch callback.');
+            }
+        }
+
+        return array_values($requests);
+    }
+
+    /**
+     * @param list<Request>         $requests
+     * @param list<JsonRpcResponse> $responses
+     *
+     * @throws ZabbixApiException
+     *
+     * @return list<mixed>
+     */
+    private function resultsFromResponses(array $requests, array $responses, bool $skipFirstResult): array
+    {
+        $results = [];
+
+        foreach ($responses as $index => $response) {
+            if (null !== $response->error) {
+                throw self::zabbixError($response->error);
+            }
+
+            $result = $response->result;
+
+            if (($requests[$index] ?? null) instanceof ApiinfoVersionRequest) {
+                $this->apiVersion = (string)$result;
+            }
+
+            if (!$skipFirstResult || 0 !== $index) {
+                $results[] = $result;
+            }
+        }
+
+        return $results;
+    }
+
+    private function shouldPrefetchApiVersion(): bool
+    {
+        return null === $this->apiVersion;
+    }
+
+    /**
+     * @param array{code: int, message: string, data?: mixed} $error
+     */
+    private static function zabbixError(array $error): ZabbixApiException
+    {
+        return new ZabbixApiException(
+            message: sprintf('%s [%s]', $error['message'], self::formatErrorData($error['data'] ?? null)),
+            code: $error['code'],
+        );
+    }
+
+    private static function formatErrorData(mixed $data): string
+    {
+        if (null === $data) {
+            return '';
+        }
+
+        if (is_bool($data)) {
+            return $data ? 'true' : 'false';
+        }
+
+        if (is_scalar($data)) {
+            return (string)$data;
+        }
+
+        return get_debug_type($data);
     }
 }

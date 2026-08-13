@@ -4,44 +4,88 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix;
 
-use Psr\Log\NullLogger;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Idiot\Zabbix\Clients\JsonRpcClient;
+use Psr\Http\Client\ClientInterface;
+use RuntimeException;
 
+/**
+ * Resolved, validated Zabbix client configuration.
+ *
+ * Accepts a plain options bag, rejects unknown keys and missing credentials, and
+ * exposes a ready-to-use {@see JsonRpcClient} on {@see $client}.
+ */
 final class Options
 {
     public const DEFAULT_TIMEOUT = 30;
     public const DEFAULT_CONNECTION_TIMEOUT = 10;
 
-    private array $defaultOptions = [];
+    /** @var list<string> */
+    private const KNOWN_OPTIONS = [
+        'url',
+        'token',
+        'debug',
+        'verify',
+        'timeout',
+        'connect_timeout',
+        'client',
+    ];
 
-    private function __construct(public ?array $options = null)
-    {
-        $this->options = $this->resolveOptions($options ?? []);
+    public readonly JsonRpcClient $client;
+
+    private function __construct(
+        public readonly string $url,
+        public readonly string $token,
+        public readonly bool $debug,
+        public readonly bool $verify,
+        public readonly int $timeout,
+        public readonly int $connectTimeout,
+        ?ClientInterface $client = null,
+    ) {
+        $this->client = new JsonRpcClient([
+            'url' => $this->url,
+            'token' => $this->token,
+            'client' => $client,
+        ]);
     }
 
     /**
      * @param array<string, mixed> $options
+     *
+     * @throws RuntimeException
      */
     public static function fromArray(array $options): self
     {
-        return new self(options: $options);
-    }
+        foreach (array_keys($options) as $key) {
+            if (!in_array($key, self::KNOWN_OPTIONS, true)) {
+                throw new RuntimeException(sprintf('Unknown Zabbix API option: "%s".', $key));
+            }
+        }
 
-    private function resolveOptions(array $options): array
-    {
-        $resolver = new OptionsResolver();
+        $url = (string)($options['url'] ?? '');
+        $token = (string)($options['token'] ?? '');
 
-        $resolver->setDefaults([
-            'url' => null,
-            'token' => null,
-            'debug' => false,
-            'verify' => true,
-            'timeout' => self::DEFAULT_TIMEOUT,
-            'connect_timeout' => self::DEFAULT_CONNECTION_TIMEOUT,
-            'logger' => new NullLogger(),
-            'client' => null,
-        ]);
+        if ('' === $url) {
+            throw new RuntimeException('Missing Zabbix URL.');
+        }
 
-        return $resolver->resolve($options);
+        if ('' === $token) {
+            throw new RuntimeException('Missing Zabbix API token.');
+        }
+
+        $client = $options['client'] ?? null;
+
+        if (null !== $client && !$client instanceof ClientInterface) {
+            throw new RuntimeException('Zabbix API option "client" must be a PSR-18 ClientInterface.');
+        }
+
+        return new self(
+            url: $url,
+            token: $token,
+            debug: (bool)($options['debug'] ?? false),
+            verify: (bool)($options['verify'] ?? true),
+            timeout: (int)($options['timeout'] ?? self::DEFAULT_TIMEOUT),
+            connectTimeout: (int)($options['connect_timeout'] ?? self::DEFAULT_CONNECTION_TIMEOUT),
+            client: $client,
+        );
     }
 }

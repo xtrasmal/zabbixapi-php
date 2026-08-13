@@ -4,65 +4,61 @@ declare(strict_types=1);
 
 namespace Idiot\Zabbix\Clients;
 
-use Http\Discovery\Psr17Factory;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
-use Idiot\Zabbix\Options;
 use Idiot\Zabbix\Request;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 /**
  * A minimal JSON-RPC 2.0 client.
  *
- * Queue one or more requests as JSON-RPC envelopes, then normalize the decoded
- * response payload with {@see decode()}.
+ * Encodes one ({@see call()}) or many ({@see batch()}) {@see Request} objects as
+ * JSON-RPC envelopes, POSTs them over a PSR-18 transport, then normalizes the decoded
+ * reply into {@see JsonRpcResponse} objects with {@see decode()}.
  */
 final class JsonRpcClient
 {
     private const JSON_RPC_REQUEST_ID = 1;
     private const JSON_RPC_VERSION = '2.0';
+    private const CONTENT_TYPE = 'application/json-rpc';
     private const ERROR_INVALID_REQUEST = -32600;
     private const ERROR_INTERNAL = -32603;
 
-    private ClientInterface $client;
-    private RequestFactoryInterface $requestFactory;
-    private StreamFactoryInterface $streamFactory;
-    private ?array $options;
+    private string $url;
+    private ?string $token;
+    private ?ClientInterface $client;
+    private ?RequestFactoryInterface $requestFactory;
+    private ?StreamFactoryInterface $streamFactory;
 
-    public function __construct(Options $options)
+    /**
+     * The PSR-18 client and PSR-17 factories are resolved via discovery on first send,
+     * so a client can be constructed (and its configuration validated) without an HTTP
+     * transport installed.
+     *
+     * @param array{
+     *     url: string,
+     *     token?: string|null,
+     *     client?: ClientInterface|null,
+     *     requestFactory?: RequestFactoryInterface|null,
+     *     streamFactory?: StreamFactoryInterface|null,
+     * } $options
+     */
+    public function __construct(array $options)
     {
-        $this->options = $options->options;
-        $this->client = $options->options['client'] ?? Psr18ClientDiscovery::find();
-        $this->requestFactory = Psr17FactoryDiscovery::findRequestFactory();
-        $this->streamFactory = Psr17FactoryDiscovery::findStreamFactory();
+        $this->url = $options['url'];
+        $this->token = $options['token'] ?? null;
+        $this->client = $options['client'] ?? null;
+        $this->requestFactory = $options['requestFactory'] ?? null;
+        $this->streamFactory = $options['streamFactory'] ?? null;
     }
 
-    public function call(Request $payload): JsonRpcResponse
+    public function call(Request $request): JsonRpcResponse
     {
-        // 1. Create the base POST request (The URI '' comes from your original code)
-        $request = $this->requestFactory->createRequest('POST', $this->options['url']);
+        $decoded = $this->send($this->requestPayload($request, self::JSON_RPC_REQUEST_ID));
 
-        foreach ($this->options['headers'] ?? [] as $name => $value) {
-            $request = $request->withHeader($name, $value);
-        }
-
-        if (!empty($this->options['token'])) {
-            $request = $request->withHeader('Authorization', 'Bearer ' . $this->options['token']);
-        }
-
-        // 2. Stream the JSON payload into the request body
-        $jsonString = json_encode($payload, JSON_THROW_ON_ERROR);
-        $body = $this->streamFactory->createStream($jsonString);
-        $request = $request->withBody($body);
-
-        // 3. Send via PSR-18 client
-        $response = $this->client->sendRequest($request);
-
-        return json_decode((string)$response->getBody(), true, flags: JSON_THROW_ON_ERROR);
+        return $this->singleResponse($this->decode($decoded), self::JSON_RPC_REQUEST_ID);
     }
 
     /**
@@ -78,18 +74,9 @@ final class JsonRpcClient
             ];
         }
 
-        $this->log()->debug('Sending Zabbix JSON-RPC batch request.', [
-            'methods' => array_map(static fn (Request $request): string => $request->method(), $requests),
-        ]);
+        $decoded = $this->send($this->batchPayload($requests));
 
-        $response = $this->client->call($this->batchPayload($requests));
-
-        $this->log()->debug('Received Zabbix JSON-RPC batch response.', [
-            'methods' => array_map(static fn (Request $request): string => $request->method(), $requests),
-            'response' => $response,
-        ]);
-
-        return $this->orderedResponses($this->decode($response), range(
+        return $this->orderedResponses($this->decode($decoded), range(
             self::JSON_RPC_REQUEST_ID,
             count($requests),
         ));
@@ -129,6 +116,45 @@ final class JsonRpcClient
     }
 
     /**
+     * Encode a JSON-RPC payload, POST it over the PSR-18 transport, and return the
+     * decoded reply.
+     *
+     * @param array<string, mixed>|list<mixed> $payload
+     *
+     * @return array<string, mixed>|list<mixed>
+     */
+    private function send(array $payload): array
+    {
+        $request = $this->requestFactory()
+            ->createRequest('POST', $this->url)
+            ->withHeader('Content-Type', self::CONTENT_TYPE);
+
+        if (null !== $this->token && '' !== $this->token) {
+            $request = $request->withHeader('Authorization', 'Bearer ' . $this->token);
+        }
+
+        $body = $this->streamFactory()->createStream(json_encode($payload, JSON_THROW_ON_ERROR));
+        $response = $this->client()->sendRequest($request->withBody($body));
+
+        return json_decode((string)$response->getBody(), true, flags: JSON_THROW_ON_ERROR);
+    }
+
+    private function client(): ClientInterface
+    {
+        return $this->client ??= Psr18ClientDiscovery::find();
+    }
+
+    private function requestFactory(): RequestFactoryInterface
+    {
+        return $this->requestFactory ??= Psr17FactoryDiscovery::findRequestFactory();
+    }
+
+    private function streamFactory(): StreamFactoryInterface
+    {
+        return $this->streamFactory ??= Psr17FactoryDiscovery::findStreamFactory();
+    }
+
+    /**
      * @param array<string, mixed> $envelope
      */
     private function toResponse(array $envelope): JsonRpcResponse
@@ -161,6 +187,74 @@ final class JsonRpcClient
     }
 
     /**
+     * @param list<JsonRpcResponse> $responses
+     */
+    private function singleResponse(array $responses, int $requestId): JsonRpcResponse
+    {
+        if (1 !== count($responses)) {
+            return self::error(null, self::ERROR_INTERNAL, 'Expected exactly one JSON-RPC response.');
+        }
+
+        $response = $responses[0];
+
+        if ($response->id !== $requestId) {
+            return self::error($response->id, self::ERROR_INTERNAL, 'JSON-RPC response id did not match request id.');
+        }
+
+        return $response;
+    }
+
+    /**
+     * @param list<JsonRpcResponse> $responses
+     * @param list<int>             $requestIds
+     *
+     * @return list<JsonRpcResponse>
+     */
+    private function orderedResponses(array $responses, array $requestIds): array
+    {
+        if (count($responses) !== count($requestIds)) {
+            return [
+                self::error(null, self::ERROR_INTERNAL, 'JSON-RPC batch response count did not match request count.'),
+            ];
+        }
+
+        $byId = [];
+
+        foreach ($responses as $response) {
+            $key = $this->responseKey($response->id);
+
+            if (array_key_exists($key, $byId)) {
+                return [
+                    self::error($response->id, self::ERROR_INTERNAL, 'JSON-RPC batch response contained a duplicate id.'),
+                ];
+            }
+
+            $byId[$key] = $response;
+        }
+
+        $ordered = [];
+
+        foreach ($requestIds as $requestId) {
+            $key = $this->responseKey($requestId);
+
+            if (!array_key_exists($key, $byId)) {
+                return [
+                    self::error($requestId, self::ERROR_INTERNAL, 'JSON-RPC batch response id did not match request id.'),
+                ];
+            }
+
+            $ordered[] = $byId[$key];
+        }
+
+        return $ordered;
+    }
+
+    private function responseKey(mixed $id): string
+    {
+        return get_debug_type($id) . ':' . serialize($id);
+    }
+
+    /**
      * @param list<Request> $requests
      *
      * @return list<array{jsonrpc: string, method: string, id: int, params: array}>
@@ -188,11 +282,6 @@ final class JsonRpcClient
             'id' => $id,
             'params' => $request->params(),
         ];
-    }
-
-    private function log(): LoggerInterface
-    {
-        return $this->logger ?? new NullLogger();
     }
 
     private static function error(mixed $id, int $code, string $message): JsonRpcResponse

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\JsonRpc;
 
-use GuzzleHttp\Client as GuzzleClient;
-use Idiot\Zabbix\Clients\HttpClient;
 use Idiot\Zabbix\Clients\JsonRpcClient;
 use Idiot\Zabbix\Clients\JsonRpcResponse;
 use PHPUnit\Framework\TestCase;
@@ -104,6 +102,9 @@ final class ResponseTest extends TestCase
 
     private static function client(): JsonRpcClient
     {
-        return new JsonRpcClient(new HttpClient(new GuzzleClient()));
+        return new JsonRpcClient([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+        ]);
     }
 }
