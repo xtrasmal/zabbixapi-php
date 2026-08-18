@@ -12,15 +12,25 @@ $zabbix = new ZabbixApi([
 ]);
 ```
 
-Supported options are `url`, `token`, `debug`, `verify`, `timeout`, `connect_timeout`, and `logger`.
+Supported options are `url`, `token`, `debug`, `verify`, `timeout`, `connect_timeout`, and `client`.
 
 The `url` option is the full Zabbix JSON-RPC endpoint, including `api_jsonrpc.php`.
 
-The resolved client always receives the JSON-RPC endpoint, bearer token, fixed JSON-RPC headers, timeout options, TLS verification, and `http_errors` behavior from `Options`. `http_errors` is derived from `debug`.
+`JsonRpcClient` discovers a PSR-18 client and PSR-17 factories when no `client` is supplied. PSR-18 deliberately has no standard TLS or timeout configuration API, so applications that need to enforce `verify`, `timeout`, or `connect_timeout` must provide a configured PSR-18 client. The Laravel provider included with this repository does this with Guzzle.
 
 ## TLS Verification
 
-Default behavior verifies TLS certificates and hostnames.
+Default behavior does not verify TLS certificates or hostnames.
+
+To enable TLS certificate verification:
+
+```php
+$zabbix = new ZabbixApi([
+    'url' => 'https://zabbix.example/api_jsonrpc.php',
+    'token' => 'your-zabbix-api-token',
+    'verify' => true,
+]);
+```
 
 To disable TLS certificate verification:
 
@@ -29,27 +39,5 @@ $zabbix = new ZabbixApi([
     'url' => 'https://zabbix.example/api_jsonrpc.php',
     'token' => 'your-zabbix-api-token',
     'verify' => false,
-]);
-```
-
-To use a custom CA bundle:
-
-```php
-$zabbix = new ZabbixApi([
-    'url' => 'https://zabbix.example/api_jsonrpc.php',
-    'token' => 'your-zabbix-api-token',
-    'verify' => '/path/to/ca-bundle.pem',
-]);
-```
-
-## Logging
-
-Pass a PSR-3 logger to receive debug-level request and response diagnostics.
-
-```php
-$zabbix = new ZabbixApi([
-    'url' => 'https://zabbix.example/api_jsonrpc.php',
-    'token' => 'your-zabbix-api-token',
-    'logger' => $logger,
 ]);
 ```

@@ -8,5 +8,5 @@ return [
     'username' => env('ZABBIX_USERNAME'),
     'password' => env('ZABBIX_PASSWORD'),
 
-    'verify' => env('ZABBIX_VERIFY_TLS', true),
+    'verify' => env('ZABBIX_VERIFY_TLS', false),
 ];

@@ -82,7 +82,7 @@ final class Options
             url: $url,
             token: $token,
             debug: (bool)($options['debug'] ?? false),
-            verify: (bool)($options['verify'] ?? true),
+            verify: (bool)($options['verify'] ?? false),
             timeout: (int)($options['timeout'] ?? self::DEFAULT_TIMEOUT),
             connectTimeout: (int)($options['connect_timeout'] ?? self::DEFAULT_CONNECTION_TIMEOUT),
             client: $client,

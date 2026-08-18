@@ -6,6 +6,7 @@ namespace Tests;
 
 use Idiot\Zabbix\Api\Requests\HostGetRequest;
 use Idiot\Zabbix\InvalidZabbixRequest;
+use Idiot\Zabbix\Options;
 use Idiot\Zabbix\ZabbixApi;
 use Idiot\Zabbix\ZabbixApiException;
 use PHPUnit\Framework\TestCase;
@@ -23,6 +24,27 @@ final class ZabbixApiTest extends TestCase
         ]);
 
         self::assertInstanceOf(ZabbixApi::class, $api);
+    }
+
+    public function testSslVerificationIsDisabledByDefault(): void
+    {
+        $options = Options::fromArray([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+        ]);
+
+        self::assertFalse($options->verify);
+    }
+
+    public function testSslVerificationCanBeExplicitlyEnabled(): void
+    {
+        $options = Options::fromArray([
+            'url' => 'https://zabbix.example/api_jsonrpc.php',
+            'token' => 'secret',
+            'verify' => true,
+        ]);
+
+        self::assertTrue($options->verify);
     }
 
     public function testConstructorRejectsEmptyUrl(): void
