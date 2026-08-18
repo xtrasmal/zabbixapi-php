@@ -7,9 +7,13 @@ namespace Idiot\Zabbix\Clients;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
 use Idiot\Zabbix\Request;
+use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
+use Psr\Log\NullLogger;
 
 /**
  * A minimal JSON-RPC 2.0 client.
@@ -28,30 +32,40 @@ final class JsonRpcClient
 
     private string $url;
     private ?string $token;
+    private bool $debug;
     private ?ClientInterface $client;
     private ?RequestFactoryInterface $requestFactory;
     private ?StreamFactoryInterface $streamFactory;
+    private ?LoggerInterface $logger;
 
     /**
      * The PSR-18 client and PSR-17 factories are resolved via discovery on first send,
      * so a client can be constructed (and its configuration validated) without an HTTP
      * transport installed.
      *
+     * When "debug" is on, each call is traced through the PSR-3 logger (a no-op
+     * NullLogger unless one is injected); the backend wires "debug" to the host
+     * application's APP_DEBUG, so call tracing follows Laravel's debug mode.
+     *
      * @param array{
      *     url: string,
      *     token?: string|null,
+     *     debug?: bool,
      *     client?: ClientInterface|null,
      *     requestFactory?: RequestFactoryInterface|null,
      *     streamFactory?: StreamFactoryInterface|null,
+     *     logger?: LoggerInterface|null,
      * } $options
      */
     public function __construct(array $options)
     {
         $this->url = $options['url'];
         $this->token = $options['token'] ?? null;
+        $this->debug = $options['debug'] ?? false;
         $this->client = $options['client'] ?? null;
         $this->requestFactory = $options['requestFactory'] ?? null;
         $this->streamFactory = $options['streamFactory'] ?? null;
+        $this->logger = $options['logger'] ?? null;
     }
 
     public function call(Request $request): JsonRpcResponse
@@ -133,15 +147,83 @@ final class JsonRpcClient
             $request = $request->withHeader('Authorization', 'Bearer ' . $this->token);
         }
 
-        $body = $this->streamFactory()->createStream(json_encode($payload, JSON_THROW_ON_ERROR));
-        $response = $this->client()->sendRequest($request->withBody($body));
+        $this->log(LogLevel::DEBUG, 'Zabbix JSON-RPC request', [
+            'url' => $this->url,
+            'methods' => $this->payloadMethods($payload),
+            'payload' => $payload,
+        ]);
 
-        return json_decode((string)$response->getBody(), true, flags: JSON_THROW_ON_ERROR);
+        $body = $this->streamFactory()->createStream(json_encode($payload, JSON_THROW_ON_ERROR));
+
+        try {
+            $response = $this->client()->sendRequest($request->withBody($body));
+        } catch (ClientExceptionInterface $exception) {
+            $this->log(LogLevel::ERROR, 'Zabbix JSON-RPC transport failure', [
+                'url' => $this->url,
+                'methods' => $this->payloadMethods($payload),
+                'exception' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
+
+        $decoded = json_decode((string)$response->getBody(), true, flags: JSON_THROW_ON_ERROR);
+
+        $this->log(LogLevel::DEBUG, 'Zabbix JSON-RPC response', [
+            'url' => $this->url,
+            'status' => $response->getStatusCode(),
+            'methods' => $this->payloadMethods($payload),
+            'response' => $decoded,
+        ]);
+
+        return $decoded;
+    }
+
+    /**
+     * Trace one call through the injected logger, but only in debug mode - so a
+     * production build carries no per-call logging cost and leaks no payloads.
+     *
+     * @param array<string, mixed> $context
+     */
+    private function log(string $level, string $message, array $context): void
+    {
+        if (!$this->debug) {
+            return;
+        }
+
+        $this->logger()->log($level, $message, $context);
+    }
+
+    /**
+     * The JSON-RPC method(s) in a single or batch payload, for a readable trace
+     * that names each call without decoding the nested envelope.
+     *
+     * @param array<string, mixed>|list<mixed> $payload
+     *
+     * @return list<string>
+     */
+    private function payloadMethods(array $payload): array
+    {
+        $envelopes = array_is_list($payload) ? $payload : [$payload];
+        $methods = [];
+
+        foreach ($envelopes as $envelope) {
+            if (is_array($envelope) && isset($envelope['method']) && is_string($envelope['method'])) {
+                $methods[] = $envelope['method'];
+            }
+        }
+
+        return $methods;
     }
 
     private function client(): ClientInterface
     {
         return $this->client ??= Psr18ClientDiscovery::find();
+    }
+
+    private function logger(): LoggerInterface
+    {
+        return $this->logger ??= new NullLogger();
     }
 
     private function requestFactory(): RequestFactoryInterface

@@ -6,6 +6,7 @@ namespace Idiot\Zabbix;
 
 use Idiot\Zabbix\Clients\JsonRpcClient;
 use Psr\Http\Client\ClientInterface;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 
 /**
@@ -28,6 +29,7 @@ final class Options
         'timeout',
         'connect_timeout',
         'client',
+        'logger',
     ];
 
     public readonly JsonRpcClient $client;
@@ -40,11 +42,14 @@ final class Options
         public readonly int $timeout,
         public readonly int $connectTimeout,
         ?ClientInterface $client = null,
+        ?LoggerInterface $logger = null,
     ) {
         $this->client = new JsonRpcClient([
             'url' => $this->url,
             'token' => $this->token,
+            'debug' => $this->debug,
             'client' => $client,
+            'logger' => $logger,
         ]);
     }
 
@@ -78,6 +83,12 @@ final class Options
             throw new RuntimeException('Zabbix API option "client" must be a PSR-18 ClientInterface.');
         }
 
+        $logger = $options['logger'] ?? null;
+
+        if (null !== $logger && !$logger instanceof LoggerInterface) {
+            throw new RuntimeException('Zabbix API option "logger" must be a PSR-3 LoggerInterface.');
+        }
+
         return new self(
             url: $url,
             token: $token,
@@ -86,6 +97,7 @@ final class Options
             timeout: (int)($options['timeout'] ?? self::DEFAULT_TIMEOUT),
             connectTimeout: (int)($options['connect_timeout'] ?? self::DEFAULT_CONNECTION_TIMEOUT),
             client: $client,
+            logger: $logger,
         );
     }
 }
